@@ -82,12 +82,10 @@ export default function PaymentPage() {
         return;
       }
 
-      // Clear checkout information
       sessionStorage.removeItem(
         "prakratri-matri-checkout"
       );
 
-      // Clear local cart storage for the MVP
       localStorage.removeItem(
         "prakratri-matri-cart"
       );
@@ -96,7 +94,7 @@ export default function PaymentPage() {
         `/checkout/success?order=${data.orderId}`
       );
     } catch (error) {
-      console.error(error);
+      console.error("Order creation error:", error);
 
       setError(
         "Something went wrong. Please try again."
@@ -133,9 +131,7 @@ export default function PaymentPage() {
       <main>
         <h1>Payment</h1>
 
-        <p>
-          Delivery information is missing.
-        </p>
+        <p>Delivery information is missing.</p>
 
         <Link href="/checkout">
           ← Back to Checkout
@@ -158,15 +154,12 @@ export default function PaymentPage() {
             </p>
 
             <p>
-              ₹{item.price.toFixed(2)} ×{" "}
-              {item.quantity}
+              ₹{item.price.toFixed(2)} × {item.quantity}
             </p>
 
             <p>
               ₹
-              {(item.price * item.quantity).toFixed(
-                2
-              )}
+              {(item.price * item.quantity).toFixed(2)}
             </p>
           </div>
         ))}
@@ -175,9 +168,7 @@ export default function PaymentPage() {
           Subtotal: ₹{subtotal.toFixed(2)}
         </p>
 
-        <p>
-          Shipping: ₹0.00
-        </p>
+        <p>Shipping: ₹0.00</p>
 
         <p>
           <strong>
