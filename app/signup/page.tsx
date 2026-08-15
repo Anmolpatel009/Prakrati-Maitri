@@ -1,115 +1,77 @@
-"use client";
+import SignupForm from "@/components/auth/SignupForm";
 
-import { FormEvent, useState } from "react";
-import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-
-export default function SignupForm() {
-  const supabase = createClient();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-
-  async function handleSignup(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    setError("");
-    setSuccess(false);
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    setLoading(true);
-
-    const { error } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    setSuccess(true);
-  }
-
-  if (success) {
-    return (
-      <div>
-        <h2>Check your email</h2>
-
-        <p>
-          We sent a verification link to <strong>{email}</strong>.
-        </p>
-
-        <p>
-          Please verify your email before continuing.
-        </p>
-
-        <Link href="/login">Go to login</Link>
-      </div>
-    );
-  }
-
+export default function SignupPage() {
   return (
-    <form onSubmit={handleSignup}>
-      <div>
-        <label htmlFor="email">Email address</label>
+    <main className="min-h-screen bg-[#F9F7F2]">
 
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
+      <div className="mx-auto grid min-h-screen max-w-6xl lg:grid-cols-2">
+
+        {/* ================================================= */}
+        {/* BRAND / INTRO PANEL */}
+        {/* ================================================= */}
+
+        <section className="relative hidden overflow-hidden bg-[#E9E0CE] lg:flex lg:flex-col lg:justify-between p-12">
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
+              Prakratri Maitri
+            </p>
+
+            <h2 className="mt-8 max-w-md font-serif text-5xl leading-tight text-[#4A5D23]">
+              Thoughtful products,
+              <br />
+              made with purpose.
+            </h2>
+
+            <p className="mt-6 max-w-md text-base leading-7 text-[#3D3D3D]/65">
+              Create your account and discover thoughtfully
+              selected products made for everyday moments.
+            </p>
+          </div>
+
+          <p className="text-xs text-[#3D3D3D]/45">
+            Sustainable choices. Meaningful products.
+          </p>
+
+        </section>
+
+        {/* ================================================= */}
+        {/* SIGNUP */}
+        {/* ================================================= */}
+
+        <section className="flex items-center justify-center px-6 py-16 sm:px-10 lg:px-16">
+
+          <div className="w-full max-w-md">
+
+            {/* Heading */}
+
+            <div className="mb-8">
+
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
+                Account
+              </p>
+
+              <h1 className="mt-4 font-serif text-4xl leading-tight text-[#4A5D23] sm:text-5xl">
+                Create your account
+              </h1>
+
+              <p className="mt-4 text-sm leading-6 text-[#3D3D3D]/60">
+                Join Prakratri Maitri and start exploring
+                our thoughtfully selected collection.
+              </p>
+
+            </div>
+
+            {/* Form */}
+
+            <SignupForm />
+
+          </div>
+
+        </section>
+
       </div>
 
-      <div>
-        <label htmlFor="password">Password</label>
-
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-
-        <small>Password must contain at least 8 characters.</small>
-      </div>
-
-      {error && (
-        <p role="alert">
-          {error}
-        </p>
-      )}
-
-      <button type="submit" disabled={loading}>
-        {loading ? "Creating account..." : "Create account"}
-      </button>
-
-      <p>
-        Already have an account?{" "}
-        <Link href="/login">Log in</Link>
-      </p>
-    </form>
+    </main>
   );
 }
