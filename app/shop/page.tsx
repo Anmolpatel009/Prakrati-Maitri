@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import CartBadge from "@/components/cart/CartBadge";
 
 type Product = {
   id: string;
@@ -230,10 +231,14 @@ export default async function ShopPage() {
             <span className="nav-count">0</span>
           </a>
 
-          <a href="/cart" aria-label="Cart">
-            ♧
-            <span className="nav-count">0</span>
-          </a>
+          <a
+  href="/cart"
+  aria-label="Cart"
+  className="relative"
+>
+  ♧
+  <CartBadge />
+</a>
         </div>
 
       </header>

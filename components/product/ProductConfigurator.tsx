@@ -6,6 +6,8 @@ import {
   useState,
   type ChangeEvent,
 } from "react";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/components/cart/CartProvider";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 
 type ProductImage = {
@@ -135,6 +137,11 @@ function formatQuantityRange(
 export default function ProductConfigurator({
   product,
 }: ProductConfiguratorProps) {
+  const router = useRouter();
+  const { addItem, clearCart } = useCart();
+
+  const [buyingNow, setBuyingNow] = useState(false);
+
   const [selectedImage, setSelectedImage] =
     useState(0);
 
@@ -273,6 +280,55 @@ export default function ProductConfigurator({
 
   const quantityAvailable =
     quantity <= product.availableQuantity;
+
+  // =====================================================
+  // BUY NOW
+  // =====================================================
+
+  const handleBuyNow = () => {
+    if (buyingNow) {
+      return;
+    }
+
+    if (product.availableQuantity <= 0) {
+      return;
+    }
+
+    if (!quantityAvailable) {
+      return;
+    }
+
+    if (
+      purchaseMode === "custom" &&
+      !customConfigurationValid
+    ) {
+      return;
+    }
+
+    setBuyingNow(true);
+
+    // Buy Now means checkout with ONLY this product.
+    clearCart();
+
+    addItem(
+      {
+        productId: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: unitPrice,
+        imageUrl:
+          product.images[0]?.image_url ?? null,
+        customization: {
+          type: purchaseMode,
+          imageUrl: null,
+          note: customNote.trim(),
+        },
+      },
+      quantity
+    );
+
+    router.push("/checkout");
+  };
 
   // =====================================================
   // RENDER
@@ -711,7 +767,7 @@ export default function ProductConfigurator({
         )}
 
         {/* ================================================= */}
-        {/* ADD TO CART */}
+        {/* PURCHASE ACTIONS */}
         {/* ================================================= */}
 
         <div className="mt-8">
@@ -748,22 +804,35 @@ export default function ProductConfigurator({
               Add a Design or Instructions
             </button>
           ) : (
-            <AddToCartButton
-              productId={product.id}
-              name={product.name}
-              slug={product.slug}
-              price={unitPrice}
-              imageUrl={
-                product.images[0]?.image_url ??
-                null
-              }
-              quantity={quantity}
-              customization={{
-                type: purchaseMode,
-                imageUrl: null,
-                note: customNote.trim(),
-              }}
-            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <AddToCartButton
+                productId={product.id}
+                name={product.name}
+                slug={product.slug}
+                price={unitPrice}
+                imageUrl={
+                  product.images[0]?.image_url ??
+                  null
+                }
+                quantity={quantity}
+                customization={{
+                  type: purchaseMode,
+                  imageUrl: null,
+                  note: customNote.trim(),
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                disabled={buyingNow}
+                className="w-full rounded-full border-2 border-[#8B4513] bg-[#8B4513] px-6 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#71380F] hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {buyingNow
+                  ? "Taking you to checkout..."
+                  : "Buy Now"}
+              </button>
+            </div>
           )}
         </div>
 

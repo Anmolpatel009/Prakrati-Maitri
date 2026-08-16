@@ -41,7 +41,9 @@ export default function OnboardingForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     setError("");
@@ -65,32 +67,42 @@ export default function OnboardingForm({
 
     if (userError || !user) {
       setLoading(false);
-      setError("Your session has expired. Please log in again.");
+      setError(
+        "Your session has expired. Please log in again."
+      );
       return;
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .upsert(
-        {
-          id: user.id,
-          first_name: firstName.trim(),
-          last_name: lastName.trim() || null,
-          phone: phone.trim() || null,
-          country,
-          onboarding_complete: true,
-          updated_at: new Date().toISOString(),
-        },
-        {
-          onConflict: "id",
-        }
-      );
+    const { error: profileError } =
+      await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: user.id,
+            first_name: firstName.trim(),
+            last_name: lastName.trim() || null,
+            phone: phone.trim() || null,
+            country,
+            onboarding_complete: true,
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "id",
+          }
+        );
 
     setLoading(false);
 
     if (profileError) {
-      console.error("Profile update error:", profileError);
-      setError("Unable to save your profile. Please try again.");
+      console.error(
+        "Profile update error:",
+        profileError
+      );
+
+      setError(
+        "Unable to save your profile. Please try again."
+      );
+
       return;
     }
 
@@ -99,10 +111,36 @@ export default function OnboardingForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
+      {/* ================================================= */}
+      {/* INTRO */}
+      {/* ================================================= */}
+
+      <div className="rounded-2xl bg-[#F9F7F2] px-4 py-4">
+        <p className="text-sm leading-6 text-[#3D3D3D]/65">
+          These details help us keep your account and
+          delivery information ready when you shop with
+          us.
+        </p>
+
+        <p className="mt-2 text-xs text-[#3D3D3D]/45">
+          Fields marked with * are required.
+        </p>
+      </div>
+
+      {/* ================================================= */}
+      {/* FIRST NAME */}
+      {/* ================================================= */}
+
       <div>
-        <label htmlFor="firstName">
-          First name *
+        <label
+          htmlFor="firstName"
+          className="mb-2 block text-sm font-medium text-[#3D3D3D]"
+        >
+          First name <span className="text-[#8B4513]">*</span>
         </label>
 
         <input
@@ -110,14 +148,26 @@ export default function OnboardingForm({
           name="firstName"
           type="text"
           value={firstName}
-          onChange={(event) => setFirstName(event.target.value)}
+          onChange={(event) =>
+            setFirstName(event.target.value)
+          }
+          placeholder="Enter your first name"
           autoComplete="given-name"
           required
+          disabled={loading}
+          className="w-full rounded-xl border border-[#D2B48C]/70 bg-[#F9F7F2] px-4 py-3.5 text-sm text-[#3D3D3D] outline-none transition placeholder:text-[#3D3D3D]/35 focus:border-[#4A5D23] focus:bg-white focus:ring-2 focus:ring-[#4A5D23]/10 disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
 
+      {/* ================================================= */}
+      {/* LAST NAME */}
+      {/* ================================================= */}
+
       <div>
-        <label htmlFor="lastName">
+        <label
+          htmlFor="lastName"
+          className="mb-2 block text-sm font-medium text-[#3D3D3D]"
+        >
           Last name
         </label>
 
@@ -126,13 +176,25 @@ export default function OnboardingForm({
           name="lastName"
           type="text"
           value={lastName}
-          onChange={(event) => setLastName(event.target.value)}
+          onChange={(event) =>
+            setLastName(event.target.value)
+          }
+          placeholder="Enter your last name"
           autoComplete="family-name"
+          disabled={loading}
+          className="w-full rounded-xl border border-[#D2B48C]/70 bg-[#F9F7F2] px-4 py-3.5 text-sm text-[#3D3D3D] outline-none transition placeholder:text-[#3D3D3D]/35 focus:border-[#4A5D23] focus:bg-white focus:ring-2 focus:ring-[#4A5D23]/10 disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
 
+      {/* ================================================= */}
+      {/* PHONE */}
+      {/* ================================================= */}
+
       <div>
-        <label htmlFor="phone">
+        <label
+          htmlFor="phone"
+          className="mb-2 block text-sm font-medium text-[#3D3D3D]"
+        >
           Phone number
         </label>
 
@@ -141,45 +203,125 @@ export default function OnboardingForm({
           name="phone"
           type="tel"
           value={phone}
-          onChange={(event) => setPhone(event.target.value)}
+          onChange={(event) =>
+            setPhone(event.target.value)
+          }
+          placeholder="Enter your phone number"
           autoComplete="tel"
+          inputMode="tel"
+          disabled={loading}
+          className="w-full rounded-xl border border-[#D2B48C]/70 bg-[#F9F7F2] px-4 py-3.5 text-sm text-[#3D3D3D] outline-none transition placeholder:text-[#3D3D3D]/35 focus:border-[#4A5D23] focus:bg-white focus:ring-2 focus:ring-[#4A5D23]/10 disabled:cursor-not-allowed disabled:opacity-60"
         />
+
+        <p className="mt-2 text-xs text-[#3D3D3D]/45">
+          Used for delivery-related communication.
+        </p>
       </div>
 
+      {/* ================================================= */}
+      {/* COUNTRY */}
+      {/* ================================================= */}
+
       <div>
-        <label htmlFor="country">
-          Country *
+        <label
+          htmlFor="country"
+          className="mb-2 block text-sm font-medium text-[#3D3D3D]"
+        >
+          Country <span className="text-[#8B4513]">*</span>
         </label>
 
         <select
           id="country"
           name="country"
           value={country}
-          onChange={(event) => setCountry(event.target.value)}
+          onChange={(event) =>
+            setCountry(event.target.value)
+          }
           required
+          disabled={loading}
+          className={`w-full appearance-none rounded-xl border border-[#D2B48C]/70 bg-[#F9F7F2] px-4 py-3.5 text-sm outline-none transition focus:border-[#4A5D23] focus:bg-white focus:ring-2 focus:ring-[#4A5D23]/10 disabled:cursor-not-allowed disabled:opacity-60 ${
+            country
+              ? "text-[#3D3D3D]"
+              : "text-[#3D3D3D]/40"
+          }`}
         >
-          <option value="">Select your country</option>
-          <option value="India">India</option>
-          <option value="United States">United States</option>
-          <option value="United Kingdom">United Kingdom</option>
+          <option value="" disabled>
+            Select your country
+          </option>
+
+          <option value="India">
+            India
+          </option>
+
+          <option value="United States">
+            United States
+          </option>
+
+          <option value="United Kingdom">
+            United Kingdom
+          </option>
+
           <option value="United Arab Emirates">
             United Arab Emirates
           </option>
-          <option value="Australia">Australia</option>
-          <option value="Canada">Canada</option>
-          <option value="Other">Other</option>
+
+          <option value="Australia">
+            Australia
+          </option>
+
+          <option value="Canada">
+            Canada
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
         </select>
       </div>
 
+      {/* ================================================= */}
+      {/* ERROR */}
+      {/* ================================================= */}
+
       {error && (
-        <p role="alert">
+        <div
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700"
+        >
           {error}
-        </p>
+        </div>
       )}
 
-      <button type="submit" disabled={loading}>
-        {loading ? "Saving..." : "Continue"}
+      {/* ================================================= */}
+      {/* SUBMIT */}
+      {/* ================================================= */}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full rounded-full bg-[#4A5D23] px-6 py-3.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#3D4D1D] hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span
+              className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              aria-hidden="true"
+            />
+            Saving your details...
+          </span>
+        ) : (
+          "Continue to Account"
+        )}
       </button>
+
+      {/* ================================================= */}
+      {/* PRIVACY NOTE */}
+      {/* ================================================= */}
+
+      <p className="text-center text-xs leading-5 text-[#3D3D3D]/40">
+        Your information is used to manage your account
+        and help with future orders.
+      </p>
     </form>
   );
 }

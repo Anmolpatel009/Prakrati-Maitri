@@ -16,6 +16,8 @@ type CheckoutForm = {
   postalCode: string;
 };
 
+type PaymentMethod = "cod" | "online";
+
 export default function PaymentPage() {
   const router = useRouter();
 
@@ -27,6 +29,9 @@ export default function PaymentPage() {
 
   const [checkout, setCheckout] =
     useState<CheckoutForm | null>(null);
+
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("cod");
 
   const [loaded, setLoaded] = useState(false);
 
@@ -58,10 +63,10 @@ export default function PaymentPage() {
   }, []);
 
   // =====================================================
-  // PLACE TEST ORDER
+  // PLACE ORDER
   // =====================================================
 
-  async function handlePlaceTestOrder() {
+  async function handlePlaceOrder() {
     if (placingOrder) {
       return;
     }
@@ -89,7 +94,6 @@ export default function PaymentPage() {
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify({
             items: items.map((item) => ({
               productId: item.productId,
@@ -97,6 +101,8 @@ export default function PaymentPage() {
             })),
 
             shipping: checkout,
+
+            paymentMethod,
           }),
         }
       );
@@ -116,17 +122,23 @@ export default function PaymentPage() {
         );
       }
 
-      // Remove temporary checkout information
+      // =================================================
+      // CLEAR TEMPORARY CHECKOUT DATA
+      // =================================================
+
       sessionStorage.removeItem(
         "prakratri-matri-checkout"
       );
 
-      /*
-       * Clear React cart state.
-       * CartProvider will persist the empty cart
-       * back to localStorage.
-       */
+      // =================================================
+      // CLEAR CART
+      // =================================================
+
       clearCart();
+
+      // =================================================
+      // GO TO SUCCESS PAGE
+      // =================================================
 
       router.push(
         `/checkout/success?order=${encodeURIComponent(
@@ -266,7 +278,7 @@ export default function PaymentPage() {
             </h1>
 
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#3D3D3D]/65">
-              Review the final details before creating
+              Choose your payment method before placing
               your test order.
             </p>
           </div>
@@ -284,57 +296,162 @@ export default function PaymentPage() {
 
           <div className="space-y-8">
 
+            {/* ================================================= */}
             {/* PAYMENT METHOD */}
+            {/* ================================================= */}
 
             <section className="rounded-3xl border border-[#D2B48C]/50 bg-white p-6 shadow-sm sm:p-8">
+
               <div className="border-b border-[#D2B48C]/30 pb-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
                   Payment Method
                 </p>
 
                 <h2 className="mt-2 font-serif text-3xl text-[#4A5D23]">
-                  Online Payment
+                  Choose how you want to pay
                 </h2>
               </div>
 
-              <div className="mt-6 rounded-2xl border border-[#D2B48C]/60 bg-[#F9F7F2] p-5 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#EDE5D4] text-lg">
-                    ₹
-                  </div>
+              {/* ================================================= */}
+              {/* PAYMENT OPTIONS */}
+              {/* ================================================= */}
 
-                  <div>
-                    <p className="font-semibold text-[#3D3D3D]">
-                      Payment gateway coming next
-                    </p>
+              <div className="mt-6 space-y-4">
 
-                    <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/60">
-                      Online payment is not connected yet.
-                      During development, this page creates
-                      a test order without charging the
-                      customer.
-                    </p>
+                {/* ONLINE PAYMENT */}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPaymentMethod("online")
+                  }
+                  disabled={placingOrder}
+                  className={`w-full rounded-2xl border-2 p-5 text-left transition ${
+                    paymentMethod === "online"
+                      ? "border-[#4A5D23] bg-[#F1EDE3]"
+                      : "border-[#D2B48C]/50 bg-white hover:border-[#4A5D23]/50"
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+
+                    <div
+                      className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                        paymentMethod === "online"
+                          ? "border-[#4A5D23]"
+                          : "border-[#D2B48C]"
+                      }`}
+                    >
+                      {paymentMethod === "online" && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#4A5D23]" />
+                      )}
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="font-semibold text-[#3D3D3D]">
+                          Online Payment
+                        </p>
+
+                        <span className="rounded-full bg-[#EDE5D4] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#8B4513]">
+                          Coming Soon
+                        </span>
+                      </div>
+
+                      <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/60">
+                        Payment gateway will be connected
+                        after the MVP is approved.
+                      </p>
+                    </div>
+
                   </div>
-                </div>
+                </button>
+
+                {/* COD */}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setPaymentMethod("cod")
+                  }
+                  disabled={placingOrder}
+                  className={`w-full rounded-2xl border-2 p-5 text-left transition ${
+                    paymentMethod === "cod"
+                      ? "border-[#4A5D23] bg-[#F1EDE3]"
+                      : "border-[#D2B48C]/50 bg-white hover:border-[#4A5D23]/50"
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+
+                    <div
+                      className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                        paymentMethod === "cod"
+                          ? "border-[#4A5D23]"
+                          : "border-[#D2B48C]"
+                      }`}
+                    >
+                      {paymentMethod === "cod" && (
+                        <div className="h-2.5 w-2.5 rounded-full bg-[#4A5D23]" />
+                      )}
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="font-semibold text-[#3D3D3D]">
+                          Cash on Delivery
+                        </p>
+
+                        <span className="rounded-full bg-[#E8F5E9] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#4A5D23]">
+                          Available
+                        </span>
+                      </div>
+
+                      <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/60">
+                        Place your order now and pay when
+                        your order is delivered.
+                      </p>
+                    </div>
+
+                  </div>
+                </button>
+
               </div>
 
-              <div className="mt-5 rounded-2xl border border-[#D2B48C]/40 bg-[#EDE5D4]/50 p-5">
+              {/* ================================================= */}
+              {/* DEVELOPMENT NOTICE */}
+              {/* ================================================= */}
+
+              <div className="mt-6 rounded-2xl border border-[#D2B48C]/40 bg-[#EDE5D4]/50 p-5">
+
                 <p className="text-sm font-semibold text-[#4A5D23]">
                   Development mode
                 </p>
 
-                <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
-                  Do not enter card or banking information.
-                  A real payment gateway will replace this
-                  test-order action before production.
-                </p>
+                {paymentMethod === "cod" ? (
+                  <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
+                    This COD order will be created as a
+                    confirmed order with payment marked as
+                    pending collection.
+                  </p>
+                ) : (
+                  <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
+                    No real payment will be processed.
+                    This will create a pending online
+                    payment test order.
+                  </p>
+                )}
+
               </div>
+
             </section>
 
+            {/* ================================================= */}
             {/* DELIVERY */}
+            {/* ================================================= */}
 
             <section className="rounded-3xl border border-[#D2B48C]/50 bg-white p-6 shadow-sm sm:p-8">
+
               <div className="flex items-start justify-between gap-5 border-b border-[#D2B48C]/30 pb-6">
+
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
                     Deliver To
@@ -351,9 +468,11 @@ export default function PaymentPage() {
                 >
                   Edit
                 </Link>
+
               </div>
 
               <div className="mt-6">
+
                 <p className="font-semibold text-[#3D3D3D]">
                   {checkout.firstName}{" "}
                   {checkout.lastName}
@@ -364,6 +483,7 @@ export default function PaymentPage() {
                 </p>
 
                 <div className="mt-4 rounded-2xl bg-[#F9F7F2] p-5 text-sm leading-7 text-[#3D3D3D]/70">
+
                   <p>{checkout.address}</p>
 
                   <p>
@@ -375,9 +495,13 @@ export default function PaymentPage() {
                     {checkout.country} -{" "}
                     {checkout.postalCode}
                   </p>
+
                 </div>
+
               </div>
+
             </section>
+
           </div>
 
           {/* ================================================= */}
@@ -385,7 +509,9 @@ export default function PaymentPage() {
           {/* ================================================= */}
 
           <aside className="lg:sticky lg:top-8 lg:self-start">
+
             <section className="rounded-3xl border border-[#D2B48C]/50 bg-white p-6 shadow-sm sm:p-7">
+
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
                 Your Order
               </p>
@@ -397,12 +523,15 @@ export default function PaymentPage() {
               {/* ITEMS */}
 
               <div className="mt-6 divide-y divide-[#D2B48C]/30">
+
                 {items.map((item) => (
                   <div
                     key={item.cartItemId}
                     className="flex gap-4 py-4 first:pt-0"
                   >
+
                     <div className="min-w-0 flex-1">
+
                       <p className="font-medium text-[#3D3D3D]">
                         {item.name}
                       </p>
@@ -427,6 +556,7 @@ export default function PaymentPage() {
                         )}{" "}
                         × {item.quantity}
                       </p>
+
                     </div>
 
                     <p className="shrink-0 text-sm font-semibold text-[#3D3D3D]">
@@ -442,13 +572,16 @@ export default function PaymentPage() {
                         }
                       )}
                     </p>
+
                   </div>
                 ))}
+
               </div>
 
               {/* TOTALS */}
 
               <div className="mt-6 border-t border-[#D2B48C]/40 pt-5">
+
                 <div className="flex justify-between text-sm text-[#3D3D3D]/65">
                   <span>Subtotal</span>
 
@@ -470,6 +603,7 @@ export default function PaymentPage() {
                 </div>
 
                 <div className="mt-5 border-t border-[#D2B48C]/30 pt-5">
+
                   <p className="text-sm text-[#3D3D3D]/55">
                     Total
                   </p>
@@ -484,6 +618,7 @@ export default function PaymentPage() {
                       }
                     )}
                   </p>
+
                 </div>
 
                 {/* ERROR */}
@@ -501,33 +636,43 @@ export default function PaymentPage() {
 
                 <button
                   type="button"
-                  onClick={handlePlaceTestOrder}
+                  onClick={handlePlaceOrder}
                   disabled={placingOrder}
                   className="mt-6 w-full rounded-full bg-[#8B4513] px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#71370F] hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none"
                 >
                   {placingOrder
                     ? "Placing order..."
-                    : "Place Test Order"}
+                    : paymentMethod === "cod"
+                    ? "Place COD Order"
+                    : "Place Online Test Order"}
                 </button>
 
                 <p className="mt-4 text-center text-xs leading-5 text-[#3D3D3D]/45">
-                  No payment will be charged during
-                  development.
+                  {paymentMethod === "cod"
+                    ? "No payment is required online. Payment will be collected on delivery."
+                    : "No payment will be charged during development."}
                 </p>
+
               </div>
+
             </section>
 
             <div className="mt-5 rounded-2xl border border-[#D2B48C]/40 bg-[#EDE5D4]/60 p-5">
+
               <p className="text-sm font-semibold text-[#4A5D23]">
                 Almost there
               </p>
 
               <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
-                The server will validate the order again
-                when you place it.
+                The server will validate the order,
+                price, inventory, and payment method
+                again when you place it.
               </p>
+
             </div>
+
           </aside>
+
         </div>
       </div>
     </main>
