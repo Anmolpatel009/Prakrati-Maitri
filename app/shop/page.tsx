@@ -1,6 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import CartBadge from "@/components/cart/CartBadge";
 
+type ProductImage = {
+  image_url: string;
+  alt_text: string | null;
+  display_order: number;
+};
+
 type Product = {
   id: string;
   name: string;
@@ -20,6 +26,7 @@ type Product = {
         slug: string;
       }[]
     | null;
+  product_images: ProductImage[] | null;
 };
 
 const categoryRail = [
@@ -94,6 +101,11 @@ export default async function ShopPage() {
       inventory (
         quantity,
         reserved_quantity
+      ),
+      product_images (
+        image_url,
+        alt_text,
+        display_order
       )
     `)
     .eq("is_active", true)
@@ -232,13 +244,13 @@ export default async function ShopPage() {
           </a>
 
           <a
-  href="/cart"
-  aria-label="Cart"
-  className="relative"
->
-  ♧
-  <CartBadge />
-</a>
+            href="/cart"
+            aria-label="Cart"
+            className="relative"
+          >
+            ♧
+            <CartBadge />
+          </a>
         </div>
 
       </header>
@@ -686,6 +698,20 @@ function ProductCard({
     product.compare_at_price &&
     product.compare_at_price > product.price;
 
+  /*
+   * Product images are ordered by display_order.
+   * display_order = 0 is the primary image uploaded
+   * from the admin product form.
+   */
+  const images = [
+    ...(product.product_images ?? []),
+  ].sort(
+    (a, b) =>
+      a.display_order - b.display_order
+  );
+
+  const primaryImage = images[0];
+
   return (
     <article className="product-card">
 
@@ -693,18 +719,34 @@ function ProductCard({
         href={`/products/${product.slug}`}
         className="product-image-placeholder"
       >
+
         {sale && (
           <span className="sale-badge">
             SALE
           </span>
         )}
 
-        <span>Product Image</span>
+        {primaryImage ? (
+          <img
+            src={primaryImage.image_url}
+            alt={
+              primaryImage.alt_text ??
+              product.name
+            }
+            className="product-image"
+          />
+        ) : (
+          <>
+            <span>Product Image</span>
 
-        <small>
-          Image will be added later
-        </small>
+            <small>
+              Image will be added later
+            </small>
+          </>
+        )}
+
       </a>
+
 
       <div className="product-card-content">
 
