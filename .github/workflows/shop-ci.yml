@@ -1,15 +1,16 @@
 name: Shop CI
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - "**"
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
+    name: Build Next.js application
     runs-on: ubuntu-latest
 
     steps:
@@ -26,8 +27,7 @@ jobs:
         run: npm ci
 
       - name: Build Next.js application
-        run: npm run build
-
-         env:
+        env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npm run build
