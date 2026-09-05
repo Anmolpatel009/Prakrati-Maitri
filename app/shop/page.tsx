@@ -3,6 +3,8 @@ import CartBadge from "@/components/cart/CartBadge";
 import { getShopNavbarData } from "@/lib/shop/navbar";
 import { getStorefrontNavCards } from "@/lib/shop/nav-cards";
 
+export const dynamic = "force-dynamic";
+
 type ProductImage = {
   image_url: string;
   alt_text: string | null;
