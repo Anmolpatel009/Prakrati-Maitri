@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import CartBadge from "@/components/cart/CartBadge";
 import { getShopNavbarData } from "@/lib/shop/navbar";
 import { getStorefrontNavCards } from "@/lib/shop/nav-cards";
+import { getStorefrontVideos } from "@/lib/shop/media";
+import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +83,7 @@ export default async function ShopPage() {
   const { categories, subcategories } =
     await getShopNavbarData();
     const navCards = await getStorefrontNavCards();
+    const videos = await getStorefrontVideos();
 
   const { data, error } = await supabase
     .from("products")
@@ -502,7 +505,9 @@ export default async function ShopPage() {
           MOST LOVED
       ===================================================== */}
 
-      <section className="most-loved-section">
+      <AdvertisingVideoSection videos={videos} />
+
+    <section className="most-loved-section">
 
         <div className="section-heading">
 
