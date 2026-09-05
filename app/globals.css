@@ -1183,57 +1183,153 @@
   }
 
 }
-/* Advertising / content videos */
+/* ============================================================
+   ADVERTISING / CONTENT VIDEO REELS
+============================================================ */
 
 .advertising-video-section {
-  padding: 80px 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 70px 7%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.advertising-video-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-  margin-top: 36px;
+.advertising-video-heading {
+  margin-bottom: 34px;
+}
+
+.advertising-video-carousel {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.advertising-video-track-container {
+  flex: 1 1 auto;
+  width: 0;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+
+.advertising-video-track-container::-webkit-scrollbar {
+  display: none;
+}
+
+.advertising-video-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 18px;
+  width: max-content;
 }
 
 .advertising-video-card {
+  flex: 0 0 200px;
+  width: 200px;
+  max-width: 200px;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #f7f7f4;
+  border: 1px solid #e3dccb;
+  box-sizing: border-box;
 }
 
 .advertising-video-wrapper {
+  position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 9 / 16;
   overflow: hidden;
   background: #111;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .advertising-video-wrapper video {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
   display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+  max-height: none;
   object-fit: cover;
 }
 
 .advertising-video-content {
-  padding: 18px 20px 22px;
+  padding: 12px 14px 14px;
+  box-sizing: border-box;
 }
 
 .advertising-video-content h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 14px;
+  line-height: 1.35;
   font-weight: 600;
+}
+
+.advertising-video-arrow {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #d2b48c;
+  border-radius: 50%;
+  background: #fffdf9;
+  color: #4a5d23;
+  font-family: Georgia, serif;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.advertising-video-arrow:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 1100px) {
+  .advertising-video-card {
+    flex-basis: 220px;
+    width: 220px;
+    max-width: 220px;
+  }
 }
 
 @media (max-width: 768px) {
   .advertising-video-section {
-    padding: 56px 0;
+    padding: 55px 5%;
   }
 
-  .advertising-video-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .advertising-video-carousel {
+    gap: 8px;
+  }
+
+  .advertising-video-track {
+    gap: 12px;
+  }
+
+  .advertising-video-card {
+    flex-basis: calc((82vw - 12px) / 2);
+    width: calc((82vw - 12px) / 2);
+    max-width: none;
+  }
+
+  .advertising-video-arrow {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    font-size: 24px;
   }
 }
 
