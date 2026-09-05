@@ -3,6 +3,7 @@ import CartBadge from "@/components/cart/CartBadge";
 import { getShopNavbarData } from "@/lib/shop/navbar";
 import { getStorefrontNavCards } from "@/lib/shop/nav-cards";
 import { getStorefrontVideos } from "@/lib/shop/media";
+import { getHomepageSections } from "@/lib/shop/homepage";
 import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 
 export const dynamic = "force-dynamic";
@@ -84,6 +85,19 @@ export default async function ShopPage() {
     await getShopNavbarData();
     const navCards = await getStorefrontNavCards();
     const videos = await getStorefrontVideos();
+    const homepageSections = await getHomepageSections();
+
+    const homepageSectionMap = Object.fromEntries(
+      homepageSections.map((section) => [
+        section.section_key,
+        section,
+      ])
+    );
+
+    const heroSection = homepageSectionMap.hero;
+    const purposeBanner = homepageSectionMap.purpose_banner;
+    const giftingBanner = homepageSectionMap.gifting_banner;
+    const storyBanner = homepageSectionMap.story_banner;
 
   const { data, error } = await supabase
     .from("products")
@@ -302,8 +316,18 @@ export default async function ShopPage() {
         </div>
 
         <div className="hero-placeholder">
-          <span>Hero Image</span>
-          <small>Image will be added later</small>
+          {heroSection?.media_url ? (
+            <img
+              src={heroSection.media_url}
+              alt={heroSection.title || "Prakratri Maitri"}
+              className="homepage-cms-image"
+            />
+          ) : (
+            <>
+              <span>Hero Image</span>
+              <small>Image will be added later</small>
+            </>
+          )}
         </div>
 
       </section>
@@ -400,7 +424,15 @@ export default async function ShopPage() {
         </div>
 
         <div className="wide-banner-placeholder">
-          Banner Image
+          {purposeBanner?.media_url ? (
+            <img
+              src={purposeBanner.media_url}
+              alt={purposeBanner.title || "Prakratri Maitri"}
+              className="homepage-cms-image"
+            />
+          ) : (
+            <span>Banner Image</span>
+          )}
         </div>
 
       </section>
@@ -469,7 +501,15 @@ export default async function ShopPage() {
       <section className="wide-banner wide-banner-reverse">
 
         <div className="wide-banner-placeholder">
-          Banner Image
+          {giftingBanner?.media_url ? (
+            <img
+              src={giftingBanner.media_url}
+              alt={giftingBanner.title || "Prakratri Maitri"}
+              className="homepage-cms-image"
+            />
+          ) : (
+            <span>Banner Image</span>
+          )}
         </div>
 
         <div className="wide-banner-content">
@@ -595,7 +635,15 @@ export default async function ShopPage() {
       <section className="story-banner">
 
         <div className="story-banner-placeholder">
-          Story Image
+          {storyBanner?.media_url ? (
+            <img
+              src={storyBanner.media_url}
+              alt={storyBanner.title || "Our Story"}
+              className="homepage-cms-image"
+            />
+          ) : (
+            <span>Story Image</span>
+          )}
         </div>
 
         <div className="story-content">

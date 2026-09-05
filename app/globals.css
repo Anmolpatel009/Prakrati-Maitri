@@ -1432,3 +1432,38 @@
     font-size: 14px;
   }
 }
+
+/* Homepage CMS images */
+
+.hero-placeholder,
+.wide-banner-placeholder,
+.story-banner-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.homepage-cms-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.hero-placeholder .homepage-cms-image,
+.wide-banner-placeholder .homepage-cms-image,
+.story-banner-placeholder .homepage-cms-image {
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .hero-placeholder,
+  .wide-banner-placeholder {
+    min-height: 280px;
+  }
+
+  .story-banner-placeholder {
+    min-height: 280px;
+  }
+}
