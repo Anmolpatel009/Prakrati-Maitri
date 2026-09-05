@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import CartBadge from "@/components/cart/CartBadge";
 import { getShopNavbarData } from "@/lib/shop/navbar";
+import { getStorefrontNavCards } from "@/lib/shop/nav-cards";
 
 type ProductImage = {
   image_url: string;
@@ -29,16 +30,6 @@ type Product = {
     | null;
   product_images: ProductImage[] | null;
 };
-
-const categoryRail = [
-  "Cotton Tote Bags",
-  "Canvas Tote Bags",
-  "Printed Canvas Tote",
-  "Box Tote Bags",
-  "Kids Tote Bags",
-  "Window Jute Bags",
-  "Office Bags",
-];
 
 const masterCategories = [
   {
@@ -87,6 +78,7 @@ export default async function ShopPage() {
 
   const { categories, subcategories } =
     await getShopNavbarData();
+    const navCards = await getStorefrontNavCards();
 
   const { data, error } = await supabase
     .from("products")
@@ -248,23 +240,27 @@ export default async function ShopPage() {
 
         <div className="category-rail-track">
 
-          {[...categoryRail, ...categoryRail].map(
-            (category, index) => (
-              <a
-                href={`/shop?category=${encodeURIComponent(
-                  category
-                )}`}
-                className="category-circle-item"
-                key={`${category}-${index}`}
-              >
-                <div className="category-circle">
+          {[...navCards, ...navCards].map((card, index) => (
+            <a
+              key={`${card.id}-${index}`}
+              href={card.href || "/shop"}
+              className="category-circle-item"
+            >
+              <div className="category-circle">
+                {card.image_url ? (
+                  <img
+                    src={card.image_url}
+                    alt={card.title}
+                    loading="lazy"
+                  />
+                ) : (
                   <span>✿</span>
-                </div>
+                )}
+              </div>
 
-                <span>{category}</span>
-              </a>
-            )
-          )}
+              <span>{card.title}</span>
+            </a>
+          ))}
 
         </div>
 
