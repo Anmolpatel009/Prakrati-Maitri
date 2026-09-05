@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import CartBadge from "@/components/cart/CartBadge";
+import { getShopNavbarData } from "@/lib/shop/navbar";
 
 type ProductImage = {
   image_url: string;
@@ -84,6 +85,9 @@ const testimonials = [
 export default async function ShopPage() {
   const supabase = await createClient();
 
+  const { categories, subcategories } =
+    await getShopNavbarData();
+
   const { data, error } = await supabase
     .from("products")
     .select(`
@@ -155,73 +159,51 @@ export default async function ShopPage() {
 
           <a href="/shop">NEW</a>
 
-          <div className="nav-dropdown">
-            <a href="/shop?category=hand-bags">
-              HAND BAGS <span>⌄</span>
-            </a>
+          {categories.map((category) => {
+            const categorySubcategories = subcategories.filter(
+              (subcategory) =>
+                subcategory.category_id === category.id
+            );
 
-            <div className="nav-dropdown-menu">
-              <a href="/shop?category=hand-bags">
-                All Hand Bags
-              </a>
+            if (categorySubcategories.length === 0) {
+              return (
+                <a
+                  key={category.id}
+                  href={`/shop/${category.slug}`}
+                >
+                  {category.name.toUpperCase()}
+                </a>
+              );
+            }
 
-              <a href="/shop?category=tote-bags">
-                Tote Bags
-              </a>
+            return (
+              <div
+                key={category.id}
+                className="nav-dropdown"
+              >
+                <a href={`/shop/${category.slug}`}>
+                  {category.name.toUpperCase()} <span>⌄</span>
+                </a>
 
-              <a href="/shop?category=office-bags">
-                Office Bags
-              </a>
+                <div className="nav-dropdown-menu">
+                  <a href={`/shop/${category.slug}`}>
+                    All {category.name}
+                  </a>
 
-              <a href="/shop?category=jute-bags">
-                Jute Bags
-              </a>
-            </div>
-          </div>
-
-          <div className="nav-dropdown">
-            <a href="/shop?category=packaging-bags">
-              PACKAGING BAGS <span>⌄</span>
-            </a>
-
-            <div className="nav-dropdown-menu">
-              <a href="/shop?category=packaging-bags">
-                All Packaging Bags
-              </a>
-
-              <a href="/shop?category=cotton-bags">
-                Cotton Bags
-              </a>
-
-              <a href="/shop?category=canvas-bags">
-                Canvas Bags
-              </a>
-            </div>
-          </div>
-
-          <div className="nav-dropdown">
-            <a href="/shop?category=hamper-bags">
-              HAMPER <span>⌄</span>
-            </a>
-
-            <div className="nav-dropdown-menu">
-              <a href="/shop?category=hamper-bags">
-                All Hampers
-              </a>
-
-              <a href="/shop?category=gifting">
-                Gifting
-              </a>
-            </div>
-          </div>
-
-          <a href="/shop?event=raksha-bandhan">
-            RAKSHA BANDHAN
-          </a>
-
-          <a href="/shop?category=sample-kits">
-            SAMPLE KITS
-          </a>
+                  {categorySubcategories.map(
+                    (subcategory) => (
+                      <a
+                        key={subcategory.id}
+                        href={`/shop/${category.slug}/${subcategory.slug}`}
+                      >
+                        {subcategory.name}
+                      </a>
+                    )
+                  )}
+                </div>
+              </div>
+            );
+          })}
 
           <a href="/reviews">
             REVIEWS
@@ -230,6 +212,7 @@ export default async function ShopPage() {
         </nav>
 
         <div className="shop-nav-actions">
+
           <button type="button" aria-label="Search">
             ⌕
           </button>
@@ -251,6 +234,7 @@ export default async function ShopPage() {
             ♧
             <CartBadge />
           </a>
+
         </div>
 
       </header>
