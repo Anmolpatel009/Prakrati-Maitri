@@ -1236,3 +1236,103 @@
     gap: 20px;
   }
 }
+
+/* ============================================================
+   HOMEPAGE PRODUCT CARDS
+============================================================ */
+
+.most-loved-section .product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.most-loved-section .product-card {
+  width: 100%;
+  min-width: 0;
+}
+
+.most-loved-section .product-image-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  background: #f1eee6;
+}
+
+.most-loved-section .product-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.most-loved-section .product-image-secondary {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.most-loved-section .product-card:hover
+.product-image-secondary {
+  opacity: 1;
+}
+
+.most-loved-section .product-info {
+  padding: 15px;
+}
+
+.most-loved-section .product-name-link h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.most-loved-section .product-description {
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.most-loved-section .product-rating {
+  margin: 8px 0;
+}
+
+.most-loved-section .product-price {
+  font-size: 15px;
+}
+
+@media (max-width: 1100px) {
+  .most-loved-section .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .most-loved-section {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .most-loved-section .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .most-loved-section .product-info {
+    padding: 12px;
+  }
+
+  .most-loved-section .product-name-link h2 {
+    font-size: 14px;
+  }
+
+  .most-loved-section .product-description {
+    font-size: 12px;
+  }
+
+  .most-loved-section .product-price {
+    font-size: 14px;
+  }
+}
