@@ -1467,3 +1467,42 @@
     min-height: 280px;
   }
 }
+
+/* Simple content pages */
+.simple-content-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 100px 7%;
+  min-height: 60vh;
+}
+
+.simple-content-eyebrow {
+  margin: 0 0 18px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+}
+
+.simple-content-page h1 {
+  margin: 0 0 28px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.simple-content-page p:not(.simple-content-eyebrow) {
+  max-width: 650px;
+  margin: 0 0 18px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .simple-content-page {
+    padding: 70px 6%;
+  }
+
+  .simple-content-page h1 {
+    font-size: 42px;
+  }
+}
