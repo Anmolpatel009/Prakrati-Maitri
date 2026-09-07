@@ -36,33 +36,6 @@ type Product = {
   product_images: ProductImage[] | null;
 };
 
-const masterCategories = [
-  {
-    title: "Office Bags",
-    description: "Professional, practical and reusable bags.",
-  },
-  {
-    title: "Hamper Bags",
-    description: "Thoughtfully designed bags for gifting.",
-  },
-  {
-    title: "Kids Bags",
-    description: "Fun and reusable bags made for little ones.",
-  },
-  {
-    title: "Tote Bags",
-    description: "Everyday bags for shopping, gifting and more.",
-  },
-  {
-    title: "Jute Bags",
-    description: "Natural, durable and eco-friendly choices.",
-  },
-  {
-    title: "Canvas Bags",
-    description: "Strong canvas bags for everyday use.",
-  },
-];
-
 const testimonials = [
   {
     name: "Happy Customer",
@@ -461,31 +434,27 @@ export default async function ShopPage() {
 
         <div className="master-category-grid">
 
-          {masterCategories.map((category) => (
+          {categories.map((category) => (
             <a
-              href={`/shop?category=${encodeURIComponent(
-                category.title
-              )}`}
+              href={`/shop/${category.slug}`}
               className="master-category-card"
-              key={category.title}
+              key={category.id}
             >
-
               <div className="master-category-placeholder">
-                <span>{category.title}</span>
+                <span>{category.name}</span>
               </div>
 
               <div className="master-category-content">
+                <h3>{category.name}</h3>
 
-                <h3>{category.title}</h3>
-
-                <p>{category.description}</p>
+                <p>
+                  Explore products from our {category.name.toLowerCase()} collection.
+                </p>
 
                 <span>
                   Explore →
                 </span>
-
               </div>
-
             </a>
           ))}
 
