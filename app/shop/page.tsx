@@ -5,6 +5,7 @@ import { getStorefrontNavCards } from "@/lib/shop/nav-cards";
 import { getStorefrontVideos } from "@/lib/shop/media";
 import { getHomepageSections } from "@/lib/shop/homepage";
 import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
+import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
 
 export const dynamic = "force-dynamic";
 
@@ -110,6 +111,8 @@ export default async function ShopPage() {
 
   return (
     <main className="shop-page">
+
+      <BulkOrderPopup />
 
       {/* =====================================================
           PROMO BAR
