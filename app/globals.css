@@ -756,6 +756,13 @@
   box-shadow: 0 15px 30px rgba(60, 50, 30, 0.1);
 }
 
+.master-category-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
 .master-category-placeholder {
   aspect-ratio: 1.45 / 1;
 

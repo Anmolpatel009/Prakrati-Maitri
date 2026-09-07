@@ -441,7 +441,16 @@ export default async function ShopPage() {
               key={category.id}
             >
               <div className="master-category-placeholder">
-                <span>{category.name}</span>
+                {category.image_url ? (
+                  <img
+                    src={category.image_url}
+                    alt={category.name}
+                    className="master-category-image"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span>{category.name}</span>
+                )}
               </div>
 
               <div className="master-category-content">

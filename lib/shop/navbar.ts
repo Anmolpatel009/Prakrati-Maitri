@@ -13,6 +13,7 @@ export async function getShopNavbarData() {
         id,
         name,
         slug,
+        image_url,
         is_active
       `)
       .eq("is_active", true)
