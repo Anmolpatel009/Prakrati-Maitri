@@ -1,0 +1,40 @@
+{
+  "source": "EcoCarry",
+  "parent_categories": [
+    {
+      "name": "Packaging Bags",
+      "subcategories": [
+        "Drawstring Bags",
+        "Paper Bags",
+        "Jute Bags",
+        "Pouch Bags",
+        "Saree Covers"
+      ]
+    },
+    {
+      "name": "Hand Bags",
+      "subcategories": [
+        "Office Bags",
+        "Lunch Bags",
+        "Kids Bag"
+      ]
+    },
+    {
+      "name": "Tote bags",
+      "subcategories": [
+        "Everyday Tote Bags",
+        "Mini Tote Bags",
+        "Medium Tote Bags",
+        "Large Tote Bags"
+      ]
+    },
+    {
+      "name": "Hamper",
+      "subcategories": [
+        "Hamper Bags",
+        "Embroidery Hamper Bags",
+        "Eco Gift Set"
+      ]
+    }
+  ]
+}

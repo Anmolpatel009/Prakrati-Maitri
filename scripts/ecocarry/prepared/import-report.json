@@ -1,0 +1,38 @@
+{
+  "source": "EcoCarry",
+  "products": 216,
+  "production_categories": 4,
+  "production_subcategories": 20,
+  "products_mapped": 216,
+  "products_unmapped": 0,
+  "products_missing_images": 0,
+  "products_missing_prices": 0,
+  "products_inactive": 5,
+  "total_variants": 3584,
+  "total_images": 1617,
+  "category_counts": {
+    "Tote Bags": 111,
+    "Hamper Bags": 29,
+    "Packaging Bags": 52,
+    "Hand Bags": 24
+  },
+  "subcategory_counts": {
+    "Canvas Tote Bags": 20,
+    "Embroidery Hamper Bags": 21,
+    "Large Tote Bags": 21,
+    "Hamper Bags": 6,
+    "Saree Covers": 9,
+    "Drawstring Bags": 20,
+    "Pouch Bags": 10,
+    "Everyday Tote Bags": 48,
+    "Eco Gift Sets": 2,
+    "Paper Bags": 13,
+    "Box Tote Bags": 12,
+    "Mini Tote Bags": 7,
+    "Medium Tote Bags": 3,
+    "Lunch Bags": 1,
+    "Kids Bags": 21,
+    "Office Bags": 2
+  },
+  "warnings": []
+}

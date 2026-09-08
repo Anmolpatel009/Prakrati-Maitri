@@ -1,0 +1,106 @@
+{
+  "Packaging Bags": {
+    "slug": "packaging-bags",
+    "description": "Sustainable packaging bags for businesses, gifting and everyday use.",
+    "subcategories": [
+      [
+        "Cotton Packaging Bags",
+        "cotton-packaging-bags"
+      ],
+      [
+        "Drawstring Bags",
+        "drawstring-bags"
+      ],
+      [
+        "Paper Bags",
+        "paper-bags"
+      ],
+      [
+        "Jute Bags",
+        "jute-bags"
+      ],
+      [
+        "Pouch Bags",
+        "pouch-bags"
+      ],
+      [
+        "Saree Covers",
+        "saree-covers"
+      ],
+      [
+        "Paper Mailer Bags",
+        "paper-mailer-bags"
+      ]
+    ]
+  },
+  "Tote Bags": {
+    "slug": "tote-bags",
+    "description": "Reusable tote bags in cotton and canvas for everyday carrying.",
+    "subcategories": [
+      [
+        "Everyday Tote Bags",
+        "everyday-tote-bags"
+      ],
+      [
+        "Mini Tote Bags",
+        "mini-tote-bags"
+      ],
+      [
+        "Medium Tote Bags",
+        "medium-tote-bags"
+      ],
+      [
+        "Large Tote Bags",
+        "large-tote-bags"
+      ],
+      [
+        "Cotton Tote Bags",
+        "cotton-tote-bags"
+      ],
+      [
+        "Canvas Tote Bags",
+        "canvas-tote-bags"
+      ],
+      [
+        "Box Tote Bags",
+        "box-tote-bags"
+      ]
+    ]
+  },
+  "Hand Bags": {
+    "slug": "hand-bags",
+    "description": "Functional reusable handbags for work, lunch and everyday use.",
+    "subcategories": [
+      [
+        "Office Bags",
+        "office-bags"
+      ],
+      [
+        "Lunch Bags",
+        "lunch-bags"
+      ],
+      [
+        "Kids Bags",
+        "kids-bags"
+      ]
+    ]
+  },
+  "Hamper Bags": {
+    "slug": "hamper-bags",
+    "description": "Reusable bags and gift packaging for hampers and special occasions.",
+    "subcategories": [
+      [
+        "Hamper Bags",
+        "hamper-bags"
+      ],
+      [
+        "Embroidery Hamper Bags",
+        "embroidery-hamper-bags"
+      ],
+      [
+        "Eco Gift Sets",
+        "eco-gift-sets"
+      ]
+    ]
+  }
+}
