@@ -2654,3 +2654,284 @@
     width: 100%;
   }
 }
+
+/* ============================================================
+   FINAL COLLECTION CATALOG LAYOUT
+   ============================================================ */
+
+.collections-results .product-grid,
+.collections-results .product-grid-five,
+.collections-results .product-grid-three {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.collections-results .product-card {
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.collections-results .product-image-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+}
+
+.collections-results .product-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 14px;
+}
+
+.collections-results .product-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+
+  min-height: 60px;
+  max-height: 60px;
+
+  margin: 0;
+  line-height: 1.3;
+}
+
+.collections-results .product-rating {
+  min-height: 21px;
+  margin: 8px 0;
+}
+
+.collections-results .product-price {
+  min-height: 20px;
+}
+
+.collections-results .collection-view-product-button,
+.collections-results .product-view-button {
+  width: 100%;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 9px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .collections-results .product-grid,
+  .collections-results .product-grid-five,
+  .collections-results .product-grid-three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .collections-results .product-grid,
+  .collections-results .product-grid-five,
+  .collections-results .product-grid-three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .collections-results .product-card-content {
+    padding: 10px;
+  }
+
+  .collections-results .product-name {
+    min-height: 54px;
+    max-height: 54px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .collections-results .product-rating {
+    gap: 5px;
+    margin: 7px 0;
+  }
+
+  .collections-results .product-rating span {
+    font-size: 11px;
+  }
+
+  .collections-results .product-rating small {
+    font-size: 9px;
+  }
+
+  .collections-results .product-price strong {
+    font-size: 14px;
+  }
+
+  .collections-results .collection-view-product-button,
+  .collections-results .product-view-button {
+    min-height: 38px;
+    margin-top: auto;
+    padding: 8px 8px;
+    font-size: 10px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 390px) {
+  .collections-results .product-grid,
+  .collections-results .product-grid-five,
+  .collections-results .product-grid-three {
+    gap: 10px;
+  }
+
+  .collections-results .product-card-content {
+    padding: 9px;
+  }
+
+  .collections-results .product-name {
+    font-size: 12px;
+    min-height: 49px;
+    max-height: 49px;
+  }
+
+  .collections-results .collection-view-product-button,
+  .collections-results .product-view-button {
+    font-size: 9px;
+    min-height: 36px;
+  }
+}
+
+
+/* ============================================================
+   COLLECTION BANNER CAROUSEL
+   ============================================================ */
+
+.collection-banner-section {
+  width: min(1400px, 90%);
+  margin: 0 auto 55px;
+}
+
+.collection-banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3.6 / 1;
+  overflow: hidden;
+  background: #f1eee6;
+  border: 1px solid #d9c8aa;
+}
+
+.collection-banner-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+
+.collection-banner-image.is-active {
+  opacity: 1;
+}
+
+.collection-banner-arrow {
+  position: absolute;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  color: #4a5d23;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+
+.collection-banner-arrow:hover {
+  background: #ffffff;
+}
+
+.collection-banner-prev {
+  left: 18px;
+}
+
+.collection-banner-next {
+  right: 18px;
+}
+
+.collection-banner-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.collection-banner-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.collection-banner-dot.is-active {
+  background: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .collection-banner-section {
+    width: 92%;
+    margin-bottom: 40px;
+  }
+
+  .collection-banner {
+    aspect-ratio: 2.4 / 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .collection-banner-section {
+    width: 94%;
+    margin-bottom: 30px;
+  }
+
+  .collection-banner {
+    aspect-ratio: 1.7 / 1;
+  }
+
+  .collection-banner-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 24px;
+  }
+
+  .collection-banner-prev {
+    left: 10px;
+  }
+
+  .collection-banner-next {
+    right: 10px;
+  }
+
+  .collection-banner-dots {
+    bottom: 10px;
+  }
+}
+
