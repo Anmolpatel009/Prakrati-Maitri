@@ -343,7 +343,7 @@ export default async function ShopPage() {
               <h3>New Arrivals</h3>
             </div>
 
-            <a href="/shop?category=new">
+            <a href="/collections">
               View More →
             </a>
 
