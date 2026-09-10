@@ -223,7 +223,19 @@ export default async function ShopPage() {
       <CategoryRail navCards={navCards} />
 
 
-      <HomepagePromotionalBannerCarousel banners={homepageBanners} />\n\n\n      {/* =====================================================
+      <HomepagePromotionalBannerCarousel banners={homepageBanners} />
+
+      <section className="homepage-brand-strip" aria-label="Prakratri Maitri">
+        <span className="homepage-brand-strip-eyebrow">
+          MADE WITH PURPOSE
+        </span>
+
+        <p>
+          Thoughtful bags for everyday moments, made to carry more than just things.
+        </p>
+      </section>
+
+      {/* =====================================================
           MAIN HERO
       ===================================================== */}
 
