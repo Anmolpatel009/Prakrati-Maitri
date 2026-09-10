@@ -3269,3 +3269,129 @@
     font-size: 13px;
   }
 }
+
+/* ============================================================
+   FINAL MOBILE DROPDOWN
+   Category name stays a link.
+   Arrow is the dedicated submenu trigger.
+   Mobile menu is rendered outside the horizontal nav.
+============================================================ */
+
+.nav-dropdown-menu-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-dropdown {
+    padding: 3px 0 5px;
+    flex: 0 0 auto;
+  }
+
+  /*
+   * Mobile layout:
+   *
+   * HAMPER BAGS
+   *     ˅
+   */
+  .nav-dropdown-trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    min-width: max-content;
+    min-height: 48px;
+  }
+
+  .nav-dropdown-label {
+    display: block;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 17px;
+    flex: 0 0 17px;
+
+    margin: 0;
+    padding: 0;
+
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .nav-dropdown-toggle span {
+    display: block;
+    line-height: 1;
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+  }
+
+  .nav-dropdown.is-open .nav-dropdown-toggle span {
+    transform: rotate(180deg) translateY(1px);
+  }
+
+  /*
+   * Completely disable the desktop dropdown on mobile.
+   * The mobile portal below is the only mobile menu.
+   */
+  .nav-dropdown-menu-desktop {
+    display: none !important;
+  }
+
+  .nav-dropdown-menu-mobile {
+    display: block;
+
+    position: fixed;
+
+    top: var(--nav-dropdown-top, 100px);
+    left: var(--nav-dropdown-left, 12px);
+
+    width: max-content;
+    min-width: 220px;
+    max-width: calc(100vw - 24px);
+
+    max-height: 65vh;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    margin: 0;
+    padding: 8px;
+
+    background: #fffdf9;
+    border: 1px solid #d8d5ca;
+    border-radius: 10px;
+
+    box-shadow: 0 15px 40px rgba(50, 50, 30, 0.18);
+
+    z-index: 999999;
+
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav-dropdown-menu-mobile a {
+    display: flex;
+    align-items: center;
+
+    min-height: 44px;
+
+    padding: 10px 13px;
+
+    color: #3d3d3d;
+    font-size: 13px;
+    line-height: 1.3;
+
+    border-radius: 6px;
+  }
+
+  .nav-dropdown-menu-mobile a:active {
+    background: #eef4ef;
+  }
+}

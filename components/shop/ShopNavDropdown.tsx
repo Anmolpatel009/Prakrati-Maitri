@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { CSSProperties } from "react";
 
 type Subcategory = {
@@ -29,6 +35,7 @@ export default function ShopNavDropdown({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const updateMenuPosition = useCallback(() => {
     const button = toggleRef.current;
@@ -40,14 +47,17 @@ export default function ShopNavDropdown({
     const rect = button.getBoundingClientRect();
 
     const menuWidth = Math.min(
-      240,
-      Math.max(180, window.innerWidth - 24)
+      260,
+      Math.max(210, window.innerWidth - 24)
     );
 
-    const left = Math.min(
-      Math.max(12, rect.left),
-      Math.max(12, window.innerWidth - menuWidth - 12)
-    );
+    let left = rect.left;
+
+    if (left + menuWidth > window.innerWidth - 12) {
+      left = window.innerWidth - menuWidth - 12;
+    }
+
+    left = Math.max(12, left);
 
     setMenuPosition({
       top: Math.round(rect.bottom + 8),
@@ -57,10 +67,15 @@ export default function ShopNavDropdown({
 
   useEffect(() => {
     const handleOutside = (event: MouseEvent | TouchEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+      const insideDropdown =
+        dropdownRef.current?.contains(target) ?? false;
+
+      const insideMobileMenu =
+        mobileMenuRef.current?.contains(target) ?? false;
+
+      if (!insideDropdown && !insideMobileMenu) {
         setOpen(false);
       }
     };
@@ -102,10 +117,31 @@ export default function ShopNavDropdown({
     };
   }, [open, updateMenuPosition]);
 
-  const menuStyle = {
+  const mobileMenuStyle = {
     "--nav-dropdown-top": `${menuPosition.top}px`,
     "--nav-dropdown-left": `${menuPosition.left}px`,
   } as CSSProperties;
+
+  const menuContent = (
+    <>
+      <a
+        href={`/shop/${category.slug}`}
+        onClick={() => setOpen(false)}
+      >
+        All {category.name}
+      </a>
+
+      {subcategories.map((subcategory) => (
+        <a
+          key={subcategory.id}
+          href={`/shop/${category.slug}/${subcategory.slug}`}
+          onClick={() => setOpen(false)}
+        >
+          {subcategory.name}
+        </a>
+      ))}
+    </>
+  );
 
   return (
     <div
@@ -136,28 +172,24 @@ export default function ShopNavDropdown({
         </button>
       </div>
 
-      <div
-        className="nav-dropdown-menu"
-        style={menuStyle}
-        aria-hidden={!open}
-      >
-        <a
-          href={`/shop/${category.slug}`}
-          onClick={() => setOpen(false)}
-        >
-          All {category.name}
-        </a>
-
-        {subcategories.map((subcategory) => (
-          <a
-            key={subcategory.id}
-            href={`/shop/${category.slug}/${subcategory.slug}`}
-            onClick={() => setOpen(false)}
-          >
-            {subcategory.name}
-          </a>
-        ))}
+      {/* Desktop dropdown */}
+      <div className="nav-dropdown-menu nav-dropdown-menu-desktop">
+        {menuContent}
       </div>
+
+      {/* Mobile dropdown is rendered outside the scrolling navbar */}
+      {open &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={mobileMenuRef}
+            className="nav-dropdown-menu-mobile"
+            style={mobileMenuStyle}
+          >
+            {menuContent}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
