@@ -24,19 +24,21 @@ export default function ShopNavDropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleOutsideClick(event: MouseEvent) {
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setOpen(false);
       }
-    }
+    };
 
     document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
 
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
     };
   }, []);
 
@@ -46,23 +48,36 @@ export default function ShopNavDropdown({
       className={`nav-dropdown${open ? " is-open" : ""}`}
     >
       <div className="nav-dropdown-trigger">
-        <a href={`/shop/${category.slug}`}>
+        <a
+          href={`/shop/${category.slug}`}
+          className="nav-dropdown-label"
+        >
           {category.name.toUpperCase()}
         </a>
 
         <button
           type="button"
           className="nav-dropdown-toggle"
-          aria-label={`Open ${category.name} menu`}
+          aria-label={`Open ${category.name} submenu`}
           aria-expanded={open}
-          onClick={() => setOpen((current) => !current)}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setOpen((current) => !current);
+          }}
         >
           <span aria-hidden="true">⌄</span>
         </button>
       </div>
 
-      <div className="nav-dropdown-menu">
-        <a href={`/shop/${category.slug}`} onClick={() => setOpen(false)}>
+      <div
+        className="nav-dropdown-menu"
+        aria-hidden={!open}
+      >
+        <a
+          href={`/shop/${category.slug}`}
+          onClick={() => setOpen(false)}
+        >
           All {category.name}
         </a>
 
