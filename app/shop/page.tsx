@@ -6,6 +6,7 @@ import { getStorefrontVideos } from "@/lib/shop/media";
 import { getHomepageSections } from "@/lib/shop/homepage";
 import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
+import ShopNavDropdown from "@/components/shop/ShopNavDropdown";
 
 export const dynamic = "force-dynamic";
 
@@ -164,31 +165,11 @@ export default async function ShopPage() {
             }
 
             return (
-              <div
+              <ShopNavDropdown
                 key={category.id}
-                className="nav-dropdown"
-              >
-                <a href={`/shop/${category.slug}`}>
-                  {category.name.toUpperCase()} <span>⌄</span>
-                </a>
-
-                <div className="nav-dropdown-menu">
-                  <a href={`/shop/${category.slug}`}>
-                    All {category.name}
-                  </a>
-
-                  {categorySubcategories.map(
-                    (subcategory) => (
-                      <a
-                        key={subcategory.id}
-                        href={`/shop/${category.slug}/${subcategory.slug}`}
-                      >
-                        {subcategory.name}
-                      </a>
-                    )
-                  )}
-                </div>
-              </div>
+                category={category}
+                subcategories={categorySubcategories}
+              />
             );
           })}
 

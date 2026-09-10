@@ -2117,15 +2117,32 @@
   /* CATEGORY RAIL */
   .category-rail {
     padding: 16px 0 20px;
+    overflow: hidden;
   }
 
   .category-rail-track {
     gap: 22px;
-    animation-duration: 24s;
+    animation: none;
+    width: max-content;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    padding: 0 18px 8px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .category-rail-track::-webkit-scrollbar {
+    display: none;
   }
 
   .category-circle-item {
     width: 94px;
+    min-width: 94px;
+    flex: 0 0 94px;
     gap: 7px;
     font-size: 11px;
   }
@@ -2935,3 +2952,70 @@
   }
 }
 
+
+/* ============================================================
+   CATEGORY DROPDOWN — CLICK CONTROL
+============================================================ */
+
+.nav-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.nav-dropdown-trigger > a {
+  color: #176f74;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+  white-space: nowrap;
+}
+
+.nav-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #176f74;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nav-dropdown-toggle span {
+  display: block;
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
+
+.nav-dropdown.is-open .nav-dropdown-toggle span {
+  transform: rotate(180deg) translateY(1px);
+}
+
+.nav-dropdown.is-open .nav-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 768px) {
+  .nav-dropdown-trigger {
+    gap: 4px;
+  }
+
+  .nav-dropdown-trigger > a {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .nav-dropdown-toggle {
+    width: 16px;
+    height: 20px;
+    font-size: 14px;
+  }
+}
