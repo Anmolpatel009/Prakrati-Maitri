@@ -3770,3 +3770,131 @@
     width: 100%;
   }
 }
+
+/* ============================================================
+   HOMEPAGE PROMOTIONAL BANNER CAROUSEL
+============================================================ */
+
+.homepage-promotional-banner {
+  width: 100%;
+  padding: 0;
+  background: #faf8f5;
+}
+
+.homepage-promotional-banner-frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 3.6 / 1;
+}
+
+.homepage-promotional-banner-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.homepage-promotional-banner-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.88);
+  color: #263b3b;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.homepage-promotional-banner-arrow:hover {
+  background: #fff;
+}
+
+.homepage-promotional-banner-prev {
+  left: 18px;
+}
+
+.homepage-promotional-banner-next {
+  right: 18px;
+}
+
+.homepage-promotional-banner-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.homepage-promotional-banner-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.homepage-promotional-banner-dot.is-active {
+  width: 22px;
+  border-radius: 999px;
+}
+
+/* ============================================================
+   DESKTOP CATEGORY RAIL
+   CategoryRail controls movement through scrollLeft.
+   Mobile remains native finger-scroll.
+============================================================ */
+
+@media (min-width: 769px) {
+  .category-rail {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .category-rail-track {
+    width: max-content;
+    overflow: visible;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .homepage-promotional-banner-frame {
+    aspect-ratio: 2.4 / 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .homepage-promotional-banner-frame {
+    aspect-ratio: 1.7 / 1;
+  }
+
+  .homepage-promotional-banner-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+  }
+
+  .homepage-promotional-banner-prev {
+    left: 10px;
+  }
+
+  .homepage-promotional-banner-next {
+    right: 10px;
+  }
+
+  .homepage-promotional-banner-dots {
+    bottom: 9px;
+  }
+}

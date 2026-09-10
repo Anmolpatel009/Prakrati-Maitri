@@ -102,19 +102,6 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
       lastTime = performance.now();
     };
 
-    /*
-     * Desktop behavior:
-     * hovering the rail pauses automatic movement.
-     */
-    const handleMouseEnter = () => {
-      pausedRef.current = true;
-    };
-
-    const handleMouseLeave = () => {
-      pausedRef.current = false;
-      lastTime = performance.now();
-    };
-
     const initialFrame = requestAnimationFrame(() => {
       startAtMiddle();
       lastTime = performance.now();
@@ -125,9 +112,6 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
     rail.addEventListener("pointerup", handlePointerUp);
     rail.addEventListener("pointercancel", handlePointerCancel);
 
-    rail.addEventListener("mouseenter", handleMouseEnter);
-    rail.addEventListener("mouseleave", handleMouseLeave);
-
     return () => {
       cancelAnimationFrame(initialFrame);
       cancelAnimationFrame(animationFrame);
@@ -136,8 +120,6 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
       rail.removeEventListener("pointerup", handlePointerUp);
       rail.removeEventListener("pointercancel", handlePointerCancel);
 
-      rail.removeEventListener("mouseenter", handleMouseEnter);
-      rail.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [navCards.length]);
 

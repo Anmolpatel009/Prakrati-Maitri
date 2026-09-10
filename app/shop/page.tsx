@@ -8,6 +8,8 @@ import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
 import ShopNavDropdown from "@/components/shop/ShopNavDropdown";
 import CategoryRail from "@/components/shop/CategoryRail";
+import HomepagePromotionalBannerCarousel from "@/components/shop/HomepagePromotionalBannerCarousel";
+import { getHomepageBanners } from "@/lib/shop/homepage-banners";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +64,7 @@ export default async function ShopPage() {
     const navCards = await getStorefrontNavCards();
     const videos = await getStorefrontVideos();
     const homepageSections = await getHomepageSections();
+    const homepageBanners = await getHomepageBanners();
 
     const homepageSectionMap = Object.fromEntries(
       homepageSections.map((section) => [
@@ -220,7 +223,7 @@ export default async function ShopPage() {
       <CategoryRail navCards={navCards} />
 
 
-      {/* =====================================================
+      <HomepagePromotionalBannerCarousel banners={homepageBanners} />\n\n\n      {/* =====================================================
           MAIN HERO
       ===================================================== */}
 
