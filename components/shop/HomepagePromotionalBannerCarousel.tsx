@@ -12,10 +12,12 @@ type HomepageBanner = {
 
 type Props = {
   banners: HomepageBanner[];
+  variant?: "default" | "hero";
 };
 
 export default function HomepagePromotionalBannerCarousel({
   banners,
+  variant = "default",
 }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -37,7 +39,7 @@ export default function HomepagePromotionalBannerCarousel({
 
   return (
     <section
-      className="homepage-promotional-banner"
+      className={`homepage-promotional-banner homepage-promotional-banner-${variant}`}
       aria-label="Homepage promotions"
     >
       <div className="homepage-promotional-banner-frame">
@@ -94,6 +96,12 @@ export default function HomepagePromotionalBannerCarousel({
           </>
         )}
       </div>
+
+      {activeBanner.alt_text && (
+        <div className="homepage-promotional-banner-caption">
+          {activeBanner.alt_text}
+        </div>
+      )}
     </section>
   );
 }

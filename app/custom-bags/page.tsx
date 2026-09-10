@@ -1,8 +1,12 @@
 import CustomBagForm from "@/components/shop/CustomBagForm";
+import HomepagePromotionalBannerCarousel from "@/components/shop/HomepagePromotionalBannerCarousel";
+import { getHomepageBanners } from "@/lib/shop/homepage-banners";
 
 export const dynamic = "force-dynamic";
 
-export default function CustomBagsPage() {
+export default async function CustomBagsPage() {
+  const homepageBanners = await getHomepageBanners();
+
   return (
     <main className="custom-bag-page">
       <section className="custom-bag-hero">
@@ -31,16 +35,11 @@ export default function CustomBagsPage() {
           </a>
         </div>
 
-        <div className="custom-bag-hero-art" aria-hidden="true">
-          <div className="custom-bag-art-circle">
-            <span>✿</span>
-          </div>
-
-          <div className="custom-bag-art-card">
-            YOUR
-            <br />
-            IDEA
-          </div>
+        <div className="custom-bag-hero-art">
+          <HomepagePromotionalBannerCarousel
+            banners={homepageBanners}
+            variant="hero"
+          />
         </div>
       </section>
 
