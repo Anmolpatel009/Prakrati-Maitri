@@ -7,6 +7,7 @@ import { getHomepageSections } from "@/lib/shop/homepage";
 import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
 import ShopNavDropdown from "@/components/shop/ShopNavDropdown";
+import CategoryRail from "@/components/shop/CategoryRail";
 
 export const dynamic = "force-dynamic";
 
@@ -216,35 +217,7 @@ export default async function ShopPage() {
           MOVING CATEGORY RAIL
       ===================================================== */}
 
-      <section className="category-rail">
-
-        <div className="category-rail-track">
-
-          {[...navCards, ...navCards].map((card, index) => (
-            <a
-              key={`${card.id}-${index}`}
-              href={card.href || "/shop"}
-              className="category-circle-item"
-            >
-              <div className="category-circle">
-                {card.image_url ? (
-                  <img
-                    src={card.image_url}
-                    alt={card.title}
-                    loading="lazy"
-                  />
-                ) : (
-                  <span>✿</span>
-                )}
-              </div>
-
-              <span>{card.title}</span>
-            </a>
-          ))}
-
-        </div>
-
-      </section>
+      <CategoryRail navCards={navCards} />
 
 
       {/* =====================================================
