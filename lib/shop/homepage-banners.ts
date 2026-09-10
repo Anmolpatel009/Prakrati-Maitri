@@ -5,6 +5,7 @@ export type HomepageBanner = {
   slot: number;
   image_url: string;
   alt_text: string | null;
+  destination_url: string | null;
   is_active: boolean;
 };
 
@@ -13,7 +14,9 @@ export async function getHomepageBanners(): Promise<HomepageBanner[]> {
 
   const { data, error } = await supabase
     .from("homepage_banners")
-    .select("id, slot, image_url, alt_text, is_active")
+    .select(
+      "id, slot, image_url, alt_text, destination_url, is_active"
+    )
     .eq("is_active", true)
     .order("slot", { ascending: true });
 

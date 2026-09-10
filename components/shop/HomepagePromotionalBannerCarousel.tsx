@@ -7,6 +7,7 @@ type HomepageBanner = {
   slot: number;
   image_url: string;
   alt_text: string | null;
+  destination_url: string | null;
   is_active: boolean;
 };
 
@@ -43,12 +44,29 @@ export default function HomepagePromotionalBannerCarousel({
       aria-label="Homepage promotions"
     >
       <div className="homepage-promotional-banner-frame">
-        <img
-          key={activeBanner.id}
-          src={activeBanner.image_url}
-          alt={activeBanner.alt_text || "Prakratri Maitri promotion"}
-          className="homepage-promotional-banner-image"
-        />
+        {activeBanner.destination_url ? (
+          <a
+            href={activeBanner.destination_url}
+            className="homepage-promotional-banner-link"
+            aria-label={
+              activeBanner.alt_text || "View promotional banner"
+            }
+          >
+            <img
+              key={activeBanner.id}
+              src={activeBanner.image_url}
+              alt={activeBanner.alt_text || "Prakratri Maitri promotion"}
+              className="homepage-promotional-banner-image"
+            />
+          </a>
+        ) : (
+          <img
+            key={activeBanner.id}
+            src={activeBanner.image_url}
+            alt={activeBanner.alt_text || "Prakratri Maitri promotion"}
+            className="homepage-promotional-banner-image"
+          />
+        )}
 
         {banners.length > 1 && (
           <>
@@ -99,7 +117,16 @@ export default function HomepagePromotionalBannerCarousel({
 
       {activeBanner.alt_text && (
         <div className="homepage-promotional-banner-caption">
-          {activeBanner.alt_text}
+          {activeBanner.destination_url ? (
+            <a
+              href={activeBanner.destination_url}
+              className="homepage-promotional-banner-caption-link"
+            >
+              {activeBanner.alt_text}
+            </a>
+          ) : (
+            activeBanner.alt_text
+          )}
         </div>
       )}
     </section>
