@@ -196,6 +196,10 @@ export default async function ShopPage() {
             REVIEWS
           </a>
 
+          <a href="/bulk-order" className="shop-nav-bulk-link">
+            BULK ORDERS
+          </a>
+
         </nav>
 
         <div className="shop-nav-actions">
