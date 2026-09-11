@@ -142,11 +142,43 @@ export default async function ShopPage() {
 
       <header className="shop-navbar">
 
-        <div className="shop-brand">
-          <span className="brand-mark">✿</span>
-          <span>Prakratri Maitri</span>
+        {/* ROW 1: Brand + utility actions */}
+        <div className="shop-navbar-top">
+
+          <div className="shop-brand">
+            <span className="brand-mark">✿</span>
+            <span>Prakratri Maitri</span>
+          </div>
+
+          <div className="shop-nav-actions">
+
+            <button type="button" aria-label="Search">
+              ⌕
+            </button>
+
+            <a href="/account" aria-label="Account">
+              ♙
+            </a>
+
+            <a href="/wishlist" aria-label="Wishlist">
+              ♡
+              <span className="nav-count">0</span>
+            </a>
+
+            <a
+              href="/cart"
+              aria-label="Cart"
+              className="relative"
+            >
+              ♧
+              <CartBadge />
+            </a>
+
+          </div>
+
         </div>
 
+        {/* ROW 2: Main navigation */}
         <nav className="shop-nav">
 
           <a href="/shop">NEW</a>
@@ -186,32 +218,6 @@ export default async function ShopPage() {
           </a>
 
         </nav>
-
-        <div className="shop-nav-actions">
-
-          <button type="button" aria-label="Search">
-            ⌕
-          </button>
-
-          <a href="/account" aria-label="Account">
-            ♙
-          </a>
-
-          <a href="/wishlist" aria-label="Wishlist">
-            ♡
-            <span className="nav-count">0</span>
-          </a>
-
-          <a
-            href="/cart"
-            aria-label="Cart"
-            className="relative"
-          >
-            ♧
-            <CartBadge />
-          </a>
-
-        </div>
 
       </header>
 
