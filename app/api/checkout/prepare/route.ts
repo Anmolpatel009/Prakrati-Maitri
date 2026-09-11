@@ -296,8 +296,10 @@ export async function POST(request: Request) {
       0
     );
 
-    // Shipping logic comes later.
-    const shippingFee = 0;
+    // Shipping rule:
+    // subtotal < ₹999  -> ₹80
+    // subtotal >= ₹999 -> FREE
+    const shippingFee = subtotal >= 999 ? 0 : 80;
 
     const total = subtotal + shippingFee;
 

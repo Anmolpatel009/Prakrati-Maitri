@@ -5,6 +5,74 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
 
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
+type RazorpayOptions = {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  prefill?: {
+    name?: string;
+    contact?: string;
+  };
+  notes?: Record<string, string>;
+  theme?: {
+    color?: string;
+  };
+  handler: (response: RazorpayPaymentResponse) => void | Promise<void>;
+  modal?: {
+    ondismiss?: () => void;
+  };
+};
+
+type RazorpayPaymentResponse = {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+};
+
+type RazorpayInstance = {
+  open: () => void;
+};
+
+function loadRazorpay(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
+    const existing = document.querySelector(
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+    );
+
+    if (existing) {
+      existing.addEventListener("load", () => resolve(true), {
+        once: true,
+      });
+      existing.addEventListener("error", () => resolve(false), {
+        once: true,
+      });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+
+    document.body.appendChild(script);
+  });
+}
+
 type CheckoutForm = {
   firstName: string;
   lastName: string;
@@ -72,9 +140,7 @@ export default function PaymentPage() {
     }
 
     if (!checkout) {
-      setError(
-        "Delivery information is missing."
-      );
+      setError("Delivery information is missing.");
       return;
     }
 
@@ -87,23 +153,75 @@ export default function PaymentPage() {
     setError("");
 
     try {
-      const response = await fetch(
-        "/api/orders/create",
-        {
+      const orderPayload = {
+        items: items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+        shipping: checkout,
+      };
+
+      // -------------------------------------------------
+      // COD — preserve the existing order flow
+      // -------------------------------------------------
+      if (paymentMethod === "cod") {
+        const response = await fetch("/api/orders/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            items: items.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-            })),
-
-            shipping: checkout,
-
-            paymentMethod,
+            ...orderPayload,
+            paymentMethod: "cod",
           }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "Unable to create your order."
+          );
+        }
+
+        if (!data.orderId) {
+          throw new Error("Order ID was not returned.");
+        }
+
+        sessionStorage.removeItem(
+          "prakratri-matri-checkout"
+        );
+
+        clearCart();
+
+        router.push(
+          `/checkout/success?order=${encodeURIComponent(
+            data.orderId
+          )}`
+        );
+
+        return;
+      }
+
+      // -------------------------------------------------
+      // ONLINE — create the local order + Razorpay order
+      // -------------------------------------------------
+      const razorpayLoaded = await loadRazorpay();
+
+      if (!razorpayLoaded || !window.Razorpay) {
+        throw new Error(
+          "Unable to load the Razorpay payment window. Please try again."
+        );
+      }
+
+      const response = await fetch(
+        "/api/payments/razorpay/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(orderPayload),
         }
       );
 
@@ -112,49 +230,123 @@ export default function PaymentPage() {
       if (!response.ok) {
         throw new Error(
           data.error ||
-            "Unable to create your order."
+            "Unable to initialize online payment."
         );
       }
 
-      if (!data.orderId) {
+      if (
+        !data.orderId ||
+        !data.razorpayOrderId ||
+        !data.amount ||
+        !data.currency ||
+        !data.keyId
+      ) {
         throw new Error(
-          "Order was created without a valid order ID."
+          "Payment initialization returned incomplete information."
         );
       }
 
-      // =================================================
-      // CLEAR TEMPORARY CHECKOUT DATA
-      // =================================================
+      let verificationStarted = false;
 
-      sessionStorage.removeItem(
-        "prakratri-matri-checkout"
-      );
+      const razorpay = new window.Razorpay({
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Prakrati Maitri",
+        description: "Order payment",
+        order_id: data.razorpayOrderId,
+        prefill: {
+          name: `${checkout.firstName} ${checkout.lastName}`.trim(),
+          contact: checkout.phone,
+        },
+        notes: {
+          local_order_id: data.orderId,
+        },
+        theme: {
+          color: "#4A5D23",
+        },
+        handler: async (
+          paymentResponse
+        ) => {
+          if (verificationStarted) {
+            return;
+          }
 
-      // =================================================
-      // CLEAR CART
-      // =================================================
+          verificationStarted = true;
 
-      clearCart();
+          try {
+            const verifyResponse = await fetch(
+              "/api/payments/razorpay/verify",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                  paymentResponse
+                ),
+              }
+            );
 
-      // =================================================
-      // GO TO SUCCESS PAGE
-      // =================================================
+            const verifyData =
+              await verifyResponse.json();
 
-      router.push(
-        `/checkout/success?order=${encodeURIComponent(
-          data.orderId
-        )}`
-      );
-    } catch (err) {
-      console.error(
-        "Order creation error:",
-        err
-      );
+            if (!verifyResponse.ok) {
+              throw new Error(
+                verifyData.error ||
+                  "Payment verification failed."
+              );
+            }
+
+            if (!verifyData.success) {
+              throw new Error(
+                "Payment could not be verified."
+              );
+            }
+
+            sessionStorage.removeItem(
+              "prakratri-matri-checkout"
+            );
+
+            clearCart();
+
+            router.push(
+              `/checkout/success?order=${encodeURIComponent(
+                verifyData.orderId
+              )}`
+            );
+          } catch (verificationError) {
+            console.error(
+              "Payment verification error:",
+              verificationError
+            );
+
+            setError(
+              verificationError instanceof Error
+                ? verificationError.message
+                : "Payment verification failed. Please contact support before trying again."
+            );
+            setPlacingOrder(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setError(
+              "Payment was cancelled. Your order has not been confirmed."
+            );
+            setPlacingOrder(false);
+          },
+        },
+      });
+
+      razorpay.open();
+    } catch (error) {
+      console.error("Place order error:", error);
 
       setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong. Please try again."
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while placing your order."
       );
 
       setPlacingOrder(false);
@@ -434,7 +626,7 @@ export default function PaymentPage() {
                   </p>
                 ) : (
                   <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
-                    No real payment will be processed.
+                    Online payments are processed through Razorpay.
                     This will create a pending online
                     payment test order.
                   </p>
@@ -599,7 +791,13 @@ export default function PaymentPage() {
 
                 <div className="mt-3 flex justify-between text-sm text-[#3D3D3D]/65">
                   <span>Shipping</span>
-                  <span>₹0.00</span>
+                  <span>₹{(subtotal >= 999 ? 0 : 80).toLocaleString(
+                      "en-IN",
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }
+                    )}</span>
                 </div>
 
                 <div className="mt-5 border-t border-[#D2B48C]/30 pt-5">
@@ -610,7 +808,7 @@ export default function PaymentPage() {
 
                   <p className="mt-1 font-serif text-3xl text-[#4A5D23]">
                     ₹
-                    {subtotal.toLocaleString(
+                    {(subtotal + (subtotal >= 999 ? 0 : 80)).toLocaleString(
                       "en-IN",
                       {
                         minimumFractionDigits: 2,
@@ -644,7 +842,7 @@ export default function PaymentPage() {
                     ? "Placing order..."
                     : paymentMethod === "cod"
                     ? "Place COD Order"
-                    : "Place Online Test Order"}
+                    : "Pay Securely with Razorpay"}
                 </button>
 
                 <p className="mt-4 text-center text-xs leading-5 text-[#3D3D3D]/45">
