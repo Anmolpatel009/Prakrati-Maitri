@@ -4644,3 +4644,62 @@
     letter-spacing: 0.7px;
   }
 }
+
+/* ============================================================
+   DESKTOP: KEEP ALL MAIN NAVIGATION ON ONE LINE
+   Mobile rules remain unchanged.
+   ============================================================ */
+
+@media (min-width: 769px) {
+  .shop-nav {
+    width: 100%;
+    min-width: 0;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: clamp(8px, 1.35vw, 20px);
+    min-height: 52px;
+    padding: 4px 0 8px;
+    overflow: hidden;
+  }
+
+  .shop-nav > a,
+  .shop-nav .nav-dropdown {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .shop-nav > a,
+  .nav-dropdown-label {
+    font-size: clamp(9px, 0.82vw, 12px);
+    letter-spacing: clamp(0.4px, 0.07vw, 1px);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown-trigger {
+    min-width: 0;
+    min-height: 34px;
+    gap: 2px;
+  }
+
+  .nav-dropdown-toggle {
+    width: 18px;
+    height: 28px;
+    flex-basis: 18px;
+    font-size: 13px;
+  }
+}
+
+/* Wider screens can breathe a little more. */
+@media (min-width: 1400px) {
+  .shop-nav {
+    gap: 18px;
+  }
+
+  .shop-nav > a,
+  .nav-dropdown-label {
+    font-size: 12px;
+    letter-spacing: 0.8px;
+  }
+}
