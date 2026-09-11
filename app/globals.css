@@ -4206,3 +4206,177 @@
     font-size: 17px;
   }
 }
+
+/* ============================================================
+   FINAL RESPONSIVE SHOP NAVIGATION OVERRIDE
+   Keeps every navigation item inside the viewport while
+   allowing the header to grow naturally as categories increase.
+   ============================================================ */
+
+.shop-navbar {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  gap: clamp(16px, 2.5vw, 32px);
+  padding-inline: clamp(16px, 4vw, 48px);
+  overflow: visible;
+}
+
+.shop-brand {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
+.shop-nav {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: clamp(16px, 2.2vw, 32px);
+  row-gap: 0;
+}
+
+.shop-nav > a,
+.shop-nav .nav-dropdown {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.shop-nav > a,
+.nav-dropdown > a,
+.nav-dropdown-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Keep account/cart actions visible instead of allowing them
+   to be pushed outside the viewport. */
+.shop-nav-actions {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
+/* Medium desktop/tablet:
+   reduce spacing before wrapping becomes necessary. */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .shop-navbar {
+    gap: 18px;
+    padding-inline: 24px;
+  }
+
+  .shop-nav {
+    column-gap: 16px;
+  }
+
+  .shop-nav > a,
+  .nav-dropdown > a,
+  .nav-dropdown-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+}
+
+/* Mobile:
+   keep the header itself inside the viewport and make the
+   navigation area independently scrollable when there are
+   more categories than can physically fit. */
+@media (max-width: 768px) {
+  .shop-navbar {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .shop-brand {
+    flex: 0 0 auto;
+    font-size: clamp(20px, 6vw, 25px);
+    gap: 4px;
+  }
+
+  .brand-mark {
+    font-size: clamp(24px, 7vw, 30px);
+  }
+
+  .shop-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 2px;
+  }
+
+  .shop-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .shop-nav > a,
+  .shop-nav .nav-dropdown {
+    flex: 0 0 auto;
+  }
+
+  .shop-nav-actions {
+    flex: 0 0 auto;
+    gap: 9px;
+  }
+
+  .shop-nav-actions button,
+  .shop-nav-actions a {
+    font-size: 22px;
+  }
+
+  .nav-dropdown {
+    max-width: none;
+  }
+
+  .nav-dropdown-label {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+/* Very small phones:
+   prevent the brand from consuming the whole header. */
+@media (max-width: 420px) {
+  .shop-navbar {
+    gap: 6px;
+    padding-inline: 10px;
+  }
+
+  .shop-brand {
+    font-size: 18px;
+  }
+
+  .brand-mark {
+    font-size: 22px;
+  }
+
+  .shop-nav {
+    gap: 10px;
+  }
+
+  .shop-nav-actions {
+    gap: 6px;
+  }
+
+  .shop-nav-actions button,
+  .shop-nav-actions a {
+    font-size: 20px;
+  }
+}
