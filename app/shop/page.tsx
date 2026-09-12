@@ -160,10 +160,6 @@ export default async function ShopPage() {
 
           <div className="shop-nav-actions">
 
-            <button type="button" aria-label="Search">
-              ⌕
-            </button>
-
             <a href="/account" aria-label="Account">
               ♙
             </a>
