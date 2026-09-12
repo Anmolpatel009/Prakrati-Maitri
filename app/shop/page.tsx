@@ -145,10 +145,18 @@ export default async function ShopPage() {
         {/* ROW 1: Brand + utility actions */}
         <div className="shop-navbar-top">
 
-          <div className="shop-brand">
-            <span className="brand-mark">✿</span>
-            <span>Prakratri Maitri</span>
-          </div>
+          <a href="/shop" className="shop-brand" aria-label="Prakrati Maitri home">
+            <span className="shop-brand-word">Prakrati</span>
+            <span className="shop-brand-seal">
+              <img
+                src="/prakrati-maitri-logo.jpg"
+                alt=""
+                aria-hidden="true"
+                className="shop-brand-logo"
+              />
+            </span>
+            <span className="shop-brand-word">Maitri</span>
+          </a>
 
           <div className="shop-nav-actions">
 
