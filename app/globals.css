@@ -4933,3 +4933,126 @@
   position: relative;
   z-index: 2;
 }
+
+/* Reduce excess whitespace after homepage purpose/gifting banners.
+   Promotional and Story banners remain unchanged. */
+.wide-banner {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   FINAL RESPONSIVE BRAND BAR
+   Keep centered brand + right utility controls.
+   Does not alter header height or navigation row.
+============================================================ */
+
+.shop-navbar-top {
+  position: relative;
+}
+
+.shop-navbar-top .shop-brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.shop-navbar-top .shop-nav-actions {
+  margin-left: auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Keep the decorative accent attached to the logo seal. */
+.shop-brand-seal {
+  position: relative;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .shop-navbar-top .shop-brand {
+    max-width: 360px;
+  }
+
+  .shop-brand-word {
+    font-size: 21px;
+  }
+
+  .shop-brand-seal,
+  .shop-brand-logo {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .shop-navbar-top {
+    min-height: 68px;
+    padding: 6px 0;
+  }
+
+  .shop-navbar-top .shop-brand {
+    width: max-content;
+    max-width: calc(100% - 118px);
+    height: 42px;
+    gap: 6px;
+  }
+
+  .shop-brand-word {
+    font-size: clamp(15px, 4.6vw, 18px);
+    line-height: 1;
+  }
+
+  .shop-brand-seal {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+  }
+
+  .shop-brand-logo {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+  }
+
+  .shop-navbar-top .shop-nav-actions {
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .shop-nav-actions button,
+  .shop-nav-actions a {
+    flex: 0 0 auto;
+  }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  .shop-navbar-top {
+    min-height: 62px;
+    padding: 5px 0;
+  }
+
+  .shop-navbar-top .shop-brand {
+    max-width: calc(100% - 108px);
+    gap: 5px;
+  }
+
+  .shop-brand-word {
+    font-size: 15px;
+  }
+
+  .shop-brand-seal,
+  .shop-brand-logo {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .shop-navbar-top .shop-nav-actions {
+    gap: 6px;
+  }
+}
