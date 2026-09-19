@@ -59,12 +59,19 @@ const testimonials = [
 export default async function ShopPage() {
   const supabase = await createClient();
 
-  const { categories, subcategories } =
-    await getShopNavbarData();
-    const navCards = await getStorefrontNavCards();
-    const videos = await getStorefrontVideos();
-    const homepageSections = await getHomepageSections();
-    const homepageBanners = await getHomepageBanners();
+  const [
+    { categories, subcategories },
+    navCards,
+    videos,
+    homepageSections,
+    homepageBanners,
+  ] = await Promise.all([
+    getShopNavbarData(),
+    getStorefrontNavCards(),
+    getStorefrontVideos(),
+    getHomepageSections(),
+    getHomepageBanners(),
+  ]);
 
     const homepageSectionMap = Object.fromEntries(
       homepageSections.map((section) => [
