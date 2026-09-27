@@ -121,6 +121,26 @@ export default async function ShopPage() {
   const featuredProducts = products.slice(0, 5);
   const mostLovedProducts = products.slice(0, 6);
 
+  const getProductCategorySlug = (product: Product) => {
+    const category = Array.isArray(product.categories)
+      ? product.categories[0]
+      : product.categories;
+
+    return category?.slug ?? null;
+  };
+
+  const laptopBagProducts = products
+    .filter((product) => getProductCategorySlug(product) === "hand-bags")
+    .slice(0, 4);
+
+  const hamperBagProducts = products
+    .filter((product) => getProductCategorySlug(product) === "hamper-bags")
+    .slice(0, 4);
+
+  const packagingBagProducts = products
+    .filter((product) => getProductCategorySlug(product) === "packaging-bags")
+    .slice(0, 4);
+
   return (
     <main className="shop-page">
 
@@ -152,8 +172,8 @@ export default async function ShopPage() {
         {/* ROW 1: Brand + utility actions */}
         <div className="shop-navbar-top">
 
-          <a href="/shop" className="shop-brand" aria-label="Prakrati Maitri home">
-            <span className="shop-brand-word">Prakrati</span>
+          <a href="/shop" className="shop-brand" aria-label="Prakriti Maitri home">
+            <span className="shop-brand-word">Prakriti</span>
             <span className="shop-brand-seal">
               <img
                 src="/prakrati-maitri-logo.jpg"
@@ -403,6 +423,27 @@ export default async function ShopPage() {
 
       </section>
 
+
+        <CategoryProductSection
+          title="Laptop Bags"
+          eyebrow="LAPTOP BAGS & SLEEVES"
+          href="/shop/hand-bags"
+          products={laptopBagProducts}
+        />
+
+        <CategoryProductSection
+          title="Hamper Bags"
+          eyebrow="HAMPER BAGS"
+          href="/shop/hamper-bags"
+          products={hamperBagProducts}
+        />
+
+        <CategoryProductSection
+          title="Brands Packaging Bags"
+          eyebrow="BRANDS PACKAGING BAGS"
+          href="/shop/packaging-bags"
+          products={packagingBagProducts}
+        />
 
       {/* =====================================================
           MASTER CATEGORIES
@@ -694,6 +735,44 @@ export default async function ShopPage() {
 /* ============================================================
    PRODUCT CARD
 ============================================================ */
+
+function CategoryProductSection({
+  title,
+  eyebrow,
+  href,
+  products,
+}: {
+  title: string;
+  eyebrow: string;
+  href: string;
+  products: Product[];
+}) {
+  return (
+    <section className="collection-section category-product-section">
+      <div className="collection-box">
+        <div className="collection-box-header">
+          <div>
+            <span className="collection-label">{eyebrow}</span>
+            <h3>{title}</h3>
+          </div>
+
+          <a href={href}>View More →</a>
+        </div>
+
+        <div className="product-grid category-product-grid">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <EmptyProductCards count={4} />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 function ProductCard({
   product,
