@@ -4110,105 +4110,6 @@
 }
 
 /* ============================================================
-   HOMEPAGE BRAND STATEMENT
-============================================================ */
-
-.homepage-brand-strip {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 108px;
-  padding: 22px 24px;
-  overflow: hidden;
-  background: #f8f5ed;
-  border-top: 1px solid rgba(210, 180, 140, 0.28);
-  border-bottom: 1px solid rgba(210, 180, 140, 0.28);
-  text-align: center;
-}
-
-.homepage-brand-strip::before,
-.homepage-brand-strip::after {
-  content: "";
-  position: absolute;
-  width: 90px;
-  height: 1px;
-  top: 50%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(39, 123, 128, 0.45),
-    transparent
-  );
-  animation: homepageBrandPulse 3.5s ease-in-out infinite;
-}
-
-.homepage-brand-strip::before {
-  left: 8%;
-}
-
-.homepage-brand-strip::after {
-  right: 8%;
-  animation-delay: 1.75s;
-}
-
-.homepage-brand-strip-eyebrow {
-  color: #9a511d;
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 2.8px;
-  line-height: 1.2;
-}
-
-.homepage-brand-strip p {
-  max-width: 760px;
-  margin: 8px auto 0;
-  color: #4a5d23;
-  font-family: Georgia, serif;
-  font-size: clamp(17px, 2vw, 24px);
-  line-height: 1.45;
-}
-
-@keyframes homepageBrandPulse {
-  0%,
-  100% {
-    opacity: 0.25;
-    transform: scaleX(0.8);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scaleX(1);
-  }
-}
-
-@media (max-width: 768px) {
-  .homepage-brand-strip {
-    min-height: 94px;
-    padding: 20px 22px;
-  }
-
-  .homepage-brand-strip::before,
-  .homepage-brand-strip::after {
-    width: 45px;
-  }
-
-  .homepage-brand-strip::before {
-    left: 3%;
-  }
-
-  .homepage-brand-strip::after {
-    right: 3%;
-  }
-
-  .homepage-brand-strip p {
-    font-size: 17px;
-  }
-}
-
-/* ============================================================
    FINAL RESPONSIVE SHOP NAVIGATION OVERRIDE
    Keeps every navigation item inside the viewport while
    allowing the header to grow naturally as categories increase.
@@ -5081,5 +4982,252 @@
 @media (max-width: 768px) {
   .category-product-section .category-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Category CMS banners */
+.category-banner-section {
+  width: min(1400px, 92%);
+  margin: 0 auto 36px;
+}
+
+.category-banner-frame {
+  width: 100%;
+  overflow: hidden;
+  background: #f9f7f2;
+  border: 1px solid rgba(217, 200, 170, 0.75);
+}
+
+.category-banner-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .category-banner-section {
+    width: 94%;
+    margin-bottom: 28px;
+  }
+}
+
+/* ============================================================
+   CATEGORY COLLECTION ALIGNMENT
+   Banner and product collection use the same visual width.
+   Spacing is intentionally compact and consistent.
+============================================================ */
+
+.category-editorial-group {
+  width: min(1400px, 92%);
+  margin: 0 auto;
+  padding-bottom: clamp(44px, 5vw, 68px);
+}
+
+.category-editorial-group + .category-editorial-group {
+  padding-top: clamp(8px, 1.5vw, 18px);
+}
+
+/* Banner and collection panel share exactly the same width. */
+.category-editorial-group > .category-banner-section {
+  width: 100%;
+  margin: 0 0 clamp(16px, 1.8vw, 24px);
+}
+
+/* Remove the old wider/narrower section constraints. */
+.category-editorial-group > .collection-section {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Product collection panel fills the same width as the banner. */
+.category-editorial-group .collection-box {
+  width: 100%;
+  max-width: none;
+}
+
+/* Larger collection identity. */
+.category-editorial-group .collection-box-header {
+  padding-top: clamp(18px, 2vw, 28px);
+  padding-bottom: clamp(14px, 1.6vw, 22px);
+}
+
+.category-editorial-group .collection-box-header h3 {
+  font-size: clamp(2rem, 3.3vw, 3.15rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.category-editorial-group .collection-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+/* Tight visual connection between banner and collection panel. */
+.category-editorial-group > .category-banner-section + .collection-section {
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .category-editorial-group {
+    width: 94%;
+    padding-bottom: 40px;
+  }
+
+  .category-editorial-group + .category-editorial-group {
+    padding-top: 6px;
+  }
+
+  .category-editorial-group > .category-banner-section {
+    margin-bottom: 14px;
+  }
+
+  .category-editorial-group .collection-box-header {
+    padding-top: 16px;
+    padding-bottom: 10px;
+  }
+
+  .category-editorial-group .collection-box-header h3 {
+    font-size: clamp(1.85rem, 8vw, 2.45rem);
+    line-height: 1.04;
+  }
+
+  .category-editorial-group .collection-label {
+    font-size: 9px;
+    letter-spacing: 0.19em;
+  }
+}
+
+/* ============================================================
+   CATEGORY FINAL WIDTH + RHYTHM OVERRIDE
+   Existing banner + product wrappers only.
+============================================================ */
+
+/* One shared canvas for banner and product collection. */
+.category-editorial-group {
+  width: min(1400px, 92%) !important;
+  max-width: min(1400px, 92%) !important;
+  margin: 0 auto !important;
+  padding: 0 0 28px !important;
+  box-sizing: border-box !important;
+}
+
+/* Banner touches the exact shared left/right edges. */
+.category-editorial-group > .category-banner-section {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Banner frame/image cannot create an independent width. */
+.category-editorial-group
+  > .category-banner-section
+  > .category-banner-frame {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* Product section starts directly beneath banner. */
+.category-editorial-group > .collection-section {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Product panel has exactly the banner's width. */
+.category-editorial-group
+  > .collection-section
+  > .collection-box {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* No hidden top/bottom section spacing from older rules. */
+.category-editorial-group
+  > .collection-section
+  > .collection-box {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Banner-to-product separation: intentionally tiny. */
+.category-editorial-group
+  > .category-banner-section {
+  margin-bottom: 16px !important;
+}
+
+/* Category-to-category separation: compact, not empty. */
+.category-editorial-group + .category-editorial-group {
+  margin-top: 0 !important;
+  padding-top: 8px !important;
+}
+
+/* Keep the collection heading substantial without creating
+   whitespace outside the green panel. */
+.category-editorial-group .collection-box-header {
+  padding-top: 20px !important;
+  padding-bottom: 14px !important;
+}
+
+.category-editorial-group .collection-box-header h3 {
+  margin-top: 4px !important;
+  font-size: clamp(2.3rem, 3.6vw, 3.5rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.category-editorial-group .collection-label {
+  font-size: 11px !important;
+  letter-spacing: 0.22em !important;
+}
+
+/* Product grid should not create an extra outer band. */
+.category-editorial-group .homepage-category-product-grid {
+  margin-top: 0 !important;
+}
+
+/* ------------------------------------------------------------
+   Mobile: same logic, tighter rhythm.
+------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  .category-editorial-group {
+    width: 94% !important;
+    max-width: 94% !important;
+    padding-bottom: 22px !important;
+  }
+
+  .category-editorial-group + .category-editorial-group {
+    padding-top: 6px !important;
+  }
+
+  .category-editorial-group
+    > .category-banner-section {
+    margin-bottom: 12px !important;
+  }
+
+  .category-editorial-group .collection-box-header {
+    padding-top: 15px !important;
+    padding-bottom: 9px !important;
+  }
+
+  .category-editorial-group .collection-box-header h3 {
+    font-size: clamp(2rem, 9vw, 2.65rem) !important;
+  }
+
+  .category-editorial-group .collection-label {
+    font-size: 9px !important;
+    letter-spacing: 0.19em !important;
   }
 }

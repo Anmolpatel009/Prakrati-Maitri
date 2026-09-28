@@ -10,6 +10,10 @@ import ShopNavDropdown from "@/components/shop/ShopNavDropdown";
 import CategoryRail from "@/components/shop/CategoryRail";
 import HomepagePromotionalBannerCarousel from "@/components/shop/HomepagePromotionalBannerCarousel";
 import { getHomepageBanners } from "@/lib/shop/homepage-banners";
+import {
+  getCategoryBanners,
+} from "@/lib/shop/category-banners";
+import CategoryBannerView from "@/components/shop/CategoryBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +63,8 @@ const testimonials = [
 export default async function ShopPage() {
   const supabase = await createClient();
 
+  const categoryBannersPromise = getCategoryBanners();
+
   const [
     { categories, subcategories },
     navCards,
@@ -72,6 +78,8 @@ export default async function ShopPage() {
     getHomepageSections(),
     getHomepageBanners(),
   ]);
+
+    const categoryBanners = await categoryBannersPromise;
 
     const homepageSectionMap = Object.fromEntries(
       homepageSections.map((section) => [
@@ -140,6 +148,24 @@ export default async function ShopPage() {
   const packagingBagProducts = products
     .filter((product) => getProductCategorySlug(product) === "packaging-bags")
     .slice(0, 4);
+
+    const categoryBannerById = new Map(
+      categoryBanners.map((banner) => [banner.category_id, banner])
+    );
+
+    const getCategoryBannerForSlug = (slug: string) => {
+      const category = categories.find((item) => item.slug === slug);
+
+      return category
+        ? categoryBannerById.get(category.id) ?? null
+        : null;
+    };
+
+    const laptopBagBanner = getCategoryBannerForSlug("hand-bags");
+    const hamperBagBanner = getCategoryBannerForSlug("hamper-bags");
+    const packagingBagBanner =
+      getCategoryBannerForSlug("packaging-bags");
+
 
   return (
     <main className="shop-page">
@@ -262,17 +288,7 @@ export default async function ShopPage() {
 
       <HomepagePromotionalBannerCarousel banners={homepageBanners} />
 
-      <section className="homepage-brand-strip" aria-label="Prakratri Maitri">
-        <span className="homepage-brand-strip-eyebrow">
-          MADE WITH PURPOSE
-        </span>
-
-        <p>
-          Thoughtful bags for everyday moments, made to carry more than just things.
-        </p>
-      </section>
-
-      {/* =====================================================
+{/* =====================================================
           MAIN HERO
       ===================================================== */}
 
@@ -424,26 +440,38 @@ export default async function ShopPage() {
       </section>
 
 
-        <CategoryProductSection
+                <div className="category-editorial-group category-editorial-group-01">
+          <CategoryBannerView banner={laptopBagBanner} />
+
+<CategoryProductSection
           title="Laptop Bags"
           eyebrow="LAPTOP BAGS & SLEEVES"
           href="/shop/hand-bags"
           products={laptopBagProducts}
         />
+        </div>
 
-        <CategoryProductSection
+                <div className="category-editorial-group category-editorial-group-02">
+          <CategoryBannerView banner={hamperBagBanner} />
+
+<CategoryProductSection
           title="Hamper Bags"
           eyebrow="HAMPER BAGS"
           href="/shop/hamper-bags"
           products={hamperBagProducts}
         />
+        </div>
 
-        <CategoryProductSection
+                <div className="category-editorial-group category-editorial-group-03">
+          <CategoryBannerView banner={packagingBagBanner} />
+
+<CategoryProductSection
           title="Brands Packaging Bags"
           eyebrow="BRANDS PACKAGING BAGS"
           href="/shop/packaging-bags"
           products={packagingBagProducts}
         />
+        </div>
 
       {/* =====================================================
           MASTER CATEGORIES
