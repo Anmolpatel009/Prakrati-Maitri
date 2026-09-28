@@ -5315,3 +5315,63 @@
     letter-spacing: 0.19em !important;
   }
 }
+
+/* ============================================================
+   FINAL DESKTOP DROPDOWN BEHAVIOR
+   Hover/click animation for the existing desktop menu.
+   Mobile portal behavior remains unchanged.
+============================================================ */
+
+@media (min-width: 769px) {
+  .nav-dropdown-menu-desktop {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    min-width: 210px;
+    padding: 12px;
+    margin: 0;
+
+    background: #fffdf9;
+    border: 1px solid #d8d5ca;
+    box-shadow: 0 15px 40px rgba(50, 50, 30, 0.12);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateX(-50%) translateY(-10px);
+
+    transition:
+      opacity 0.25s ease,
+      transform 0.35s ease,
+      visibility 0s linear 0.35s;
+
+    z-index: 99999;
+  }
+
+  .nav-dropdown:hover .nav-dropdown-menu-desktop,
+  .nav-dropdown.is-open .nav-dropdown-menu-desktop {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: translateX(-50%) translateY(0);
+
+    transition:
+      opacity 0.25s ease,
+      transform 0.35s ease,
+      visibility 0s linear 0s;
+  }
+
+  .nav-dropdown-menu-desktop a {
+    display: block;
+    padding: 10px 12px;
+    color: #3d3d3d;
+    font-size: 13px;
+  }
+
+  .nav-dropdown-menu-desktop a:hover {
+    background: #eef4ef;
+    color: #4a5d23;
+  }
+}
