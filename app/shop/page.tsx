@@ -672,7 +672,7 @@ export default async function ShopPage() {
           STORYTELLING BANNER
       ===================================================== */}
 
-      <section className="story-banner">
+      <section className="story-banner story-banner-full-bleed">
 
         <div className="story-banner-placeholder">
           {storyBanner?.media_url ? (

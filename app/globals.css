@@ -5317,61 +5317,246 @@
 }
 
 /* ============================================================
-   FINAL DESKTOP DROPDOWN BEHAVIOR
-   Hover/click animation for the existing desktop menu.
-   Mobile portal behavior remains unchanged.
+   FINAL HOMEPAGE FULL-BLEED + DESKTOP DROPDOWN
+   Authoritative final layer.
 ============================================================ */
 
+/* ------------------------------------------------------------
+   1. CATEGORY PRODUCT SECTIONS
+   Laptop / Hamper / Brands Packaging
+------------------------------------------------------------ */
+
+.category-editorial-group {
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.category-editorial-group > .category-banner-section {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.category-editorial-group > .collection-section {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.category-editorial-group
+  > .collection-section
+  > .collection-box {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   2. PURPOSE HERO / BANNER #2
+------------------------------------------------------------ */
+
+.wide-banner-purpose {
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.wide-banner-purpose .wide-banner-placeholder {
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.wide-banner-purpose .wide-banner-placeholder .homepage-cms-image {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  object-fit: initial !important;
+}
+
+/* ------------------------------------------------------------
+   3. FINAL OUR STORY HERO
+------------------------------------------------------------ */
+
+.story-banner-full-bleed {
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.story-banner-full-bleed .story-banner-placeholder {
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.story-banner-full-bleed .story-banner-placeholder .homepage-cms-image {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  object-fit: initial !important;
+}
+
+.story-banner-full-bleed .story-content {
+  box-sizing: border-box !important;
+}
+
+/* ------------------------------------------------------------
+   4. DESKTOP DROPDOWN
+   Directly below nav item, white reference-style panel,
+   vertical slide-down, existing site text colors.
+------------------------------------------------------------ */
+
 @media (min-width: 769px) {
+  .shop-nav .nav-dropdown {
+    position: relative !important;
+    flex: 0 0 auto !important;
+    z-index: 100000 !important;
+  }
+
   .nav-dropdown-menu-desktop {
-    position: absolute;
-    top: 72px;
-    left: 50%;
-    min-width: 210px;
-    padding: 12px;
-    margin: 0;
+    display: block !important;
+    position: absolute !important;
 
-    background: #fffdf9;
-    border: 1px solid #d8d5ca;
-    box-shadow: 0 15px 40px rgba(50, 50, 30, 0.12);
+    top: calc(100% - 1px) !important;
+    left: 50% !important;
 
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: calc(100vw - 32px) !important;
 
-    transform: translateX(-50%) translateY(-10px);
+    margin: 0 !important;
+    padding: 8px !important;
+
+    background: #ffffff !important;
+    border: 1px solid #d8d5ca !important;
+    border-radius: 4px !important;
+
+    box-shadow:
+      0 18px 40px rgba(50, 50, 30, 0.14),
+      0 4px 12px rgba(50, 50, 30, 0.06) !important;
+
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+
+    transform: translateX(-50%) translateY(-12px) !important;
+    transform-origin: top center !important;
 
     transition:
-      opacity 0.25s ease,
-      transform 0.35s ease,
-      visibility 0s linear 0.35s;
+      opacity 0.22s ease,
+      transform 0.30s ease,
+      visibility 0s linear 0.30s !important;
 
-    z-index: 99999;
+    z-index: 100001 !important;
+    box-sizing: border-box !important;
   }
 
   .nav-dropdown:hover .nav-dropdown-menu-desktop,
   .nav-dropdown.is-open .nav-dropdown-menu-desktop {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(0) !important;
 
     transition:
-      opacity 0.25s ease,
-      transform 0.35s ease,
-      visibility 0s linear 0s;
+      opacity 0.22s ease,
+      transform 0.30s ease,
+      visibility 0s linear 0s !important;
   }
 
   .nav-dropdown-menu-desktop a {
-    display: block;
-    padding: 10px 12px;
-    color: #3d3d3d;
-    font-size: 13px;
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+    padding: 11px 13px !important;
+
+    background: transparent !important;
+    color: #3d3d3d !important;
+
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0 !important;
+
+    border-radius: 3px !important;
+
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease,
+      padding-left 0.18s ease !important;
   }
 
   .nav-dropdown-menu-desktop a:hover {
-    background: #eef4ef;
-    color: #4a5d23;
+    background: #eef4ef !important;
+    color: #4a5d23 !important;
+    padding-left: 16px !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   5. MOBILE
+   Preserve existing mobile portal architecture.
+------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  .category-editorial-group {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .category-editorial-group > .collection-section {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .category-editorial-group
+    > .collection-section
+    > .collection-box {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  .wide-banner-purpose {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
+  }
+
+  .story-banner-full-bleed {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
   }
 }
