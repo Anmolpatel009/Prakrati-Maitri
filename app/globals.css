@@ -5114,12 +5114,14 @@
   box-sizing: border-box !important;
 }
 
-/* Banner touches the exact shared left/right edges. */
+/* Category CMS banner expands into the surrounding page whitespace.
+   Only these category banners are affected; other homepage banners
+   keep their existing layout. */
 .category-editorial-group > .category-banner-section {
   display: block !important;
-  width: 100% !important;
+  width: 100vw !important;
   max-width: none !important;
-  margin: 0 !important;
+  margin: 0 0 16px calc(50% - 50vw) !important;
   padding: 0 !important;
   box-sizing: border-box !important;
 }
@@ -5214,6 +5216,8 @@
 
   .category-editorial-group
     > .category-banner-section {
+    width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important;
     margin-bottom: 12px !important;
   }
 
