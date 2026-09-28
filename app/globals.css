@@ -4841,6 +4841,86 @@
   margin-bottom: 0;
 }
 
+
+/* Banner #2 only: make the purpose banner full-bleed.
+   Banner #3 and other wide banners remain unchanged. */
+.wide-banner-purpose {
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .wide-banner-purpose {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
+  }
+}
+
+
+/* ============================================================
+   FULL-BLEED PRODUCT COLLECTIONS
+   New Arrivals + homepage category product panels only.
+   Product/category pages remain unchanged.
+============================================================ */
+
+/* New Arrivals: remove the outer collection whitespace. */
+.new-arrivals-section {
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.new-arrivals-section > .collection-box {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Laptop, Hamper and Brands Packaging product panels:
+   use the same full-width canvas as their CMS banners. */
+.category-editorial-group > .collection-section {
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.category-editorial-group > .collection-section > .collection-box {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .new-arrivals-section {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+  }
+
+  .category-editorial-group > .collection-section {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+  }
+}
+
 /* ============================================================
    FINAL RESPONSIVE BRAND BAR
    Keep centered brand + right utility controls.

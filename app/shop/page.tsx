@@ -339,7 +339,7 @@ export default async function ShopPage() {
           FEATURED COLLECTION
       ===================================================== */}
 
-      <section className="collection-section">
+      <section className="collection-section new-arrivals-section">
 
         <div className="section-heading">
 
@@ -400,7 +400,7 @@ export default async function ShopPage() {
           HERO / BANNER #2
       ===================================================== */}
 
-      <section className="wide-banner">
+      <section className="wide-banner wide-banner-purpose">
 
         <div className="wide-banner-content">
 
