@@ -440,7 +440,7 @@ export default async function ShopPage() {
       </section>
 
 
-                <div className="category-editorial-group category-editorial-group-01">
+                <div className="category-editorial-group category-editorial-group-01 category-editorial-group-tall-banner">
           <CategoryBannerView banner={laptopBagBanner} />
 
 <CategoryProductSection
@@ -451,7 +451,7 @@ export default async function ShopPage() {
         />
         </div>
 
-                <div className="category-editorial-group category-editorial-group-02">
+                <div className="category-editorial-group category-editorial-group-02 category-editorial-group-tall-banner">
           <CategoryBannerView banner={hamperBagBanner} />
 
 <CategoryProductSection
@@ -462,7 +462,7 @@ export default async function ShopPage() {
         />
         </div>
 
-                <div className="category-editorial-group category-editorial-group-03">
+                <div className="category-editorial-group category-editorial-group-03 category-editorial-group-tall-banner">
           <CategoryBannerView banner={packagingBagBanner} />
 
 <CategoryProductSection
@@ -538,7 +538,7 @@ export default async function ShopPage() {
           HERO / BANNER #3
       ===================================================== */}
 
-      <section className="wide-banner wide-banner-reverse">
+      <section className="wide-banner wide-banner-reverse wide-banner-gifting-full-bleed">
 
         <div className="wide-banner-placeholder">
           {giftingBanner?.media_url ? (

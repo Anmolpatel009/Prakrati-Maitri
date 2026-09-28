@@ -5317,36 +5317,42 @@
 }
 
 /* ============================================================
-   FINAL HOMEPAGE FULL-BLEED + DESKTOP DROPDOWN
+   FINAL HOMEPAGE FULL-BLEED + DROPDOWN OVERRIDE
    Authoritative final layer.
 ============================================================ */
 
 /* ------------------------------------------------------------
-   1. CATEGORY PRODUCT SECTIONS
+   CATEGORY PRODUCT SECTIONS
    Laptop / Hamper / Brands Packaging
 ------------------------------------------------------------ */
 
 .category-editorial-group {
   width: 100vw !important;
   max-width: none !important;
+
   margin-left: calc(50% - 50vw) !important;
   margin-right: 0 !important;
+
   box-sizing: border-box !important;
 }
 
 .category-editorial-group > .category-banner-section {
   width: 100% !important;
   max-width: none !important;
+
   margin-left: 0 !important;
   margin-right: 0 !important;
+
   box-sizing: border-box !important;
 }
 
 .category-editorial-group > .collection-section {
   width: 100% !important;
   max-width: none !important;
+
   margin: 0 !important;
   padding: 0 !important;
+
   box-sizing: border-box !important;
 }
 
@@ -5355,21 +5361,64 @@
   > .collection-box {
   width: 100% !important;
   max-width: none !important;
+
   margin: 0 !important;
+
   box-sizing: border-box !important;
 }
 
 /* ------------------------------------------------------------
-   2. PURPOSE HERO / BANNER #2
+   TALL CATEGORY BANNERS
+   Target artwork: 1920 × 650 px
+   Ratio: approximately 2.95 : 1
+
+   The frame uses the target ratio.
+   The image is never distorted.
+   For perfect edge-to-edge artwork, upload the CMS image
+   itself at 1920 × 650.
+------------------------------------------------------------ */
+
+.category-editorial-group-tall-banner
+  > .category-banner-section
+  > .category-banner-frame {
+  width: 100% !important;
+  max-width: none !important;
+
+  aspect-ratio: 1920 / 650 !important;
+
+  margin: 0 !important;
+
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.category-editorial-group-tall-banner
+  .category-banner-image {
+  display: block !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  max-width: none !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+/* ------------------------------------------------------------
+   PURPOSE HERO / BANNER #2
 ------------------------------------------------------------ */
 
 .wide-banner-purpose {
   width: 100vw !important;
   max-width: none !important;
+
   margin-left: calc(50% - 50vw) !important;
   margin-right: 0 !important;
+
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+
   box-sizing: border-box !important;
 }
 
@@ -5378,64 +5427,140 @@
   box-sizing: border-box !important;
 }
 
-.wide-banner-purpose .wide-banner-placeholder .homepage-cms-image {
+.wide-banner-purpose
+  .wide-banner-placeholder
+  .homepage-cms-image {
   position: static !important;
   inset: auto !important;
+
   display: block !important;
+
   width: 100% !important;
   height: auto !important;
+
   max-width: 100% !important;
+
   object-fit: initial !important;
 }
 
 /* ------------------------------------------------------------
-   3. FINAL OUR STORY HERO
+   HERO #3 — GIFTING BANNER
+------------------------------------------------------------ */
+
+.wide-banner-gifting-full-bleed {
+  width: 100vw !important;
+  max-width: none !important;
+
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+
+  box-sizing: border-box !important;
+}
+
+.wide-banner-gifting-full-bleed
+  .wide-banner-placeholder {
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.wide-banner-gifting-full-bleed
+  .wide-banner-placeholder
+  .homepage-cms-image {
+  position: static !important;
+  inset: auto !important;
+
+  display: block !important;
+
+  width: 100% !important;
+  height: auto !important;
+
+  max-width: 100% !important;
+
+  object-fit: initial !important;
+}
+
+/* Hero #3 follows Shop by Category.
+   Remove the large bottom padding responsible for the
+   visible blank band immediately above the hero. */
+.master-category-section:has(
+  + .wide-banner-gifting-full-bleed
+) {
+  padding-bottom: 0 !important;
+}
+
+/* ------------------------------------------------------------
+   FINAL OUR STORY HERO
 ------------------------------------------------------------ */
 
 .story-banner-full-bleed {
   width: 100vw !important;
   max-width: none !important;
+
   margin-left: calc(50% - 50vw) !important;
   margin-right: 0 !important;
+
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+
   box-sizing: border-box !important;
 }
 
-.story-banner-full-bleed .story-banner-placeholder {
+.story-banner-full-bleed
+  .story-banner-placeholder {
   min-height: 0 !important;
   box-sizing: border-box !important;
 }
 
-.story-banner-full-bleed .story-banner-placeholder .homepage-cms-image {
+.story-banner-full-bleed
+  .story-banner-placeholder
+  .homepage-cms-image {
   position: static !important;
   inset: auto !important;
+
   display: block !important;
+
   width: 100% !important;
   height: auto !important;
+
   max-width: 100% !important;
+
   object-fit: initial !important;
 }
 
-.story-banner-full-bleed .story-content {
-  box-sizing: border-box !important;
-}
-
 /* ------------------------------------------------------------
-   4. DESKTOP DROPDOWN
-   Directly below nav item, white reference-style panel,
-   vertical slide-down, existing site text colors.
+   DESKTOP DROPDOWN
+   Must render above the moving category rail.
 ------------------------------------------------------------ */
 
 @media (min-width: 769px) {
+
+  .shop-navbar {
+    position: relative !important;
+    z-index: 100000 !important;
+  }
+
+  .shop-nav {
+    position: relative !important;
+    z-index: 100001 !important;
+    overflow: visible !important;
+  }
+
   .shop-nav .nav-dropdown {
     position: relative !important;
-    flex: 0 0 auto !important;
-    z-index: 100000 !important;
+    z-index: 100002 !important;
+  }
+
+  .category-rail {
+    position: relative !important;
+    z-index: 1 !important;
   }
 
   .nav-dropdown-menu-desktop {
     display: block !important;
+
     position: absolute !important;
 
     top: calc(100% - 1px) !important;
@@ -5449,6 +5574,7 @@
     padding: 8px !important;
 
     background: #ffffff !important;
+
     border: 1px solid #d8d5ca !important;
     border-radius: 4px !important;
 
@@ -5460,7 +5586,10 @@
     visibility: hidden !important;
     pointer-events: none !important;
 
-    transform: translateX(-50%) translateY(-12px) !important;
+    transform:
+      translateX(-50%)
+      translateY(-10px) !important;
+
     transform-origin: top center !important;
 
     transition:
@@ -5468,7 +5597,8 @@
       transform 0.30s ease,
       visibility 0s linear 0.30s !important;
 
-    z-index: 100001 !important;
+    z-index: 100003 !important;
+
     box-sizing: border-box !important;
   }
 
@@ -5478,7 +5608,9 @@
     visibility: visible !important;
     pointer-events: auto !important;
 
-    transform: translateX(-50%) translateY(0) !important;
+    transform:
+      translateX(-50%)
+      translateY(0) !important;
 
     transition:
       opacity 0.22s ease,
@@ -5488,6 +5620,7 @@
 
   .nav-dropdown-menu-desktop a {
     display: block !important;
+
     width: 100% !important;
     box-sizing: border-box !important;
 
@@ -5499,6 +5632,7 @@
 
     font-size: 13px !important;
     font-weight: 400 !important;
+
     line-height: 1.35 !important;
     letter-spacing: 0 !important;
 
@@ -5518,22 +5652,24 @@
 }
 
 /* ------------------------------------------------------------
-   5. MOBILE
-   Preserve existing mobile portal architecture.
+   MOBILE
 ------------------------------------------------------------ */
 
 @media (max-width: 768px) {
+
   .category-editorial-group {
     width: 100vw !important;
     max-width: none !important;
+
     margin-left: calc(50% - 50vw) !important;
     margin-right: 0 !important;
-    box-sizing: border-box !important;
   }
 
-  .category-editorial-group > .collection-section {
+  .category-editorial-group
+    > .collection-section {
     width: 100% !important;
     max-width: none !important;
+
     margin: 0 !important;
     padding: 0 !important;
   }
@@ -5543,19 +5679,25 @@
     > .collection-box {
     width: 100% !important;
     max-width: none !important;
+
     margin: 0 !important;
   }
 
-  .wide-banner-purpose {
-    width: 100vw !important;
-    max-width: none !important;
-    margin-left: calc(50% - 50vw) !important;
-    margin-right: 0 !important;
+  /* Same taller artwork target on mobile.
+     The CMS image should still be 1920 × 650;
+     the browser scales it proportionally. */
+  .category-editorial-group-tall-banner
+    > .category-banner-section
+    > .category-banner-frame {
+    aspect-ratio: 1920 / 650 !important;
   }
 
+  .wide-banner-purpose,
+  .wide-banner-gifting-full-bleed,
   .story-banner-full-bleed {
     width: 100vw !important;
     max-width: none !important;
+
     margin-left: calc(50% - 50vw) !important;
     margin-right: 0 !important;
   }
