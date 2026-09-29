@@ -4,6 +4,7 @@ export type CategoryBanner = {
   id: string;
   category_id: string;
   image_url: string;
+  mobile_image_url: string | null;
   alt_text: string | null;
 };
 
@@ -12,7 +13,7 @@ export async function getCategoryBanners(): Promise<CategoryBanner[]> {
 
   const { data, error } = await supabase
     .from("category_banners")
-    .select("id, category_id, image_url, alt_text")
+    .select("id, category_id, image_url, mobile_image_url, alt_text")
     .eq("is_active", true)
     .order("created_at", { ascending: true });
 
@@ -31,7 +32,7 @@ export async function getCategoryBanner(
 
   const { data, error } = await supabase
     .from("category_banners")
-    .select("id, category_id, image_url, alt_text")
+    .select("id, category_id, image_url, mobile_image_url, alt_text")
     .eq("category_id", categoryId)
     .eq("is_active", true)
     .maybeSingle();

@@ -14,13 +14,27 @@ export default function CategoryBanner({ banner }: Props) {
       className="category-banner-section"
       aria-label="Category banner"
     >
-      <div className="category-banner-frame">
-        <img
-          src={banner.image_url}
-          alt={banner.alt_text || "Category banner"}
-          className="category-banner-image"
-          draggable={false}
-        />
+      <div
+        className={
+          banner.mobile_image_url
+            ? "category-banner-frame category-banner-frame-responsive"
+            : "category-banner-frame"
+        }
+      >
+        <picture>
+          {banner.mobile_image_url && (
+            <source
+              media="(max-width: 768px)"
+              srcSet={banner.mobile_image_url}
+            />
+          )}
+          <img
+            src={banner.image_url}
+            alt={banner.alt_text || "Category banner"}
+            className="category-banner-image"
+            draggable={false}
+          />
+        </picture>
       </div>
     </section>
   );

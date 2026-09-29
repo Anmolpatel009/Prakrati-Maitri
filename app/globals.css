@@ -5702,3 +5702,82 @@
     margin-right: 0 !important;
   }
 }
+
+
+/* FINAL RESPONSIVE CATEGORY BANNER OVERRIDE */
+
+/* Remove artificial whitespace around consecutive category blocks. */
+.category-editorial-group {
+  padding-bottom: 0 !important;
+}
+
+.category-editorial-group + .category-editorial-group {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.category-editorial-group > .category-banner-section {
+  margin-bottom: 0 !important;
+}
+
+/*
+  Category artwork uses natural height.
+  Desktop artwork target: 1920x650.
+  Mobile artwork target: 1080x720.
+  Matching artwork ratio means the complete image is visible:
+  no cropping and no distortion.
+*/
+.category-editorial-group-tall-banner
+  > .category-banner-section
+  > .category-banner-frame {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  overflow: hidden !important;
+}
+
+.category-editorial-group-tall-banner
+  > .category-banner-section
+  > .category-banner-frame
+  picture {
+  display: block !important;
+  width: 100% !important;
+}
+
+.category-editorial-group-tall-banner
+  > .category-banner-section
+  > .category-banner-frame
+  .category-banner-image {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  object-fit: initial !important;
+  object-position: center !important;
+}
+
+@media (max-width: 768px) {
+  .category-editorial-group + .category-editorial-group {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .category-editorial-group > .category-banner-section {
+    margin-bottom: 0 !important;
+  }
+
+  .category-editorial-group-tall-banner
+    > .category-banner-section
+    > .category-banner-frame {
+    aspect-ratio: auto !important;
+    height: auto !important;
+  }
+
+  .category-editorial-group-tall-banner
+    > .category-banner-section
+    > .category-banner-frame
+    .category-banner-image {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
