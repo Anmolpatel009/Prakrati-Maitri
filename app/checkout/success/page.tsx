@@ -35,12 +35,12 @@ export default async function SuccessPage({
             </p>
 
             <h1 className="mt-3 font-serif text-4xl text-[#4A5D23] sm:text-5xl">
-              Order Confirmed
+              Thank You for Shopping
             </h1>
 
             <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#3D3D3D]/65 sm:text-base">
-              Thank you for your order. Your order has
-              been successfully created.
+              Thank you for shopping with us. Your order has
+              been successfully confirmed.
             </p>
 
           </div>

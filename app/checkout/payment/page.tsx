@@ -86,6 +86,8 @@ type CheckoutForm = {
 
 type PaymentMethod = "cod" | "online";
 
+const SHOW_COD = false;
+
 export default function PaymentPage() {
   const router = useRouter();
 
@@ -99,7 +101,7 @@ export default function PaymentPage() {
     useState<CheckoutForm | null>(null);
 
   const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethod>("cod");
+    useState<PaymentMethod>("online");
 
   const [loaded, setLoaded] = useState(false);
 
@@ -310,7 +312,7 @@ export default function PaymentPage() {
 
             clearCart();
 
-            router.push(
+            window.location.replace(
               `/checkout/success?order=${encodeURIComponent(
                 verifyData.orderId
               )}`
@@ -541,25 +543,25 @@ export default function PaymentPage() {
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <p className="font-semibold text-[#3D3D3D]">
-                          Online Payment
+                          Secure Online Payment
                         </p>
 
                         <span className="rounded-full bg-[#EDE5D4] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#8B4513]">
-                          Coming Soon
+                          Available
                         </span>
                       </div>
 
                       <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/60">
-                        Payment gateway will be connected
-                        after the MVP is approved.
+                        Pay securely through Razorpay using
+                        your preferred supported payment option.
                       </p>
                     </div>
 
                   </div>
                 </button>
 
-                {/* COD */}
-
+                {/* COD - retained for future enablement, hidden for live business use. */}
+                {SHOW_COD && (
                 <button
                   type="button"
                   onClick={() =>
@@ -605,32 +607,25 @@ export default function PaymentPage() {
 
                   </div>
                 </button>
+                )}
 
               </div>
 
               {/* ================================================= */}
-              {/* DEVELOPMENT NOTICE */}
+              {/* LIVE PAYMENT INFORMATION */}
               {/* ================================================= */}
 
               <div className="mt-6 rounded-2xl border border-[#D2B48C]/40 bg-[#EDE5D4]/50 p-5">
 
                 <p className="text-sm font-semibold text-[#4A5D23]">
-                  Development mode
+                  Secure online payment
                 </p>
 
-                {paymentMethod === "cod" ? (
-                  <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
-                    This COD order will be created as a
-                    confirmed order with payment marked as
-                    pending collection.
-                  </p>
-                ) : (
-                  <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
-                    Online payments are processed through Razorpay.
-                    This will create a pending online
-                    payment test order.
-                  </p>
-                )}
+                <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
+                  Your payment is processed securely through Razorpay.
+                  You will be redirected to Razorpay&apos;s checkout to
+                  complete your payment.
+                </p>
 
               </div>
 
@@ -846,9 +841,7 @@ export default function PaymentPage() {
                 </button>
 
                 <p className="mt-4 text-center text-xs leading-5 text-[#3D3D3D]/45">
-                  {paymentMethod === "cod"
-                    ? "No payment is required online. Payment will be collected on delivery."
-                    : "No payment will be charged during development."}
+                  Your payment will be processed securely through Razorpay.
                 </p>
 
               </div>
