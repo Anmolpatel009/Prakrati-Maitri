@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import CategoryBanner from "@/components/shop/CategoryBanner";
+import { getCategoryBanner } from "@/lib/shop/category-banners";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -64,6 +66,9 @@ export default async function CategoryPage({
   if (!categoryData) {
     notFound();
   }
+
+  const categoryBanner = await getCategoryBanner(categoryData.id);
+
 
   // =====================================================
   // FETCH PRODUCTS
@@ -171,7 +176,10 @@ export default async function CategoryPage({
       {/* HERO */}
       {/* ================================================= */}
 
-      <section className="px-6 pb-12 pt-16 md:px-10 lg:px-16">
+              {categoryBanner ? (
+          <CategoryBanner banner={categoryBanner} />
+        ) : (
+<section className="px-6 pb-12 pt-16 md:px-10 lg:px-16">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-16 text-center md:px-12 md:py-24">
             <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
@@ -189,12 +197,14 @@ export default async function CategoryPage({
           </div>
         </div>
       </section>
+        )}
+
 
       {/* ================================================= */}
       {/* CATEGORY NAVIGATION */}
       {/* ================================================= */}
 
-      <section className="px-6 pb-10 md:px-10 lg:px-16">
+<section className="px-6 pb-10 md:px-10 lg:px-16">
         <div className="mx-auto max-w-7xl">
           <div className="flex gap-3 overflow-x-auto pb-3">
             <Link

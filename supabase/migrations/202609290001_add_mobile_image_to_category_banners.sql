@@ -1,0 +1,2 @@
+alter table public.category_banners
+  add column if not exists mobile_image_url text;
