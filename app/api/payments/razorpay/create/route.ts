@@ -90,18 +90,15 @@ export async function POST(request: Request) {
       throw error;
     }
 
-    const { error: updateError } = await supabase
-      .from("orders")
-      .update({
-        razorpay_order_id: razorpayOrder.id,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", order.id)
-      .eq("user_id", user.id)
-      .eq("status", "pending")
-      .eq("payment_method", "online");
+    const { error: attachError } = await supabase.rpc(
+      "attach_razorpay_order_id",
+      {
+        p_order_id: order.id,
+        p_razorpay_order_id: razorpayOrder.id,
+      }
+    );
 
-    if (updateError) {
+    if (attachError) {
       await supabase.rpc("cancel_pending_online_order", {
         p_order_id: order.id,
         p_reason: "Could not save Razorpay order ID.",

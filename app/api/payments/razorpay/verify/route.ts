@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import {
   fetchRazorpayPayment,
@@ -104,7 +105,32 @@ export async function POST(request: Request) {
       );
     }
 
-    const { error: updateError } = await supabase
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error(
+        "Payment confirmation failed: Supabase service-role credentials are not configured."
+      );
+
+      return NextResponse.json(
+        { error: "Payment verified but order confirmation failed." },
+        { status: 500 }
+      );
+    }
+
+    const adminSupabase = createServiceRoleClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+
+    const { data: updatedOrder, error: updateError } = await adminSupabase
       .from("orders")
       .update({
         status: "confirmed",
@@ -113,10 +139,12 @@ export async function POST(request: Request) {
         updated_at: new Date().toISOString(),
       })
       .eq("id", order.id)
-      .eq("user_id", user.id)
-      .eq("payment_status", "pending");
+      .eq("payment_method", "online")
+      .eq("payment_status", "pending")
+      .select("id")
+      .maybeSingle();
 
-    if (updateError) {
+    if (updateError || !updatedOrder) {
       console.error("Payment confirmation update failed:", updateError);
 
       return NextResponse.json(
