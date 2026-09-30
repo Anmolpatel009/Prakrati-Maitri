@@ -41,7 +41,21 @@ export default function LoginForm() {
         return;
       }
 
-      router.push("/account");
+      const nextParam =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get(
+              "next"
+            )
+          : null;
+
+      const next =
+        nextParam &&
+        nextParam.startsWith("/") &&
+        !nextParam.startsWith("//")
+          ? nextParam
+          : "/account";
+
+      router.push(next);
       router.refresh();
     } catch (error) {
       console.error("Login error:", error);
