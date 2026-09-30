@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 
 export async function POST(request: Request) {
   try {
@@ -18,6 +19,26 @@ export async function POST(request: Request) {
     const purpose = String(body.purpose ?? "").trim();
     const message =
       String(body.message ?? "").trim() || null;
+
+    const referenceImagePath =
+      typeof body.referenceImagePath === "string" &&
+      body.referenceImagePath.trim()
+        ? body.referenceImagePath.trim()
+        : null;
+
+    if (referenceImagePath) {
+      const validPath =
+        /^bulk-orders\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(
+          referenceImagePath
+        );
+
+      if (!validPath) {
+        return NextResponse.json(
+          { error: "Invalid reference image." },
+          { status: 400 }
+        );
+      }
+    }
 
     if (!name) {
       return NextResponse.json(
@@ -68,10 +89,42 @@ export async function POST(request: Request) {
         quantity,
         purpose,
         message,
+        reference_image_path: referenceImagePath,
       });
 
     if (error) {
       console.error("Bulk enquiry insert error:", error);
+
+      if (referenceImagePath) {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const serviceRoleKey =
+          process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+        if (supabaseUrl && serviceRoleKey) {
+          const adminSupabase = createServiceRoleClient(
+            supabaseUrl,
+            serviceRoleKey,
+            {
+              auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+              },
+            }
+          );
+
+          const { error: cleanupError } =
+            await adminSupabase.storage
+              .from("custom-bag-references")
+              .remove([referenceImagePath]);
+
+          if (cleanupError) {
+            console.error(
+              "Bulk enquiry reference image cleanup error:",
+              cleanupError
+            );
+          }
+        }
+      }
 
       return NextResponse.json(
         { error: "Unable to submit your enquiry right now." },

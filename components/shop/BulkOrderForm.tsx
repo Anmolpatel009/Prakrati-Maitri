@@ -41,6 +41,8 @@ export default function BulkOrderForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [referenceImage, setReferenceImage] =
+    useState<File | null>(null);
 
   const filteredProducts = useMemo(() => {
     if (!form.categoryId) return products;
@@ -80,30 +82,102 @@ export default function BulkOrderForm({
     }
 
     if (!form.categoryId && !form.productId) {
-      setError("Please select a category or product you're interested in.");
+      setError(
+        "Please select a category or product you're interested in."
+      );
       return;
     }
 
     if (!form.purpose.trim()) {
-      setError("Please tell us the purpose of your bulk purchase.");
+      setError(
+        "Please tell us the purpose of your bulk purchase."
+      );
       return;
+    }
+
+    if (referenceImage) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+      ];
+
+      if (!allowedTypes.includes(referenceImage.type)) {
+        setError(
+          "Reference image must be JPG, PNG or WebP."
+        );
+        return;
+      }
+
+      if (referenceImage.size > 5 * 1024 * 1024) {
+        setError(
+          "Reference image must be smaller than 5MB."
+        );
+        return;
+      }
     }
 
     setLoading(true);
 
     try {
+      let referenceImagePath: string | null = null;
+
+      if (referenceImage) {
+        const extensionByType: Record<string, string> = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/webp": "webp",
+        };
+
+        const extension =
+          extensionByType[referenceImage.type];
+
+        referenceImagePath =
+          `bulk-orders/${crypto.randomUUID()}.${extension}`;
+
+        const uploadResponse = await fetch(
+          "/api/bulk-order/reference-upload",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": referenceImage.type,
+              "x-file-path": referenceImagePath,
+            },
+            body: referenceImage,
+          }
+        );
+
+        const uploadResult =
+          await uploadResponse.json();
+
+        if (!uploadResponse.ok) {
+          throw new Error(
+            uploadResult.error ||
+              "Unable to upload reference image."
+          );
+        }
+
+        referenceImagePath =
+          uploadResult.path || referenceImagePath;
+      }
+
       const response = await fetch("/api/bulk-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          referenceImagePath,
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Unable to submit enquiry.");
+        throw new Error(
+          result.error || "Unable to submit enquiry."
+        );
       }
 
       setSuccess(true);
@@ -283,6 +357,25 @@ export default function BulkOrderForm({
           placeholder="Tell us about colours, customisation, delivery timeline, branding or anything else..."
           rows={5}
         />
+      </label>
+
+      <label className="bulk-order-full-field">
+        Reference Image
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={(e) =>
+            setReferenceImage(e.target.files?.[0] ?? null)
+          }
+        />
+        <span className="bulk-order-file-help">
+          Optional. Upload a JPG, PNG or WebP reference image, up to 5MB.
+        </span>
+        {referenceImage && (
+          <span className="bulk-order-file-selected">
+            Selected: {referenceImage.name}
+          </span>
+        )}
       </label>
 
       {error && (
