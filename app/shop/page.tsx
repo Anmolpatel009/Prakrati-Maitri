@@ -14,6 +14,8 @@ import {
   getCategoryBanners,
 } from "@/lib/shop/category-banners";
 import CategoryBannerView from "@/components/shop/CategoryBanner";
+import type { CSSProperties } from "react";
+import { parseHomepageMerchandising } from "@/lib/shop/homepage-merchandising";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +27,9 @@ type ProductImage = {
 
 type Product = {
   id: string;
+  category_id: string | null;
+  subcategory_id: string | null;
+  display_order: number | null;
   name: string;
   slug: string;
   description: string | null;
@@ -102,6 +107,9 @@ export default async function ShopPage() {
       description,
       price,
       compare_at_price,
+      category_id,
+      subcategory_id,
+      display_order,
       categories (
         id,
         name,
@@ -118,7 +126,7 @@ export default async function ShopPage() {
       )
     `)
     .eq("is_active", true)
-    .order("created_at", { ascending: false });
+    .order("display_order", { ascending: true, nullsFirst: false }).order("created_at", { ascending: false });
 
   if (error) {
     console.error("Product fetch error:", error);
@@ -126,8 +134,107 @@ export default async function ShopPage() {
 
   const products = (data ?? []) as Product[];
 
-  const featuredProducts = products.slice(0, 5);
+  const {
+    config: merchandisingConfig,
+    hasSavedConfig: hasSavedMerchandisingConfig,
+  } = parseHomepageMerchandising(homepageSections);
+
+  const productById = new Map(
+    products.map((product) => [product.id, product]),
+  );
+
+  const configuredNewArrivals = merchandisingConfig.newArrivals
+    .map((id) => productById.get(id))
+    .filter((product): product is Product => Boolean(product));
+
+  // Keep existing storefront behavior until Admin has saved the new config.
+  const featuredProducts =
+    configuredNewArrivals.length > 0
+      ? configuredNewArrivals
+      : hasSavedMerchandisingConfig
+        ? []
+        : products.slice(0, 5);
+
   const mostLovedProducts = products.slice(0, 6);
+
+  const categoryBannerById = new Map(
+    categoryBanners.map((banner) => [banner.category_id, banner]),
+  );
+
+  const homepageCollectionCards = merchandisingConfig.collectionCards
+    .slice(0, 3)
+    .map((card, index) => {
+      const category = card.categoryId
+        ? categories.find((item) => item.id === card.categoryId) ?? null
+        : null;
+
+      const subcategory = card.subcategoryId
+        ? subcategories.find((item) => item.id === card.subcategoryId) ?? null
+        : null;
+
+      const resolvedCategoryId =
+        card.type === "subcategory"
+          ? subcategory?.category_id ?? null
+          : card.categoryId;
+
+      const productsForCard =
+        card.type === "subcategory" && card.subcategoryId
+          ? products
+              .filter(
+                (product) =>
+                  product.subcategory_id === card.subcategoryId,
+              )
+              .slice(0, 4)
+          : products
+              .filter(
+                (product) =>
+                  product.category_id === resolvedCategoryId,
+              )
+              .slice(0, 4);
+
+      const href =
+        card.type === "subcategory" &&
+        category &&
+        subcategory
+          ? `/shop/${category.slug}/${subcategory.slug}`
+          : category
+            ? `/shop/${category.slug}`
+            : "/collections";
+
+      const eyebrow =
+        card.type === "subcategory"
+          ? subcategory?.name?.toUpperCase() ?? "COLLECTION"
+          : category?.name?.toUpperCase() ?? "COLLECTION";
+
+      const boxStyle: CSSProperties = {
+        backgroundColor: card.backgroundColor,
+        color: card.textColor,
+      };
+
+      const headingStyle: CSSProperties = {
+        fontFamily: card.fontFamily,
+        fontSize: `${card.fontSize}px`,
+        fontStyle: card.fontStyle,
+        fontWeight: card.fontWeight,
+        color: card.textColor,
+      };
+
+      return {
+        card,
+        index,
+        category,
+        subcategory,
+        banner: resolvedCategoryId
+          ? categoryBannerById.get(resolvedCategoryId) ?? null
+          : null,
+        products: productsForCard,
+        href,
+        eyebrow,
+        boxStyle,
+        headingStyle,
+      };
+    });
+
 
   const getProductCategorySlug = (product: Product) => {
     const category = Array.isArray(product.categories)
@@ -148,10 +255,6 @@ export default async function ShopPage() {
   const packagingBagProducts = products
     .filter((product) => getProductCategorySlug(product) === "packaging-bags")
     .slice(0, 4);
-
-    const categoryBannerById = new Map(
-      categoryBanners.map((banner) => [banner.category_id, banner])
-    );
 
     const getCategoryBannerForSlug = (slug: string) => {
       const category = categories.find((item) => item.slug === slug);
@@ -385,20 +488,34 @@ export default async function ShopPage() {
           </div>
 
 
-          <div className="product-grid product-grid-five">
+          <div className="new-arrivals-viewport">
 
-            {featuredProducts.length > 0 ? (
-              featuredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                />
-              ))
-            ) : (
-              <EmptyProductCards count={5} />
-            )}
+              <div className="new-arrivals-track">
 
-          </div>
+                <div className="new-arrivals-set">
+                  {featuredProducts.map((product) => (
+                    <ProductCard
+                      key={`new-arrivals-1-${product.id}`}
+                      product={product}
+                    />
+                  ))}
+                </div>
+
+                <div
+                  className="new-arrivals-set"
+                  aria-hidden="true"
+                >
+                  {featuredProducts.map((product) => (
+                    <ProductCard
+                      key={`new-arrivals-2-${product.id}`}
+                      product={product}
+                    />
+                  ))}
+                </div>
+
+              </div>
+
+            </div>
 
         </div>
 
@@ -449,38 +566,37 @@ export default async function ShopPage() {
       </section>
 
 
-                <div className="category-editorial-group category-editorial-group-01 category-editorial-group-tall-banner">
-          <CategoryBannerView banner={laptopBagBanner} />
+      {homepageCollectionCards.map(
+        ({
+          card,
+          index,
+          banner,
+          products,
+          href,
+          eyebrow,
+          boxStyle,
+          headingStyle,
+        }) => (
+          <div
+            key={card.slot || index}
+            className={`category-editorial-group category-editorial-group-0${
+              index + 1
+            } category-editorial-group-tall-banner`}
+          >
+            <CategoryBannerView banner={banner} />
 
-<CategoryProductSection
-          title="Laptop Bags"
-          eyebrow="LAPTOP BAGS & SLEEVES"
-          href="/shop/hand-bags"
-          products={laptopBagProducts}
-        />
-        </div>
-
-                <div className="category-editorial-group category-editorial-group-02 category-editorial-group-tall-banner">
-          <CategoryBannerView banner={hamperBagBanner} />
-
-<CategoryProductSection
-          title="Hamper Bags"
-          eyebrow="HAMPER BAGS"
-          href="/shop/hamper-bags"
-          products={hamperBagProducts}
-        />
-        </div>
-
-                <div className="category-editorial-group category-editorial-group-03 category-editorial-group-tall-banner">
-          <CategoryBannerView banner={packagingBagBanner} />
-
-<CategoryProductSection
-          title="Brands Packaging Bags"
-          eyebrow="BRANDS PACKAGING BAGS"
-          href="/shop/packaging-bags"
-          products={packagingBagProducts}
-        />
-        </div>
+            <CategoryProductSection
+              title={card.heading}
+              eyebrow={eyebrow}
+              subheading={card.subheading}
+              href={href}
+              products={products}
+              boxStyle={boxStyle}
+              headingStyle={headingStyle}
+            />
+          </div>
+        ),
+      )}
 
       {/* =====================================================
           MASTER CATEGORIES
@@ -776,21 +892,32 @@ export default async function ShopPage() {
 function CategoryProductSection({
   title,
   eyebrow,
+  subheading,
   href,
   products,
+  boxStyle,
+  headingStyle,
 }: {
   title: string;
   eyebrow: string;
+  subheading: string;
   href: string;
   products: Product[];
+  boxStyle: CSSProperties;
+  headingStyle: CSSProperties;
 }) {
   return (
     <section className="collection-section category-product-section">
-      <div className="collection-box">
+      <div className="collection-box" style={boxStyle}>
         <div className="collection-box-header">
           <div>
             <span className="collection-label">{eyebrow}</span>
-            <h3>{title}</h3>
+            <h3 style={headingStyle}>{title}</h3>
+            {subheading ? (
+              <p className="category-product-subheading">
+                {subheading}
+              </p>
+            ) : null}
           </div>
 
           <a href={href}>View More →</a>
