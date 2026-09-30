@@ -5781,3 +5781,98 @@
     height: auto !important;
   }
 }
+
+/* ============================================================
+   FINAL HOMEPAGE VISUAL TUNING
+   Scoped to avoid changing existing functionality/layout rules.
+============================================================ */
+
+.shop-brand-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  transform: translate(-50%, -50%);
+  text-decoration: none;
+}
+
+.shop-brand-center .shop-brand-seal {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+}
+
+.shop-brand-center .shop-brand-logo {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.shop-brand .shop-brand-word {
+  white-space: nowrap;
+}
+
+.new-arrivals-section .collection-eyebrow {
+  font-size: 13px;
+}
+
+.shop-page .primary-button,
+.shop-page .secondary-button {
+  color: #ffffff !important;
+}
+
+.shop-page .shop-nav-bulk-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #8b4513;
+  color: #ffffff !important;
+  font-weight: 700;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.shop-page .shop-nav-bulk-link:hover {
+  background: #71380f;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(60, 50, 30, 0.14);
+}
+
+@media (max-width: 768px) {
+  .shop-brand-center,
+  .shop-brand-center .shop-brand-seal,
+  .shop-brand-center .shop-brand-logo {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+  }
+
+  .shop-brand {
+    max-width: calc(50% - 44px);
+  }
+}
+
+@media (max-width: 420px) {
+  .shop-brand-center,
+  .shop-brand-center .shop-brand-seal,
+  .shop-brand-center .shop-brand-logo {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .shop-brand {
+    max-width: calc(50% - 40px);
+  }
+}

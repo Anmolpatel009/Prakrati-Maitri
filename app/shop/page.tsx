@@ -198,17 +198,26 @@ export default async function ShopPage() {
         {/* ROW 1: Brand + utility actions */}
         <div className="shop-navbar-top">
 
-          <a href="/shop" className="shop-brand" aria-label="Prakriti Maitri home">
-            <span className="shop-brand-word">Prakriti</span>
+          <a
+            href="/shop"
+            className="shop-brand"
+            aria-label="PRAKRITI MAITRI home"
+          >
+            <span className="shop-brand-word">PRAKRITI MAITRI</span>
+          </a>
+
+          <a
+            href="/shop"
+            className="shop-brand-center"
+            aria-label="PRAKRITI MAITRI home"
+          >
             <span className="shop-brand-seal">
               <img
                 src="/prakrati-maitri-logo.jpg"
-                alt=""
-                aria-hidden="true"
+                alt="PRAKRITI MAITRI"
                 className="shop-brand-logo"
               />
             </span>
-            <span className="shop-brand-word">Maitri</span>
           </a>
 
           <div className="shop-nav-actions">
@@ -321,7 +330,7 @@ export default async function ShopPage() {
           {heroSection?.media_url ? (
             <img
               src={heroSection.media_url}
-              alt={heroSection.title || "Prakratri Maitri"}
+              alt={heroSection.title || "PRAKRITI MAITRI"}
               className="homepage-cms-image"
             />
           ) : (
@@ -343,7 +352,7 @@ export default async function ShopPage() {
 
         <div className="section-heading">
 
-          <span className="eyebrow">
+          <span className="eyebrow collection-eyebrow">
             OUR COLLECTION
           </span>
 
@@ -429,7 +438,7 @@ export default async function ShopPage() {
           {purposeBanner?.media_url ? (
             <img
               src={purposeBanner.media_url}
-              alt={purposeBanner.title || "Prakratri Maitri"}
+              alt={purposeBanner.title || "PRAKRITI MAITRI"}
               className="homepage-cms-image"
             />
           ) : (
@@ -544,7 +553,7 @@ export default async function ShopPage() {
           {giftingBanner?.media_url ? (
             <img
               src={giftingBanner.media_url}
-              alt={giftingBanner.title || "Prakratri Maitri"}
+              alt={giftingBanner.title || "PRAKRITI MAITRI"}
               className="homepage-cms-image"
             />
           ) : (
@@ -719,7 +728,7 @@ export default async function ShopPage() {
       <footer className="shop-footer">
 
         <div className="footer-brand">
-          <h3>Prakratri Maitri</h3>
+          <h3>PRAKRITI MAITRI</h3>
 
           <p>
             Thoughtful products for a more sustainable
