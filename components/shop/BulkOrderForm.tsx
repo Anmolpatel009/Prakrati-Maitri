@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient as createBrowserClient } from "@/lib/supabase/client";
 
 type Category = {
   id: string;
@@ -82,12 +83,16 @@ export default function BulkOrderForm({
     }
 
     if (!form.categoryId && !form.productId) {
-      setError("Please select a category or product you're interested in.");
+      setError(
+        "Please select a category or product you're interested in."
+      );
       return;
     }
 
     if (!form.purpose.trim()) {
-      setError("Please tell us the purpose of your bulk purchase.");
+      setError(
+        "Please tell us the purpose of your bulk purchase."
+      );
       return;
     }
 
@@ -99,12 +104,16 @@ export default function BulkOrderForm({
       ];
 
       if (!allowedTypes.includes(referenceImage.type)) {
-        setError("Reference image must be JPG, PNG or WebP.");
+        setError(
+          "Reference image must be JPG, PNG or WebP."
+        );
         return;
       }
 
       if (referenceImage.size > 5 * 1024 * 1024) {
-        setError("Reference image must be smaller than 5MB.");
+        setError(
+          "Reference image must be smaller than 5MB."
+        );
         return;
       }
     }
@@ -112,25 +121,78 @@ export default function BulkOrderForm({
     setLoading(true);
 
     try {
-      const formData = new FormData();
-
-      Object.entries(form).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
+      let referenceImagePath: string | null = null;
 
       if (referenceImage) {
-        formData.append("referenceImage", referenceImage);
+        const uploadInitResponse = await fetch(
+          "/api/bulk-order/reference-upload",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contentType: referenceImage.type,
+              size: referenceImage.size,
+            }),
+          }
+        );
+
+        const uploadInitResult =
+          await uploadInitResponse.json();
+
+        if (!uploadInitResponse.ok) {
+          throw new Error(
+            uploadInitResult.error ||
+              "Unable to prepare reference image upload."
+          );
+        }
+
+        const supabase = createBrowserClient();
+
+        const { error: uploadError } =
+          await supabase.storage
+            .from("bulk-order-references")
+            .uploadToSignedUrl(
+              uploadInitResult.path,
+              uploadInitResult.token,
+              referenceImage,
+              {
+                contentType: referenceImage.type,
+              }
+            );
+
+        if (uploadError) {
+          console.error(
+            "Bulk enquiry reference image upload error:",
+            uploadError
+          );
+
+          throw new Error(
+            "Unable to upload reference image right now."
+          );
+        }
+
+        referenceImagePath = uploadInitResult.path;
       }
 
       const response = await fetch("/api/bulk-order", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          referenceImagePath,
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Unable to submit enquiry.");
+        throw new Error(
+          result.error || "Unable to submit enquiry."
+        );
       }
 
       setSuccess(true);

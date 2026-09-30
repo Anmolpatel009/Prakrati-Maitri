@@ -4,28 +4,41 @@ import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
 
 export async function POST(request: Request) {
   try {
-    const formData = await request.formData();
+    const body = await request.json();
 
-    const name = String(formData.get("name") ?? "").trim();
-    const mobile = String(formData.get("mobile") ?? "").trim();
-    const email = String(formData.get("email") ?? "").trim() || null;
+    const name = String(body.name ?? "").trim();
+    const mobile = String(body.mobile ?? "").trim();
+    const email = String(body.email ?? "").trim() || null;
     const businessName =
-      String(formData.get("businessName") ?? "").trim() || null;
+      String(body.businessName ?? "").trim() || null;
     const categoryId =
-      String(formData.get("categoryId") ?? "").trim() || null;
+      String(body.categoryId ?? "").trim() || null;
     const productId =
-      String(formData.get("productId") ?? "").trim() || null;
-    const quantity = Number(formData.get("quantity"));
-    const purpose = String(formData.get("purpose") ?? "").trim();
+      String(body.productId ?? "").trim() || null;
+    const quantity = Number(body.quantity);
+    const purpose = String(body.purpose ?? "").trim();
     const message =
-      String(formData.get("message") ?? "").trim() || null;
+      String(body.message ?? "").trim() || null;
 
-    const referenceImageEntry = formData.get("referenceImage");
-    const referenceImage =
-      referenceImageEntry instanceof File &&
-      referenceImageEntry.size > 0
-        ? referenceImageEntry
+    const referenceImagePath =
+      typeof body.referenceImagePath === "string" &&
+      body.referenceImagePath.trim()
+        ? body.referenceImagePath.trim()
         : null;
+
+    if (referenceImagePath) {
+      const validPath =
+        /^enquiries\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(
+          referenceImagePath
+        );
+
+      if (!validPath) {
+        return NextResponse.json(
+          { error: "Invalid reference image." },
+          { status: 400 }
+        );
+      }
+    }
 
     if (!name) {
       return NextResponse.json(
@@ -62,93 +75,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (referenceImage) {
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-      ];
-
-      if (!allowedTypes.includes(referenceImage.type)) {
-        return NextResponse.json(
-          { error: "Reference image must be JPG, PNG or WebP." },
-          { status: 400 }
-        );
-      }
-
-      if (referenceImage.size > 5 * 1024 * 1024) {
-        return NextResponse.json(
-          { error: "Reference image must be smaller than 5MB." },
-          { status: 400 }
-        );
-      }
-    }
-
     const supabase = await createClient();
-
-    let referenceImagePath: string | null = null;
-
-    if (referenceImage) {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-      if (!supabaseUrl || !serviceRoleKey) {
-        console.error(
-          "Bulk enquiry image upload failed: service-role credentials are not configured."
-        );
-
-        return NextResponse.json(
-          { error: "Unable to upload reference image right now." },
-          { status: 500 }
-        );
-      }
-
-      const extensionByType: Record<string, string> = {
-        "image/jpeg": "jpg",
-        "image/png": "png",
-        "image/webp": "webp",
-      };
-
-      const extension = extensionByType[referenceImage.type];
-
-      referenceImagePath =
-        `enquiries/${crypto.randomUUID()}.${extension}`;
-
-      const adminSupabase = createServiceRoleClient(
-        supabaseUrl,
-        serviceRoleKey,
-        {
-          auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-          },
-        }
-      );
-
-      const { error: uploadError } =
-        await adminSupabase.storage
-          .from("bulk-order-references")
-          .upload(
-            referenceImagePath,
-            await referenceImage.arrayBuffer(),
-            {
-              contentType: referenceImage.type,
-              upsert: false,
-            }
-          );
-
-      if (uploadError) {
-        console.error(
-          "Bulk enquiry reference image upload error:",
-          uploadError
-        );
-
-        return NextResponse.json(
-          { error: "Unable to upload reference image right now." },
-          { status: 500 }
-        );
-      }
-    }
 
     const { error } = await supabase
       .from("bulk_order_enquiries")
@@ -170,7 +97,8 @@ export async function POST(request: Request) {
 
       if (referenceImagePath) {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const serviceRoleKey =
+          process.env.SUPABASE_SERVICE_ROLE_KEY;
 
         if (supabaseUrl && serviceRoleKey) {
           const adminSupabase = createServiceRoleClient(
@@ -184,9 +112,17 @@ export async function POST(request: Request) {
             }
           );
 
-          await adminSupabase.storage
-            .from("bulk-order-references")
-            .remove([referenceImagePath]);
+          const { error: cleanupError } =
+            await adminSupabase.storage
+              .from("bulk-order-references")
+              .remove([referenceImagePath]);
+
+          if (cleanupError) {
+            console.error(
+              "Bulk enquiry reference image cleanup error:",
+              cleanupError
+            );
+          }
         }
       }
 
