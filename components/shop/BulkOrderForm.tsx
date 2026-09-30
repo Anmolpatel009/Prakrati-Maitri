@@ -41,6 +41,8 @@ export default function BulkOrderForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [referenceImage, setReferenceImage] =
+    useState<File | null>(null);
 
   const filteredProducts = useMemo(() => {
     if (!form.categoryId) return products;
@@ -89,15 +91,40 @@ export default function BulkOrderForm({
       return;
     }
 
+    if (referenceImage) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+      ];
+
+      if (!allowedTypes.includes(referenceImage.type)) {
+        setError("Reference image must be JPG, PNG or WebP.");
+        return;
+      }
+
+      if (referenceImage.size > 5 * 1024 * 1024) {
+        setError("Reference image must be smaller than 5MB.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
+      const formData = new FormData();
+
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      if (referenceImage) {
+        formData.append("referenceImage", referenceImage);
+      }
+
       const response = await fetch("/api/bulk-order", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+        body: formData,
       });
 
       const result = await response.json();
@@ -283,6 +310,25 @@ export default function BulkOrderForm({
           placeholder="Tell us about colours, customisation, delivery timeline, branding or anything else..."
           rows={5}
         />
+      </label>
+
+      <label className="bulk-order-full-field">
+        Reference Image
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={(e) =>
+            setReferenceImage(e.target.files?.[0] ?? null)
+          }
+        />
+        <span className="bulk-order-file-help">
+          Optional. Upload a JPG, PNG or WebP reference image, up to 5MB.
+        </span>
+        {referenceImage && (
+          <span className="bulk-order-file-selected">
+            Selected: {referenceImage.name}
+          </span>
+        )}
       </label>
 
       {error && (
