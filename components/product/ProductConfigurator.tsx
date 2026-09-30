@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   useMemo,
+  useRef,
   useState,
   type ChangeEvent,
 } from "react";
@@ -21,6 +22,7 @@ type ProductData = {
   id: string;
   name: string;
   slug: string;
+  short_description: string | null;
   description: string | null;
   price: number;
   compare_at_price: number | null;
@@ -141,6 +143,8 @@ export default function ProductConfigurator({
   const { addItem, clearCart } = useCart();
 
   const [buyingNow, setBuyingNow] = useState(false);
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
+  const customizationRef = useRef<HTMLDivElement | null>(null);
 
   const [selectedImage, setSelectedImage] =
     useState(0);
@@ -267,6 +271,13 @@ export default function ProductConfigurator({
 
   const handleCustomMode = () => {
     setPurchaseMode("custom");
+
+    requestAnimationFrame(() => {
+      customizationRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   };
 
   // =====================================================
@@ -434,12 +445,48 @@ export default function ProductConfigurator({
           {product.name}
         </h1>
 
-        {/* Description */}
+        {/* Short Description */}
+
+        {product.short_description && (
+          <p className="mt-5 max-w-2xl text-base leading-7 text-[#3D3D3D]/75">
+            {product.short_description}
+          </p>
+        )}
+
+        {/* Full Description */}
 
         {product.description && (
-          <p className="mt-5 max-w-2xl text-base leading-7 text-[#3D3D3D]/75">
-            {product.description}
-          </p>
+          <div className="mt-6 max-w-2xl overflow-hidden rounded-2xl border border-[#D2B48C]/50 bg-white">
+            <button
+              type="button"
+              onClick={() =>
+                setDescriptionOpen((current) => !current)
+              }
+              aria-expanded={descriptionOpen}
+              aria-controls="product-full-description"
+              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-[#F1EDE3]/60"
+            >
+              <span className="font-semibold text-[#4A5D23]">
+                Description
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="text-2xl leading-none text-[#4A5D23]"
+              >
+                {descriptionOpen ? "−" : "+"}
+              </span>
+            </button>
+
+            {descriptionOpen && (
+              <div
+                id="product-full-description"
+                className="border-t border-[#D2B48C]/40 px-5 py-5 text-base leading-7 text-[#3D3D3D]/75 whitespace-pre-line"
+              >
+                {product.description}
+              </div>
+            )}
+          </div>
         )}
 
         {/* SKU */}
@@ -689,84 +736,6 @@ export default function ProductConfigurator({
         </div>
 
         {/* ================================================= */}
-        {/* CUSTOMIZATION */}
-        {/* ================================================= */}
-
-        {purchaseMode === "custom" && (
-          <div className="mt-8 rounded-3xl border border-[#D2B48C] bg-white p-6">
-            <div>
-              <h2 className="font-serif text-2xl text-[#4A5D23]">
-                Customize Your Bag
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/65">
-                Upload your design and add any
-                instructions you want us to know
-                about.
-              </p>
-            </div>
-
-            {/* Upload */}
-
-            <div className="mt-6">
-              <label
-                htmlFor="custom-design"
-                className="block text-sm font-semibold"
-              >
-                Upload your design
-              </label>
-
-              <input
-                id="custom-design"
-                type="file"
-                accept="image/png,image/jpeg,image/webp,application/pdf"
-                onChange={
-                  handleCustomFileChange
-                }
-                className="mt-3 block w-full rounded-xl border border-[#D2B48C] bg-[#F9F7F2] p-3 text-sm"
-              />
-
-              {customFile && (
-                <p className="mt-2 text-xs text-[#4A5D23]">
-                  Selected:{" "}
-                  {customFile.name}
-                </p>
-              )}
-            </div>
-
-            {/* Note */}
-
-            <div className="mt-6">
-              <label
-                htmlFor="custom-note"
-                className="block text-sm font-semibold"
-              >
-                Customization instructions
-              </label>
-
-              <textarea
-                id="custom-note"
-                value={customNote}
-                onChange={(event) =>
-                  setCustomNote(
-                    event.target.value
-                  )
-                }
-                rows={5}
-                placeholder="Tell us what you want on the bag..."
-                className="mt-3 w-full resize-none rounded-xl border border-[#D2B48C] bg-[#F9F7F2] p-4 text-sm outline-none transition focus:border-[#4A5D23] focus:ring-1 focus:ring-[#4A5D23]"
-              />
-            </div>
-
-            <p className="mt-4 text-xs text-[#3D3D3D]/50">
-              Final artwork and customization
-              details can be confirmed before
-              production.
-            </p>
-          </div>
-        )}
-
-        {/* ================================================= */}
         {/* PURCHASE ACTIONS */}
         {/* ================================================= */}
 
@@ -852,6 +821,89 @@ export default function ProductConfigurator({
             </p>
           )}
       </section>
+
+              {/* ================================================= */}
+        {/* CUSTOMIZATION */}
+        {/* ================================================= */}
+
+        {purchaseMode === "custom" && (
+          <div
+          ref={customizationRef}
+          className="mt-8 scroll-mt-24 rounded-3xl border border-[#D2B48C] bg-white p-6 lg:col-start-1 lg:col-span-1"
+        >
+            <div>
+              <h2 className="font-serif text-2xl text-[#4A5D23]">
+                Customize Your Bag
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/65">
+                Upload your design and add any
+                instructions you want us to know
+                about.
+              </p>
+            </div>
+
+            {/* Upload */}
+
+            <div className="mt-6">
+              <label
+                htmlFor="custom-design"
+                className="block text-sm font-semibold"
+              >
+                Upload your design
+              </label>
+
+              <input
+                id="custom-design"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,application/pdf"
+                onChange={
+                  handleCustomFileChange
+                }
+                className="mt-3 block w-full rounded-xl border border-[#D2B48C] bg-[#F9F7F2] p-3 text-sm"
+              />
+
+              {customFile && (
+                <p className="mt-2 text-xs text-[#4A5D23]">
+                  Selected:{" "}
+                  {customFile.name}
+                </p>
+              )}
+            </div>
+
+            {/* Note */}
+
+            <div className="mt-6">
+              <label
+                htmlFor="custom-note"
+                className="block text-sm font-semibold"
+              >
+                Customization instructions
+              </label>
+
+              <textarea
+                id="custom-note"
+                value={customNote}
+                onChange={(event) =>
+                  setCustomNote(
+                    event.target.value
+                  )
+                }
+                rows={5}
+                placeholder="Tell us what you want on the bag..."
+                className="mt-3 w-full resize-none rounded-xl border border-[#D2B48C] bg-[#F9F7F2] p-4 text-sm outline-none transition focus:border-[#4A5D23] focus:ring-1 focus:ring-[#4A5D23]"
+              />
+            </div>
+
+            <p className="mt-4 text-xs text-[#3D3D3D]/50">
+              Final artwork and customization
+              details can be confirmed before
+              production.
+            </p>
+          </div>
+        )}
+
+
     </div>
   );
 }
