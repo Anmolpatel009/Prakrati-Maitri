@@ -2,7 +2,6 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient as createBrowserClient } from "@/lib/supabase/client";
 
 type Category = {
   id: string;
@@ -124,56 +123,42 @@ export default function BulkOrderForm({
       let referenceImagePath: string | null = null;
 
       if (referenceImage) {
-        const uploadInitResponse = await fetch(
+        const extensionByType: Record<string, string> = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/webp": "webp",
+        };
+
+        const extension =
+          extensionByType[referenceImage.type];
+
+        referenceImagePath =
+          `bulk-orders/${crypto.randomUUID()}.${extension}`;
+
+        const uploadResponse = await fetch(
           "/api/bulk-order/reference-upload",
           {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": referenceImage.type,
+              "x-file-path": referenceImagePath,
             },
-            body: JSON.stringify({
-              contentType: referenceImage.type,
-              size: referenceImage.size,
-            }),
+            body: referenceImage,
           }
         );
 
-        const uploadInitResult =
-          await uploadInitResponse.json();
+        const uploadResult =
+          await uploadResponse.json();
 
-        if (!uploadInitResponse.ok) {
+        if (!uploadResponse.ok) {
           throw new Error(
-            uploadInitResult.error ||
-              "Unable to prepare reference image upload."
+            uploadResult.error ||
+              "Unable to upload reference image."
           );
         }
 
-        const supabase = createBrowserClient();
-
-        const { error: uploadError } =
-          await supabase.storage
-            .from("bulk-order-references")
-            .uploadToSignedUrl(
-              uploadInitResult.path,
-              uploadInitResult.token,
-              referenceImage,
-              {
-                contentType: referenceImage.type,
-              }
-            );
-
-        if (uploadError) {
-          console.error(
-            "Bulk enquiry reference image upload error:",
-            uploadError
-          );
-
-          throw new Error(
-            "Unable to upload reference image right now."
-          );
-        }
-
-        referenceImagePath = uploadInitResult.path;
+        referenceImagePath =
+          uploadResult.path || referenceImagePath;
       }
 
       const response = await fetch("/api/bulk-order", {

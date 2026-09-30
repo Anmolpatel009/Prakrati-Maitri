@@ -1,99 +1,104 @@
 import { NextResponse } from "next/server";
-import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 
-const BUCKET = "bulk-order-references";
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-const EXTENSION_BY_TYPE: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-};
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const contentType =
+      request.headers.get("content-type") || "";
+    const filePath =
+      request.headers.get("x-file-path") || "";
 
-    const contentType = String(body.contentType ?? "").trim();
-    const size = Number(body.size);
-
-    if (!EXTENSION_BY_TYPE[contentType]) {
+    if (!ALLOWED_TYPES.includes(contentType)) {
       return NextResponse.json(
-        { error: "Reference image must be JPG, PNG or WebP." },
-        { status: 400 }
-      );
-    }
-
-    if (
-      !Number.isFinite(size) ||
-      size <= 0 ||
-      size > MAX_FILE_SIZE
-    ) {
-      return NextResponse.json(
-        { error: "Reference image must be smaller than 5MB." },
-        { status: 400 }
-      );
-    }
-
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey =
-      process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      console.error(
-        "Reference upload initialization failed: service-role credentials are not configured."
-      );
-
-      return NextResponse.json(
-        { error: "Unable to upload reference image right now." },
-        { status: 500 }
-      );
-    }
-
-    const supabase = createServiceRoleClient(
-      supabaseUrl,
-      serviceRoleKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
+        {
+          error:
+            "Only JPG, PNG and WebP images are allowed.",
         },
-      }
-    );
+        { status: 400 }
+      );
+    }
 
-    const extension = EXTENSION_BY_TYPE[contentType];
-    const path =
-      `enquiries/${crypto.randomUUID()}.${extension}`;
+    if (!filePath.startsWith("bulk-orders/")) {
+      return NextResponse.json(
+        { error: "Invalid upload path." },
+        { status: 400 }
+      );
+    }
 
-    const { data, error } = await supabase.storage
-      .from(BUCKET)
-      .createSignedUploadUrl(path);
+    const file = await request.arrayBuffer();
 
-    if (error || !data?.token) {
+    if (file.byteLength === 0) {
+      return NextResponse.json(
+        { error: "Reference image is empty." },
+        { status: 400 }
+      );
+    }
+
+    if (file.byteLength > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        {
+          error:
+            "Reference image must be smaller than 5MB.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const supabase = await createClient();
+
+    const { error } = await supabase.storage
+      .from("custom-bag-references")
+      .upload(filePath, file, {
+        contentType,
+        upsert: false,
+      });
+
+    if (error) {
       console.error(
-        "Reference upload signed URL error:",
+        "Bulk reference image upload error:",
         error
       );
 
       return NextResponse.json(
-        { error: "Unable to prepare reference image upload." },
+        {
+          error:
+            "Unable to upload reference image.",
+        },
         { status: 500 }
       );
     }
 
+    const {
+      data: { publicUrl },
+    } = supabase.storage
+      .from("custom-bag-references")
+      .getPublicUrl(filePath);
+
     return NextResponse.json({
-      path,
-      token: data.token,
+      success: true,
+      path: filePath,
+      url: publicUrl,
     });
   } catch (error) {
     console.error(
-      "Reference upload initialization error:",
+      "Bulk reference upload API error:",
       error
     );
 
     return NextResponse.json(
-      { error: "Invalid request." },
-      { status: 400 }
+      {
+        error:
+          "Unable to upload reference image.",
+      },
+      { status: 500 }
     );
   }
 }

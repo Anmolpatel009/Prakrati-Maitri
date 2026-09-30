@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     if (referenceImagePath) {
       const validPath =
-        /^enquiries\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(
+        /^bulk-orders\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(
           referenceImagePath
         );
 
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
 
           const { error: cleanupError } =
             await adminSupabase.storage
-              .from("bulk-order-references")
+              .from("custom-bag-references")
               .remove([referenceImagePath]);
 
           if (cleanupError) {
