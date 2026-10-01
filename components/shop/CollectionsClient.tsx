@@ -143,7 +143,7 @@ export default function CollectionsClient({
   return (
     <main className="collections-page">
       <section className="collections-hero">
-        <p className="shop-eyebrow">PRAKRATI MAITRI</p>
+        <p className="shop-eyebrow">PRAKRITI MAITRI</p>
 
         <h1>Our Collection</h1>
 

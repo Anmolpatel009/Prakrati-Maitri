@@ -237,7 +237,7 @@ export default async function OrdersPage() {
                 </h1>
 
                 <p className="mt-3 text-sm text-[#3D3D3D]/60">
-                  View and track your Prakrati Maitri
+                  View and track your Prakriti Maitri
                   orders.
                 </p>
               </div>

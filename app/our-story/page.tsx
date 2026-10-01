@@ -8,7 +8,7 @@ export default function OurStoryPage() {
         the world around us.
       </p>
       <p>
-        Prakrati Maitri brings thoughtful, sustainable products into everyday
+        Prakriti Maitri brings thoughtful, sustainable products into everyday
         moments — from shopping and gifting to celebrations and businesses.
       </p>
     </main>

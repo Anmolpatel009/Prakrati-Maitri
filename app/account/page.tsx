@@ -312,7 +312,7 @@ export default async function AccountPage() {
         {/* ================================================= */}
 
         <p className="mt-8 text-center text-xs text-[#3D3D3D]/40">
-          Prakrati Maitri · Thoughtfully made, consciously
+          Prakriti Maitri · Thoughtfully made, consciously
           chosen.
         </p>
 

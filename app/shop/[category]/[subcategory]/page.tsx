@@ -494,7 +494,7 @@ export default async function SubcategoryPage({
           <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-14 text-center md:px-12">
 
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
-              Prakrati Maitri
+              Prakriti Maitri
             </p>
 
             <h2 className="mx-auto mt-3 max-w-3xl font-serif text-3xl font-semibold text-[#4A5D23] md:text-4xl">

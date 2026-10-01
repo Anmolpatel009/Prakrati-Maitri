@@ -66,7 +66,7 @@ export default function ShopClient({
       {/* HERO */}
       <section className="shop-hero">
         <p className="shop-eyebrow">
-          PRAKRATI MAITRI
+          PRAKRITI MAITRI
         </p>
 
         <h1>Thoughtfully made. Naturally better.</h1>
@@ -267,7 +267,7 @@ export default function ShopClient({
       <section className="why-section">
         <div className="shop-section-heading centered">
           <p className="section-eyebrow">
-            WHY PRAKRATI MAITRI
+            WHY PRAKRITI MAITRI
           </p>
 
           <h2>Made with purpose</h2>
