@@ -5325,8 +5325,8 @@
 }
 
 .category-editorial-group .collection-label {
-  font-size: 11px !important;
-  letter-spacing: 0.22em !important;
+  font-size: 16px !important;
+  letter-spacing: 0.16em !important;
 }
 
 /* Product grid should not create an extra outer band. */
@@ -5366,8 +5366,8 @@
   }
 
   .category-editorial-group .collection-label {
-    font-size: 9px !important;
-    letter-spacing: 0.19em !important;
+    font-size: 12px !important;
+    letter-spacing: 0.16em !important;
   }
 }
 
