@@ -94,25 +94,151 @@ export function parseHomepageMerchandising(
     };
 
     const cards = Array.isArray(raw.collectionCards)
-      ? raw.collectionCards.filter(
-          (card): card is HomepageCollectionCard =>
-            typeof card === "object" &&
-            card !== null &&
-            typeof (card as HomepageCollectionCard).slot === "number" &&
-            ((card as HomepageCollectionCard).type === "category" ||
-              (card as HomepageCollectionCard).type === "subcategory"),
-        )
+      ? raw.collectionCards.flatMap((value, index) => {
+          if (
+            typeof value !== "object" ||
+            value === null ||
+            Array.isArray(value)
+          ) {
+            return [];
+          }
+
+          const card = value as Record<string, unknown>;
+
+          const rawType =
+            card.type ?? card.collection_type;
+
+          if (
+            rawType !== "category" &&
+            rawType !== "subcategory"
+          ) {
+            return [];
+          }
+
+          const rawFontSize =
+            card.fontSize ?? card.font_size;
+
+          const fontSize =
+            typeof rawFontSize === "number"
+              ? rawFontSize
+              : rawFontSize === "small"
+                ? 20
+                : rawFontSize === "medium"
+                  ? 24
+                  : rawFontSize === "xlarge"
+                    ? 36
+                    : 28;
+
+          const rawFontWeight =
+            card.fontWeight ?? card.font_weight;
+
+          const fontWeightNumber =
+            Number(rawFontWeight);
+
+          const rawFontFamily =
+            card.fontFamily ?? card.font_family;
+
+          const fontFamily =
+            rawFontFamily === "sans"
+              ? "sans-serif"
+              : rawFontFamily === "mono"
+                ? "monospace"
+                : rawFontFamily === "serif"
+                  ? "serif"
+                  : typeof rawFontFamily === "string" &&
+                      rawFontFamily.trim()
+                    ? rawFontFamily
+                    : "inherit";
+
+          const slot =
+            typeof card.slot === "number"
+              ? card.slot
+              : index + 1;
+
+          const categoryId =
+            typeof (card.categoryId ?? card.category_id) ===
+            "string"
+              ? String(
+                  card.categoryId ?? card.category_id,
+                )
+              : null;
+
+          const subcategoryId =
+            typeof (
+              card.subcategoryId ??
+              card.subcategory_id
+            ) === "string"
+              ? String(
+                  card.subcategoryId ??
+                    card.subcategory_id,
+                )
+              : null;
+
+          return [
+            {
+              slot,
+              type: rawType,
+              categoryId,
+              subcategoryId,
+              heading:
+                typeof card.heading === "string"
+                  ? card.heading
+                  : "",
+              subheading:
+                typeof card.subheading === "string"
+                  ? card.subheading
+                  : "",
+              fontFamily,
+              fontSize,
+              fontStyle:
+                card.fontStyle === "italic" ||
+                card.font_style === "italic"
+                  ? "italic"
+                  : "normal",
+              fontWeight: Number.isFinite(
+                fontWeightNumber,
+              )
+                ? fontWeightNumber
+                : 600,
+              textColor:
+                typeof (
+                  card.textColor ??
+                  card.text_color
+                ) === "string"
+                  ? String(
+                      card.textColor ??
+                        card.text_color,
+                    )
+                  : "#3D3D3D",
+              backgroundColor:
+                typeof (
+                  card.backgroundColor ??
+                  card.background_color
+                ) === "string"
+                  ? String(
+                      card.backgroundColor ??
+                        card.background_color,
+                    )
+                  : "#FFFFFF",
+            } satisfies HomepageCollectionCard,
+          ];
+        })
       : [];
+
+    const normalizedCards = cards.sort(
+      (a, b) => a.slot - b.slot,
+    );
 
     return {
       config: {
         collectionCards:
-          cards.length === 3
-            ? cards
+          normalizedCards.length === 3
+            ? normalizedCards
             : DEFAULT_COLLECTION_CARDS,
         newArrivals: Array.isArray(raw.newArrivals)
           ? raw.newArrivals.filter(
-              (id): id is string => typeof id === "string",
+              (id): id is string =>
+                typeof id === "string",
             )
           : [],
       },
@@ -125,3 +251,4 @@ export function parseHomepageMerchandising(
     };
   }
 }
+
