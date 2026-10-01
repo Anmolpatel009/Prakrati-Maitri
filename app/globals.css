@@ -4868,6 +4868,61 @@
    Product/category pages remain unchanged.
 ============================================================ */
 
+/* New Arrivals: horizontal product rail */
+.new-arrivals-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.new-arrivals-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: new-arrivals-scroll 32s linear infinite;
+}
+
+.new-arrivals-set {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 24px;
+  padding-right: 24px;
+}
+
+.new-arrivals-set .product-card {
+  flex: 0 0 260px;
+  width: 260px;
+  min-width: 260px;
+}
+
+@keyframes new-arrivals-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .new-arrivals-set {
+    gap: 14px;
+    padding-right: 14px;
+  }
+
+  .new-arrivals-set .product-card {
+    flex: 0 0 78vw;
+    width: 78vw;
+    min-width: 78vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-arrivals-track {
+    animation: none;
+  }
+}
+
 /* New Arrivals: remove the outer collection whitespace. */
 .new-arrivals-section {
   width: 100vw !important;
