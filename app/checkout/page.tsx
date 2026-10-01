@@ -84,7 +84,7 @@ export default function CheckoutPage() {
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-[#EDE5D4] px-6 py-16 text-center sm:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
-              Prakrati Maitri
+              Prakriti Maitri
             </p>
 
             <h1 className="mt-3 font-serif text-4xl text-[#4A5D23] sm:text-5xl">
@@ -126,7 +126,7 @@ export default function CheckoutPage() {
 
           <div className="mt-7 rounded-3xl border border-[#D2B48C]/50 bg-[#EDE5D4] px-6 py-10 text-center sm:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
-              Prakrati Maitri
+              Prakriti Maitri
             </p>
 
             <h1 className="mt-3 font-serif text-4xl text-[#4A5D23] sm:text-5xl">

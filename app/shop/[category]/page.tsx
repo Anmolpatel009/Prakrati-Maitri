@@ -181,7 +181,7 @@ export default async function CategoryPage({
         <div className="mx-auto max-w-7xl">
           <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-16 text-center md:px-12 md:py-24">
             <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
-              Prakrati Maitri Collection
+              Prakriti Maitri Collection
             </p>
 
             <h1 className="font-serif text-4xl font-semibold text-[#4A5D23] md:text-5xl lg:text-6xl">
@@ -421,7 +421,7 @@ export default async function CategoryPage({
 
             <p className="mx-auto mt-4 max-w-2xl text-[#3D3D3D]/70">
               Discover reusable, practical, and thoughtfully
-              designed products from Prakrati Maitri.
+              designed products from Prakriti Maitri.
             </p>
 
             <Link

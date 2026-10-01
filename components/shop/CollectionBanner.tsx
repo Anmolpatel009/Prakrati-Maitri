@@ -47,7 +47,7 @@ export default function CollectionBanner({ banners }: Props) {
           <img
             key={banner.id}
             src={banner.image_url}
-            alt={banner.alt_text ?? "Prakrati Maitri collection banner"}
+            alt={banner.alt_text ?? "Prakriti Maitri collection banner"}
             className={`collection-banner-image ${
               index === current ? "is-active" : ""
             }`}

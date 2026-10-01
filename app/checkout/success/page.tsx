@@ -31,7 +31,7 @@ export default async function SuccessPage({
             </div>
 
             <p className="mt-6 text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
-              Prakrati Maitri
+              Prakriti Maitri
             </p>
 
             <h1 className="mt-3 font-serif text-4xl text-[#4A5D23] sm:text-5xl">
@@ -169,7 +169,7 @@ export default async function SuccessPage({
         {/* ================================================= */}
 
         <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-5 text-[#3D3D3D]/45">
-          Thoughtfully created with care by Prakrati Maitri.
+          Thoughtfully created with care by Prakriti Maitri.
         </p>
 
       </div>

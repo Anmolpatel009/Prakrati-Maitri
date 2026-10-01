@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import {
-  useMemo,
   useRef,
   useState,
   type ChangeEvent,
@@ -37,104 +36,6 @@ type ProductConfiguratorProps = {
 };
 
 type PurchaseMode = "standard" | "custom";
-
-type PriceTier = {
-  min: number;
-  max: number | null;
-  save: number;
-  price: number;
-};
-
-const STANDARD_TIERS: PriceTier[] = [
-  {
-    min: 100,
-    max: 499,
-    save: 0,
-    price: 13.6,
-  },
-  {
-    min: 500,
-    max: 999,
-    save: 3.7,
-    price: 13.1,
-  },
-  {
-    min: 1000,
-    max: 4999,
-    save: 7.4,
-    price: 12.6,
-  },
-  {
-    min: 5000,
-    max: 9999,
-    save: 11.0,
-    price: 12.1,
-  },
-  {
-    min: 10000,
-    max: 19999,
-    save: 13.2,
-    price: 11.8,
-  },
-  {
-    min: 20000,
-    max: null,
-    save: 14.7,
-    price: 11.6,
-  },
-];
-
-const CUSTOM_TIERS: PriceTier[] = [
-  {
-    min: 100,
-    max: 499,
-    save: 0,
-    price: 15.9,
-  },
-  {
-    min: 500,
-    max: 999,
-    save: 5.0,
-    price: 15.1,
-  },
-  {
-    min: 1000,
-    max: 4999,
-    save: 9.4,
-    price: 14.4,
-  },
-  {
-    min: 5000,
-    max: 9999,
-    save: 13.2,
-    price: 13.8,
-  },
-  {
-    min: 10000,
-    max: 19999,
-    save: 15.7,
-    price: 13.4,
-  },
-  {
-    min: 20000,
-    max: null,
-    save: 18.9,
-    price: 12.9,
-  },
-];
-
-function formatQuantityRange(
-  min: number,
-  max: number | null
-) {
-  if (max === null) {
-    return `${min.toLocaleString("en-IN")}+`;
-  }
-
-  return `${min.toLocaleString(
-    "en-IN"
-  )}-${max.toLocaleString("en-IN")}`;
-}
 
 export default function ProductConfigurator({
   product,
@@ -174,38 +75,10 @@ export default function ProductConfigurator({
   // PRICING
   // =====================================================
 
-  const tiers =
-    purchaseMode === "custom"
-      ? CUSTOM_TIERS
-      : STANDARD_TIERS;
+  // Unit price is fixed; quantity does not change the product price.\n  const unitPrice = product.price;\n\n  const total = quantity * unitPrice;
 
-  /*
-   * Bulk pricing starts at 100 according to the
-   * existing pricing tables.
-   *
-   * For 1-99 units we use the product's normal
-   * database price because there is no defined
-   * bulk-tier price for that range.
-   */
-  const activeTier = useMemo(() => {
-    return (
-      tiers.find((tier) => {
-        if (quantity < tier.min) {
-          return false;
-        }
-
-        if (tier.max === null) {
-          return true;
-        }
-
-        return quantity <= tier.max;
-      }) ?? null
-    );
-  }, [quantity, tiers]);
-
-  const unitPrice =
-    activeTier?.price ?? product.price;
-
+  // Fixed product pricing: quantity never changes the unit price.
+  const unitPrice = product.price;
   const total = quantity * unitPrice;
 
   const selectedProductImage =
@@ -634,9 +507,7 @@ export default function ProductConfigurator({
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-sm text-[#3D3D3D]/60">
-                {activeTier
-                  ? "Your price"
-                  : "Product price"}
+                Product price
               </p>
 
               <p className="mt-1 font-serif text-4xl text-[#4A5D23]">
@@ -648,12 +519,7 @@ export default function ProductConfigurator({
               </p>
             </div>
 
-            {activeTier &&
-              activeTier.save > 0 && (
-                <span className="rounded-full bg-[#E8F5E9] px-4 py-2 text-sm font-semibold text-[#4A5D23]">
-                  Save {activeTier.save}%
-                </span>
-              )}
+
           </div>
 
           <div className="mt-5 border-t border-[#D2B48C]/40 pt-5">
@@ -673,66 +539,7 @@ export default function ProductConfigurator({
             </p>
           </div>
 
-          {!activeTier && (
-            <p className="mt-3 text-xs text-[#3D3D3D]/50">
-              Bulk pricing starts at 100 bags.
-            </p>
-          )}
-        </div>
 
-        {/* ================================================= */}
-        {/* BULK PRICING */}
-        {/* ================================================= */}
-
-        <div className="mt-8">
-          <h2 className="font-serif text-2xl text-[#4A5D23]">
-            Bulk Pricing
-          </h2>
-
-          <div className="mt-4 overflow-hidden rounded-2xl border border-[#D2B48C]/60 bg-white">
-            <div className="grid grid-cols-3 bg-[#F1EDE3] px-4 py-3 text-xs font-semibold uppercase tracking-wide">
-              <span>Quantity</span>
-              <span>Save</span>
-              <span className="text-right">
-                Price / Bag
-              </span>
-            </div>
-
-            {tiers.map((tier) => {
-              const isActive =
-                quantity >= tier.min &&
-                (tier.max === null ||
-                  quantity <= tier.max);
-
-              return (
-                <div
-                  key={`${purchaseMode}-${tier.min}`}
-                  className={`grid grid-cols-3 items-center border-t border-[#D2B48C]/30 px-4 py-3 text-sm transition ${
-                    isActive
-                      ? "bg-[#E8F5E9] font-semibold"
-                      : ""
-                  }`}
-                >
-                  <span>
-                    {formatQuantityRange(
-                      tier.min,
-                      tier.max
-                    )}
-                  </span>
-
-                  <span>
-                    {tier.save > 0
-                      ? `${tier.save}%`
-                      : "—"}
-                  </span>
-
-                  <span className="text-right">
-                    ₹{tier.price.toFixed(2)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
         {/* ================================================= */}

@@ -26,7 +26,7 @@ export default function CartPage() {
           </div>
 
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
-            Prakrati Maitri
+            Prakriti Maitri
           </p>
 
           <h1 className="mt-3 font-serif text-4xl text-[#4A5D23] sm:text-5xl">

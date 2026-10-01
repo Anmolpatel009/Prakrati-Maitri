@@ -5,7 +5,7 @@ export default function ContactPage() {
       <h1>We would love to hear from you.</h1>
       <p>
         Have a question about our products, an order or a business requirement?
-        Get in touch with the Prakrati Maitri team.
+        Get in touch with the Prakriti Maitri team.
       </p>
       <p>
         Email: hello@prakratimaitri.com

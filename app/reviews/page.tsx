@@ -7,7 +7,7 @@ export default function ReviewsPage() {
         We are building a collection of honest customer experiences.
       </p>
       <p>
-        Your feedback helps us make Prakrati Maitri better.
+        Your feedback helps us make Prakriti Maitri better.
       </p>
     </main>
   );
