@@ -101,9 +101,7 @@ export default async function CategoryPage({
     `)
     .eq("category_id", categoryData.id)
     .eq("is_active", true)
-    .order("created_at", {
-      ascending: false,
-    });
+    .order("display_order", { ascending: true, nullsFirst: false }).order("created_at", { ascending: false });
 
   if (productsError) {
     console.error(
