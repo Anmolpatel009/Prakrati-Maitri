@@ -16,6 +16,9 @@ import {
 import CategoryBannerView from "@/components/shop/CategoryBanner";
 import type { CSSProperties } from "react";
 import { parseHomepageMerchandising } from "@/lib/shop/homepage-merchandising";
+import SharedProductCard from "@/components/shop/ProductCard";
+import { getProductCardStyling } from "@/lib/shop/product-card-styling";
+import type { ProductCardStylingConfig } from "@/lib/shop/product-card-styling";
 
 export const dynamic = "force-dynamic";
 
@@ -133,6 +136,7 @@ export default async function ShopPage() {
   }
 
   const products = (data ?? []) as Product[];
+  const productCardStyling = await getProductCardStyling();
 
   const {
     config: merchandisingConfig,
@@ -494,9 +498,10 @@ export default async function ShopPage() {
 
                 <div className="new-arrivals-set">
                   {featuredProducts.map((product) => (
-                    <ProductCard
+                    <SharedProductCard
                       key={`new-arrivals-1-${product.id}`}
                       product={product}
+                      config={productCardStyling}
                     />
                   ))}
                 </div>
@@ -506,9 +511,10 @@ export default async function ShopPage() {
                   aria-hidden="true"
                 >
                   {featuredProducts.map((product) => (
-                    <ProductCard
+                    <SharedProductCard
                       key={`new-arrivals-2-${product.id}`}
                       product={product}
+                      config={productCardStyling}
                     />
                   ))}
                 </div>
@@ -586,6 +592,7 @@ export default async function ShopPage() {
             <CategoryBannerView banner={banner} />
 
             <CategoryProductSection
+              productCardStyling={productCardStyling}
               title={card.heading}
               eyebrow={eyebrow}
               subheading={card.subheading}
@@ -734,9 +741,10 @@ export default async function ShopPage() {
 
           {mostLovedProducts.length > 0 ? (
             mostLovedProducts.map((product) => (
-              <ProductCard
+              <SharedProductCard
                 key={product.id}
                 product={product}
+                config={productCardStyling}
               />
             ))
           ) : (
@@ -890,6 +898,7 @@ export default async function ShopPage() {
 ============================================================ */
 
 function CategoryProductSection({
+  productCardStyling,
   title,
   eyebrow,
   subheading,
@@ -905,6 +914,7 @@ function CategoryProductSection({
   products: Product[];
   boxStyle: CSSProperties;
   headingStyle: CSSProperties;
+  productCardStyling: ProductCardStylingConfig;
 }) {
   return (
     <section className="collection-section category-product-section">
@@ -926,7 +936,11 @@ function CategoryProductSection({
         <div className="product-grid category-product-grid">
           {products.length > 0 ? (
             products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <SharedProductCard
+                key={product.id}
+                product={product}
+                config={productCardStyling}
+              />
             ))
           ) : (
             <EmptyProductCards count={4} />
@@ -937,114 +951,6 @@ function CategoryProductSection({
   );
 }
 
-
-function ProductCard({
-  product,
-}: {
-  product: Product;
-}) {
-  const sale =
-    product.compare_at_price &&
-    product.compare_at_price > product.price;
-
-  /*
-   * Product images are ordered by display_order.
-   * display_order = 0 is the primary image uploaded
-   * from the admin product form.
-   */
-  const images = [
-    ...(product.product_images ?? []),
-  ].sort(
-    (a, b) =>
-      a.display_order - b.display_order
-  );
-
-  const primaryImage = images[0];
-
-  return (
-    <article className="product-card">
-
-      <a
-        href={`/products/${product.slug}`}
-        className="product-image-placeholder"
-      >
-
-        {sale && (
-          <span className="sale-badge">
-            SALE
-          </span>
-        )}
-
-        {primaryImage ? (
-          <img
-            src={primaryImage.image_url}
-            alt={
-              primaryImage.alt_text ??
-              product.name
-            }
-            className="product-image"
-          />
-        ) : (
-          <>
-            <span>Product Image</span>
-
-            <small>
-              Image will be added later
-            </small>
-          </>
-        )}
-
-      </a>
-
-
-      <div className="product-card-content">
-
-        <a
-          href={`/products/${product.slug}`}
-          className="product-name"
-        >
-          {product.name}
-        </a>
-
-        <div className="product-rating">
-          <span>★★★★★</span>
-          <small>New</small>
-        </div>
-
-        <div className="product-price">
-
-          <strong>
-            ₹{Number(product.price).toFixed(2)}
-          </strong>
-
-          {sale && (
-            <s>
-              ₹
-              {Number(
-                product.compare_at_price
-              ).toFixed(2)}
-            </s>
-          )}
-
-        </div>
-
-        <a
-          href={`/products/${product.slug}`}
-          className="product-view-button"
-        >
-          View Product
-        </a>
-
-      </div>
-
-    </article>
-  );
-}
-
-
-/* ============================================================
-   EMPTY PRODUCT PLACEHOLDERS
-============================================================ */
 
 function EmptyProductCards({
   count,

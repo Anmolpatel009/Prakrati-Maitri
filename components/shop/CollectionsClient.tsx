@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import SharedProductCard from "@/components/shop/ProductCard";
+import type { ProductCardStylingConfig } from "@/lib/shop/product-card-styling";
 
 type Product = {
   id: string;
@@ -37,12 +39,14 @@ type Props = {
   products: Product[];
   categories: Category[];
   subcategories: Subcategory[];
+  productCardStyling: ProductCardStylingConfig;
 };
 
 export default function CollectionsClient({
   products,
   categories,
   subcategories,
+  productCardStyling,
 }: Props) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -320,92 +324,22 @@ export default function CollectionsClient({
                     : null;
 
                 return (
-                  <article
+                  <SharedProductCard
                     key={product.id}
-                    className="product-card"
-                  >
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="product-image-link"
-                    >
-                      <div className="product-image-wrapper">
-                        {product.image ? (
-                          <img
-                            src={product.image.imageUrl}
-                            alt={
-                              product.image.altText ??
-                              product.name
-                            }
-                            className="product-image"
-                          />
-                        ) : (
-                          <div className="product-image-placeholder">
-                            <span>Product Image</span>
-                            <small>
-                              Image will be added later
-                            </small>
-                          </div>
-                        )}
-
-                        {discount !== null && (
-                          <span className="sale-badge">
-                            {discount}% OFF
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-
-                    <div className="product-card-content">
-                      <Link
-                        href={`/products/${product.slug}`}
-                        className="product-name"
-                      >
-                        {product.name}
-                      </Link>
-
-                      <div className="product-rating">
-                        <span aria-hidden="true">
-                          ★★★★★
-                        </span>
-
-                        <small>New</small>
-                      </div>
-
-                      <div className="product-price">
-                        <strong>
-                          ₹{product.price.toFixed(2)}
-                        </strong>
-
-                        {product.compareAtPrice !== null && (
-                          <s>
-                            ₹
-                            {product.compareAtPrice.toFixed(
-                              2
-                            )}
-                          </s>
-                        )}
-                      </div>
-
-                      <p
-                        className={`stock-status ${
-                          product.availableQuantity > 0
-                            ? "in-stock"
-                            : "out-of-stock"
-                        }`}
-                      >
-                        {product.availableQuantity > 0
-                          ? `${product.availableQuantity} available`
-                          : "Out of stock"}
-                      </p>
-
-                      <Link
-                        href={`/products/${product.slug}`}
-                        className="collection-view-product-button"
-                      >
-                        View Product
-                      </Link>
-                    </div>
-                  </article>
+                    product={{
+                      ...product,
+                      product_images: product.image
+                        ? [
+                            {
+                              image_url: product.image.imageUrl,
+                              alt_text: product.image.altText,
+                              display_order: 0,
+                            },
+                          ]
+                        : [],
+                    }}
+                    config={productCardStyling}
+                  />
                 );
               })}
             </div>

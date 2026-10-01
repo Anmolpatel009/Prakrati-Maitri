@@ -1,11 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import CollectionsClient from "@/components/shop/CollectionsClient";
 import CollectionBanner from "@/components/shop/CollectionBanner";
+import { getProductCardStyling } from "@/lib/shop/product-card-styling";
 
 export const dynamic = "force-dynamic";
 
 export default async function CollectionsPage() {
   const supabase = await createClient();
+  const productCardStyling = await getProductCardStyling();
 
   const [
     { data: products, error: productsError },
@@ -127,6 +129,7 @@ export default async function CollectionsPage() {
         products={normalizedProducts}
         categories={categories ?? []}
         subcategories={subcategories ?? []}
+        productCardStyling={productCardStyling}
       />
     </>
   );

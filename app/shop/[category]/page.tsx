@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import SharedProductCard from "@/components/shop/ProductCard";
+import { getProductCardStyling } from "@/lib/shop/product-card-styling";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -17,6 +19,7 @@ export default async function CategoryPage({
   const { category } = await params;
 
   const supabase = await createClient();
+  const productCardStyling = await getProductCardStyling();
 
   // =====================================================
   // FIND CATEGORY
@@ -277,99 +280,14 @@ export default async function CategoryPage({
                   product.images[0];
 
                 return (
-                  <article
-                    key={product.id}
-                    className="group overflow-hidden rounded-3xl border border-[#D2B48C]/40 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                  >
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="block"
-                    >
-                      {/* IMAGE */}
-
-                      <div className="relative aspect-square overflow-hidden bg-[#F1EDE3]">
-                        {primaryImage ? (
-                          <Image
-                            src={
-                              primaryImage.image_url
-                            }
-                            alt={
-                              primaryImage.alt_text ||
-                              product.name
-                            }
-                            width={700}
-                            height={700}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center">
-                            <div className="text-center">
-                              <p className="font-serif text-lg text-[#4A5D23]/70">
-                                Product Image
-                              </p>
-
-                              <p className="mt-1 text-xs text-[#3D3D3D]/45">
-                                Image coming soon
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* STOCK BADGE */}
-
-                        {product.availableQuantity <=
-                          0 && (
-                          <div className="absolute left-4 top-4 rounded-full bg-[#3D3D3D]/85 px-3 py-1.5 text-xs font-medium text-white">
-                            Out of Stock
-                          </div>
-                        )}
-                      </div>
-
-                      {/* DETAILS */}
-
-                      <div className="p-5">
-                        <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#4A5D23]/70">
-                          {categoryData.name}
-                        </p>
-
-                        <h3 className="font-serif text-xl font-semibold text-[#3D3D3D] transition-colors group-hover:text-[#4A5D23]">
-                          {product.name}
-                        </h3>
-
-                        {product.description && (
-                          <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#3D3D3D]/60">
-                            {product.description}
-                          </p>
-                        )}
-
-                        <div className="mt-4 flex items-end justify-between gap-4">
-                          <div>
-                            <p className="text-lg font-semibold text-[#4A5D23]">
-                              ₹{product.price}
-                            </p>
-
-                            {product.compare_at_price &&
-                              product.compare_at_price >
-                                product.price && (
-                                <p className="text-sm text-[#3D3D3D]/45">
-                                  <s>
-                                    ₹
-                                    {
-                                      product.compare_at_price
-                                    }
-                                  </s>
-                                </p>
-                              )}
-                          </div>
-
-                          <span className="text-sm font-medium text-[#8B4513]">
-                            View Product →
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </article>
+                  <SharedProductCard
+                  key={product.id}
+                  product={{
+                    ...product,
+                    product_images: product.images,
+                  }}
+                  config={productCardStyling}
+                />
                 );
               })}
             </div>
