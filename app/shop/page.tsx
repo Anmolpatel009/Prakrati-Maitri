@@ -1,12 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
-import CartBadge from "@/components/cart/CartBadge";
 import { getShopNavbarData } from "@/lib/shop/navbar";
 import { getStorefrontNavCards } from "@/lib/shop/nav-cards";
 import { getStorefrontVideos } from "@/lib/shop/media";
 import { getHomepageSections } from "@/lib/shop/homepage";
 import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
-import ShopNavDropdown from "@/components/shop/ShopNavDropdown";
 import CategoryRail from "@/components/shop/CategoryRail";
 import HomepagePromotionalBannerCarousel from "@/components/shop/HomepagePromotionalBannerCarousel";
 import { getHomepageBanners } from "@/lib/shop/homepage-banners";
@@ -278,122 +276,6 @@ export default async function ShopPage() {
     <main className="shop-page">
 
       <BulkOrderPopup />
-
-      {/* =====================================================
-          PROMO BAR
-      ===================================================== */}
-
-      <div className="shop-promo-bar">
-        <button type="button" aria-label="Previous promotion">
-          ‹
-        </button>
-
-        <span>Free shipping on Order above 500/-</span>
-
-        <button type="button" aria-label="Next promotion">
-          ›
-        </button>
-      </div>
-
-
-      {/* =====================================================
-          NAVBAR
-      ===================================================== */}
-
-      <header className="shop-navbar">
-
-        {/* ROW 1: Brand + utility actions */}
-        <div className="shop-navbar-top">
-
-          <a
-            href="/shop"
-            className="shop-brand"
-            aria-label="PRAKRITI MAITRI home"
-          >
-            <span className="shop-brand-word">PRAKRITI MAITRI</span>
-          </a>
-
-          <a
-            href="/shop"
-            className="shop-brand-center"
-            aria-label="PRAKRITI MAITRI home"
-          >
-            <span className="shop-brand-seal">
-              <img
-                src="/prakrati-maitri-logo.jpg"
-                alt="PRAKRITI MAITRI"
-                className="shop-brand-logo"
-              />
-            </span>
-          </a>
-
-          <div className="shop-nav-actions">
-
-            <a href="/account" aria-label="Account">
-              ♙
-            </a>
-
-            <a href="/wishlist" aria-label="Wishlist">
-              ♡
-              <span className="nav-count">0</span>
-            </a>
-
-            <a
-              href="/cart"
-              aria-label="Cart"
-              className="relative"
-            >
-              ♧
-              <CartBadge />
-            </a>
-
-          </div>
-
-        </div>
-
-        {/* ROW 2: Main navigation */}
-        <nav className="shop-nav">
-
-          <a href="/shop">NEW</a>
-
-          {categories.map((category) => {
-            const categorySubcategories = subcategories.filter(
-              (subcategory) =>
-                subcategory.category_id === category.id
-            );
-
-            if (categorySubcategories.length === 0) {
-              return (
-                <a
-                  key={category.id}
-                  href={`/shop/${category.slug}`}
-                >
-                  {category.name.toUpperCase()}
-                </a>
-              );
-            }
-
-            return (
-              <ShopNavDropdown
-                key={category.id}
-                category={category}
-                subcategories={categorySubcategories}
-              />
-            );
-          })}
-
-          <a href="/reviews">
-            REVIEWS
-          </a>
-
-          <a href="/bulk-order" className="shop-nav-bulk-link">
-            BULK ORDERS
-          </a>
-
-        </nav>
-
-      </header>
-
 
       {/* =====================================================
           MOVING CATEGORY RAIL
