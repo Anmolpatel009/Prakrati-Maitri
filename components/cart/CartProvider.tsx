@@ -24,7 +24,7 @@ export type CartItem = {
   price: number;
   imageUrl: string | null;
   quantity: number;
-
+  minimumOrderQuantity: number;
   customization: CartCustomization | null;
 };
 
@@ -33,7 +33,7 @@ type AddItemInput = {
   name: string;
   slug: string;
   price: number;
-  imageUrl: string | null;
+  imageUrl: string | null;  minimumOrderQuantity?: number;
   customization?: CartCustomization | null;
 };
 
@@ -156,8 +156,13 @@ export function CartProvider({
     item: AddItemInput,
     quantity = 1
   ) {
-    const safeQuantity = Math.max(
+        const minimumOrderQuantity = Math.max(
       1,
+      Math.floor(item.minimumOrderQuantity ?? 1)
+    );
+
+    const safeQuantity = Math.max(
+      minimumOrderQuantity,
       Math.floor(quantity)
     );
 
@@ -185,6 +190,14 @@ export function CartProvider({
             existingItem.cartItemId
               ? {
                   ...cartItem,
+                  minimumOrderQuantity: Math.max(
+                    1,
+                    Math.floor(
+                      item.minimumOrderQuantity ??
+                        cartItem.minimumOrderQuantity ??
+                        1
+                    )
+                  ),
                   quantity:
                     cartItem.quantity +
                     safeQuantity,
@@ -198,6 +211,7 @@ export function CartProvider({
         {
           ...item,
           cartItemId: createCartItemId(),
+          minimumOrderQuantity,
           quantity: safeQuantity,
           customization,
         },
@@ -230,20 +244,26 @@ export function CartProvider({
   ) {
     const safeQuantity = Math.floor(quantity);
 
-    if (safeQuantity <= 0) {
-      removeItem(cartItemId);
-      return;
-    }
-
     setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.cartItemId === cartItemId
-          ? {
-              ...item,
-              quantity: safeQuantity,
-            }
-          : item
-      )
+      currentItems.map((item) => {
+        if (item.cartItemId !== cartItemId) {
+          return item;
+        }
+
+        const minimumOrderQuantity = Math.max(
+          1,
+          Math.floor(item.minimumOrderQuantity ?? 1)
+        );
+
+        return {
+          ...item,
+          minimumOrderQuantity,
+          quantity: Math.max(
+            minimumOrderQuantity,
+            safeQuantity
+          ),
+        };
+      })
     );
   }
 

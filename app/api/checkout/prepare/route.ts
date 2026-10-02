@@ -99,7 +99,7 @@ export async function POST(request: Request) {
       await supabase
         .from("products")
         .select(
-          "id, name, slug, sku, price, is_active"
+          "id, name, slug, sku, price, is_active, minimum_order_quantity"
         )
         .in("id", productIds);
 
@@ -230,6 +230,27 @@ export async function POST(request: Request) {
         0,
         quantity - reservedQuantity
       );
+
+      // ------------------------------------------------
+      // MOQ validation
+      // ------------------------------------------------
+
+      const minimumOrderQuantity = Math.max(
+        1,
+        Number(product.minimum_order_quantity ?? 1)
+      );
+
+      if (item.quantity < minimumOrderQuantity) {
+        return NextResponse.json(
+          {
+            error: `${product.name} has a minimum order quantity of ${minimumOrderQuantity}.`,
+            productId: product.id,
+            requestedQuantity: item.quantity,
+            minimumOrderQuantity,
+          },
+          { status: 400 }
+        );
+      }
 
       // ------------------------------------------------
       // Stock validation

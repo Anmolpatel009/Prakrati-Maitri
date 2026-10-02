@@ -27,6 +27,7 @@ export default async function ProductPage({
       price,
       compare_at_price,
       sku,
+      minimum_order_quantity,
       categories (
         id,
         name,
@@ -114,6 +115,7 @@ export default async function ProductPage({
             price: product.price,
             compare_at_price: product.compare_at_price,
             sku: product.sku,
+            minimum_order_quantity: product.minimum_order_quantity ?? 1,
             categoryName: category?.name ?? "",
             availableQuantity,
             images: images.map((image) => ({

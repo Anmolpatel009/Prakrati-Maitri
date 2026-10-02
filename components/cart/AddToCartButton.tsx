@@ -9,6 +9,7 @@ type AddToCartButtonProps = {
   slug: string;
   price: number;
   imageUrl: string | null;
+  minimumOrderQuantity?: number;
 
   quantity?: number;
 
@@ -25,6 +26,7 @@ export default function AddToCartButton({
   slug,
   price,
   imageUrl,
+  minimumOrderQuantity = 1,
   quantity = 1,
   customization = null,
 }: AddToCartButtonProps) {
@@ -40,6 +42,7 @@ export default function AddToCartButton({
         slug,
         price,
         imageUrl,
+        minimumOrderQuantity,
         customization,
       },
       quantity

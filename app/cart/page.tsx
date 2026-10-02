@@ -236,7 +236,7 @@ export default function CartPage() {
                               }
                               disabled={
                                 item.quantity <=
-                                1
+                                (item.minimumOrderQuantity ?? 1)
                               }
                               className="h-full w-11 text-lg transition hover:bg-[#F1EDE3] disabled:cursor-not-allowed disabled:opacity-30"
                               aria-label={`Decrease quantity of ${item.name}`}
@@ -246,7 +246,9 @@ export default function CartPage() {
 
                             <input
                               type="number"
-                              min={1}
+                              min={
+                                item.minimumOrderQuantity ?? 1
+                              }
                               value={
                                 item.quantity
                               }
@@ -266,7 +268,7 @@ export default function CartPage() {
                                   updateQuantity(
                                     item.cartItemId,
                                     Math.max(
-                                      1,
+                                      item.minimumOrderQuantity ?? 1,
                                       Math.floor(
                                         value
                                       )
