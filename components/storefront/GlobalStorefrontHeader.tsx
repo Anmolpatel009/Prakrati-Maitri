@@ -99,16 +99,24 @@ export default function GlobalStorefrontHeader({
           {customization.items.map((item) => {
             if (item.type === "new") {
               return (
-                <a key={item.key} href="/shop">
-                  NEW
+                <a key={item.key} href={item.href ?? "/shop"}>
+                  {item.label ?? "NEW"}
                 </a>
               );
             }
 
             if (item.type === "reviews") {
               return (
-                <a key={item.key} href="/reviews">
-                  REVIEWS
+                <a key={item.key} href={item.href ?? "/reviews"}>
+                  {item.label ?? "REVIEWS"}
+                </a>
+              );
+            }
+
+            if (item.type === "link") {
+              return (
+                <a key={item.key} href={item.href ?? "#"}>
+                  {item.label ?? "LINK"}
                 </a>
               );
             }

@@ -7,12 +7,15 @@ export type NavbarItemType =
   | "category"
   | "subcategory"
   | "reviews"
-  | "bulk_orders";
+  | "bulk_orders"
+  | "link";
 
 export type NavbarItem = {
   key: string;
   type: NavbarItemType;
   id?: string;
+  label?: string;
+  href?: string;
 };
 
 export type NavbarCustomizationConfig = {

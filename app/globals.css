@@ -7,7 +7,7 @@
 ============================================================ */
 
 .shop-page {
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
   color: #3d3d3d;
   min-height: 100vh;
   overflow-x: hidden;
@@ -1536,7 +1536,7 @@
   width: min(560px, 100%);
   padding: 48px;
   border-radius: 24px;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
 }
 
@@ -1606,7 +1606,7 @@
 .bulk-order-page {
   min-height: 100vh;
   padding-bottom: 80px;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
 }
 
 .bulk-order-hero {
@@ -1686,7 +1686,7 @@
   width: 100%;
   border: 1px solid rgba(61, 61, 61, 0.15);
   border-radius: 12px;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
   padding: 13px 14px;
   color: #3d3d3d;
   font: inherit;
@@ -1793,7 +1793,7 @@
   width: min(560px, 100%);
   padding: 48px;
   border-radius: 24px;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
 }
 
@@ -1863,7 +1863,7 @@
 .bulk-order-page {
   min-height: 100vh;
   padding-bottom: 80px;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
 }
 
 .bulk-order-hero {
@@ -1943,7 +1943,7 @@
   width: 100%;
   border: 1px solid rgba(61, 61, 61, 0.15);
   border-radius: 12px;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
   padding: 13px 14px;
   color: #3d3d3d;
   font: inherit;
@@ -5129,7 +5129,7 @@
 .category-banner-frame {
   width: 100%;
   overflow: hidden;
-  background: #f9f7f2;
+  background: var(--site-background, #f9f7f2);
   border: 1px solid rgba(217, 200, 170, 0.75);
 }
 

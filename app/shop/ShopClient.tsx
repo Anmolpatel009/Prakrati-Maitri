@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+
 
 type Product = {
   id: string;
@@ -30,36 +30,7 @@ type ShopClientProps = {
 export default function ShopClient({
   products,
 }: ShopClientProps) {
-  const [activeCategory, setActiveCategory] = useState("all");
-
-  const categories = useMemo(() => {
-    const map = new Map<
-      string,
-      { name: string; slug: string }
-    >();
-
-    products.forEach((product) => {
-      if (product.category) {
-        map.set(product.category.slug, {
-          name: product.category.name,
-          slug: product.category.slug,
-        });
-      }
-    });
-
-    return Array.from(map.values());
-  }, [products]);
-
-  const filteredProducts = useMemo(() => {
-    if (activeCategory === "all") {
-      return products;
-    }
-
-    return products.filter(
-      (product) =>
-        product.category?.slug === activeCategory
-    );
-  }, [products, activeCategory]);
+  const filteredProducts = products;
 
   return (
     <main className="shop-page">
@@ -76,41 +47,6 @@ export default function ShopClient({
           living, thoughtfully designed with nature in mind.
         </p>
       </section>
-
-      {/* CATEGORY TABS */}
-      <nav
-        className="shop-categories"
-        aria-label="Product categories"
-      >
-        <button
-          type="button"
-          className={
-            activeCategory === "all"
-              ? "category-tab active"
-              : "category-tab"
-          }
-          onClick={() => setActiveCategory("all")}
-        >
-          All
-        </button>
-
-        {categories.map((category) => (
-          <button
-            key={category.slug}
-            type="button"
-            className={
-              activeCategory === category.slug
-                ? "category-tab active"
-                : "category-tab"
-            }
-            onClick={() =>
-              setActiveCategory(category.slug)
-            }
-          >
-            {category.name}
-          </button>
-        ))}
-      </nav>
 
       {/* COLLECTION */}
       <section className="shop-collection">
@@ -252,13 +188,7 @@ export default function ShopClient({
               There are no products in this collection yet.
             </p>
 
-            <button
-              type="button"
-              onClick={() => setActiveCategory("all")}
-              className="product-button"
-            >
-              View All Products
-            </button>
+
           </div>
         )}
       </section>

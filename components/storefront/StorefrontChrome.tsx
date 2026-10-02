@@ -39,6 +39,7 @@ export default function StorefrontChrome({
       style={{
         backgroundColor,
         minHeight: "100vh",
+        ["--site-background" as string]: backgroundColor,
       }}
     >
       {header}
