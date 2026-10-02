@@ -28,6 +28,7 @@ type ProductData = {
   sku: string | null;
   categoryName: string;
   availableQuantity: number;
+  minimum_order_quantity: number;
   images: ProductImage[];
 };
 
@@ -59,7 +60,14 @@ export default function ProductConfigurator({
 
   // IMPORTANT:
   // No artificial minimum of 100.
-  const [quantity, setQuantity] = useState(1);
+  const minimumOrderQuantity = Math.max(
+    1,
+    product.minimum_order_quantity ?? 1
+  );
+
+  const [quantity, setQuantity] = useState(
+    minimumOrderQuantity
+  );
 
   // =====================================================
   // CUSTOMIZATION
@@ -94,7 +102,7 @@ export default function ProductConfigurator({
 
   const decreaseQuantity = () => {
     setQuantity((current) =>
-      Math.max(1, current - 1)
+      Math.max(minimumOrderQuantity, current - 1)
     );
   };
 
@@ -104,7 +112,7 @@ export default function ProductConfigurator({
     const rawValue = event.target.value;
 
     if (rawValue === "") {
-      setQuantity(1);
+      setQuantity(minimumOrderQuantity);
       return;
     }
 
@@ -115,7 +123,10 @@ export default function ProductConfigurator({
     }
 
     setQuantity(
-      Math.max(1, Math.floor(value))
+      Math.max(
+        minimumOrderQuantity,
+        Math.floor(value)
+      )
     );
   };
 
@@ -202,6 +213,7 @@ export default function ProductConfigurator({
         price: unitPrice,
         imageUrl:
           product.images[0]?.image_url ?? null,
+        minimumOrderQuantity,
         customization: {
           type: purchaseMode,
           imageUrl: null,
@@ -471,7 +483,7 @@ export default function ProductConfigurator({
             <button
               type="button"
               onClick={decreaseQuantity}
-              disabled={quantity <= 1}
+              disabled={quantity <= minimumOrderQuantity}
               className="h-14 w-14 text-xl transition hover:bg-[#F1EDE3] disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Decrease quantity"
             >
@@ -480,7 +492,7 @@ export default function ProductConfigurator({
 
             <input
               type="number"
-              min={1}
+              min={minimumOrderQuantity}
               step={1}
               value={quantity}
               onChange={handleQuantityChange}
@@ -590,6 +602,7 @@ export default function ProductConfigurator({
                   product.images[0]?.image_url ??
                   null
                 }
+                minimumOrderQuantity={minimumOrderQuantity}
                 quantity={quantity}
                 customization={{
                   type: purchaseMode,
