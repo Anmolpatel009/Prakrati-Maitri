@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import GlobalStorefrontFooter from "@/components/storefront/GlobalStorefrontFooter";
 
 const HIDDEN_PREFIXES = [
   "/admin",
@@ -26,7 +27,8 @@ export default function StorefrontChrome({
 
   const isHidden = HIDDEN_PREFIXES.some(
     (prefix) =>
-      pathname === prefix || pathname.startsWith(`${prefix}/`),
+      pathname === prefix ||
+      pathname.startsWith(`${prefix}/`),
   );
 
   if (isHidden) {
@@ -44,6 +46,7 @@ export default function StorefrontChrome({
     >
       {header}
       {children}
+      <GlobalStorefrontFooter />
     </div>
   );
 }

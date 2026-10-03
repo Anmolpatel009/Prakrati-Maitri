@@ -29,11 +29,11 @@ export type NavbarCustomizationConfig = {
 };
 
 export const DEFAULT_NAVBAR_CUSTOMIZATION: NavbarCustomizationConfig = {
-  brand_font_family: "Georgia, serif",
-  brand_font_size: 28,
-  brand_font_weight: "500",
+  brand_font_family: "Montserrat, Arial, sans-serif",
+  brand_font_size: 21,
+  brand_font_weight: "400",
   brand_font_style: "normal",
-  brand_text_color: "#176B78",
+  brand_text_color: "#8B5A2B",
   background_color: "#F9F7F2",
   items: [
     { key: "new", type: "new" },
