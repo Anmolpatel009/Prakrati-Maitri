@@ -2,17 +2,18 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignupForm() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   async function handleSignup(
     event: FormEvent<HTMLFormElement>
@@ -20,7 +21,6 @@ export default function SignupForm() {
     event.preventDefault();
 
     setError("");
-    setSuccess(false);
 
     if (password.length < 8) {
       setError(
@@ -31,15 +31,10 @@ export default function SignupForm() {
 
     setLoading(true);
 
-    const { error } =
-      await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          emailRedirectTo:
-            `${window.location.origin}/auth/callback`,
-        },
-      });
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+    });
 
     setLoading(false);
 
@@ -48,46 +43,15 @@ export default function SignupForm() {
       return;
     }
 
-    setSuccess(true);
-  }
+    if (!data.session) {
+      setError(
+        "Account was created, but automatic sign-in was not available. Please try logging in."
+      );
+      return;
+    }
 
-  {/* ================================================= */}
-  {/* SUCCESS */}
-  {/* ================================================= */}
-
-  if (success) {
-    return (
-      <div className="rounded-3xl border border-[#D2B48C]/50 bg-[#F9F7F2] p-7 sm:p-8">
-
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F5E9] text-xl text-[#4A5D23]">
-          ✓
-        </div>
-
-        <h2 className="mt-5 font-serif text-3xl text-[#4A5D23]">
-          Check your email
-        </h2>
-
-        <p className="mt-4 text-sm leading-6 text-[#3D3D3D]/65">
-          We sent a verification link to{" "}
-          <strong className="font-semibold text-[#3D3D3D]">
-            {email}
-          </strong>
-          .
-        </p>
-
-        <p className="mt-2 text-sm leading-6 text-[#3D3D3D]/60">
-          Please verify your email before continuing.
-        </p>
-
-        <Link
-          href="/login"
-          className="mt-6 inline-flex rounded-full bg-[#4A5D23] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#3D4D1D] hover:shadow-lg"
-        >
-          Go to login
-        </Link>
-
-      </div>
-    );
+    router.push("/shop");
+    router.refresh();
   }
 
   {/* ================================================= */}
