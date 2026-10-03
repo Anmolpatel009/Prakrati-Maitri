@@ -233,7 +233,7 @@ export default async function SubcategoryPage({
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#F9F7F2] text-[#3D3D3D]">
+    <main className="min-h-screen collection-listing-page bg-[#F9F7F2] text-[#3D3D3D] shop-listing-page">
 
       {/* ================================================= */}
       {/* BREADCRUMB */}
@@ -274,7 +274,7 @@ export default async function SubcategoryPage({
       {/* HERO */}
       {/* ================================================= */}
 
-      <section className="px-6 pb-12 pt-8 md:px-10 lg:px-16">
+      <section className="shop-listing-promo">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-14 text-center md:px-12 md:py-20">
 
@@ -349,7 +349,7 @@ export default async function SubcategoryPage({
         <div className="mx-auto max-w-7xl">
 
           {preparedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
               {preparedProducts.map((product) => {
                 const primaryImage = product.images[0];

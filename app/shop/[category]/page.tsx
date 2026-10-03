@@ -172,15 +172,15 @@ export default async function CategoryPage({
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#F9F7F2] text-[#3D3D3D]">
+    <main className="min-h-screen collection-listing-page bg-[#F9F7F2] text-[#3D3D3D] shop-listing-page">
       {/* ================================================= */}
       {/* HERO */}
       {/* ================================================= */}
 
               {categoryBanner ? (
-          <CategoryBanner banner={categoryBanner} />
+          <div className="shop-listing-promo-slot"><CategoryBanner banner={categoryBanner} /></div>
         ) : (
-<section className="px-6 pb-12 pt-16 md:px-10 lg:px-16">
+<section className="shop-listing-promo">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-16 text-center md:px-12 md:py-24">
             <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
@@ -274,7 +274,7 @@ export default async function CategoryPage({
           </div>
 
           {preparedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {preparedProducts.map((product) => {
                 const primaryImage =
                   product.images[0];

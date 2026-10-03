@@ -113,10 +113,10 @@ export default function ProductCard({
   const reviewCount = product.reviewCount ?? null;
 
   const cardStyle = {
-    "--product-card-font-family": config.font_family,
-    "--product-card-font-size": `${config.font_size}px`,
-    "--product-card-text-color": config.text_color,
-    "--product-card-background": config.card_color,
+    "--product-card-font-family": "Montserrat, Arial, sans-serif",
+    "--product-card-font-size": "14px",
+    "--product-card-text-color": "#2E2118",
+    "--product-card-background": "#E9DCC3",
   } as CSSProperties;
 
   return (
