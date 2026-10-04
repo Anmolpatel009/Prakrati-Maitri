@@ -274,7 +274,7 @@ export default async function CategoryPage({
           </div>
 
           {preparedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="storefront-product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {preparedProducts.map((product) => {
                 const primaryImage =
                   product.images[0];

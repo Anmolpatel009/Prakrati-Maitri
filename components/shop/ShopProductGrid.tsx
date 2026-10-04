@@ -184,7 +184,7 @@ export default function ShopProductGrid({
       {/* PRODUCT GRID */}
       {filteredProducts.length > 0 ? (
 
-        <section className="product-grid">
+        <section className="product-grid storefront-product-grid">
 
           {filteredProducts.map((product) => {
 

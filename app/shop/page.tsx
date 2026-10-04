@@ -15,6 +15,7 @@ import CategoryBannerView from "@/components/shop/CategoryBanner";
 import type { CSSProperties } from "react";
 import { parseHomepageMerchandising } from "@/lib/shop/homepage-merchandising";
 import SharedProductCard from "@/components/shop/ProductCard";
+import NewArrivalsRail from "@/components/shop/NewArrivalsRail";
 import { getProductCardStyling } from "@/lib/shop/product-card-styling";
 import type { ProductCardStylingConfig } from "@/lib/shop/product-card-styling";
 
@@ -374,38 +375,10 @@ export default async function ShopPage() {
           </div>
 
 
-          <div className="new-arrivals-viewport">
-
-              <div className="new-arrivals-track">
-
-                <div className="new-arrivals-set">
-                  {featuredProducts.map((product) => (
-                    <SharedProductCard
-                      key={`new-arrivals-1-${product.id}`}
-                      product={product}
-                      config={productCardStyling}
-                    />
-                  ))}
-                </div>
-
-                <div
-                  className="new-arrivals-set"
-                  aria-hidden="true"
-                >
-                  {featuredProducts.map((product) => (
-                    <SharedProductCard
-                      key={`new-arrivals-2-${product.id}`}
-                      product={product}
-                      config={productCardStyling}
-                    />
-                  ))}
-                </div>
-
-              </div>
-
-            </div>
-
-        </div>
+          <NewArrivalsRail
+            products={featuredProducts}
+            config={productCardStyling}
+          />        </div>
 
       </section>
 
@@ -619,7 +592,7 @@ export default async function ShopPage() {
         </div>
 
 
-        <div className="product-grid product-grid-three">
+        <div className="product-grid product-grid-three storefront-product-grid">
 
           {mostLovedProducts.length > 0 ? (
             mostLovedProducts.map((product) => (
@@ -774,7 +747,7 @@ function CategoryProductSection({
           <a href={href}>View More →</a>
         </div>
 
-        <div className="product-grid category-product-grid">
+        <div className="product-grid category-product-grid storefront-product-grid">
           {products.length > 0 ? (
             products.map((product) => (
               <SharedProductCard

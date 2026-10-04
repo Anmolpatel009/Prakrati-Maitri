@@ -8576,3 +8576,692 @@
     gap: 12px !important;
   }
 }
+
+
+/* =========================================================
+   GLOBAL RESPONSIVE PRODUCT COLLECTIONS
+   Desktop: 4 cards / Mobile: 2 cards
+   Presentation-only. Core store functionality untouched.
+   ========================================================= */
+
+@media (min-width: 769px) {
+  .shop-page .product-grid,
+  .shop-page .product-grid-three,
+  .shop-page .product-grid-five,
+  .shop-page .category-product-grid,
+  .shop-page .homepage-category-product-grid,
+  .collection-listing-page .product-grid,
+  .collection-listing-page .product-grid-three,
+  .collection-listing-page .product-grid-five,
+  .collection-listing-page .category-product-grid,
+  .collections-page .product-grid,
+  .collections-page .product-grid-three,
+  .collections-page .product-grid-five,
+  .collections-results .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .shop-page .product-grid,
+  .shop-page .product-grid-three,
+  .shop-page .product-grid-five,
+  .shop-page .category-product-grid,
+  .shop-page .homepage-category-product-grid,
+  .collection-listing-page .product-grid,
+  .collection-listing-page .product-grid-three,
+  .collection-listing-page .product-grid-five,
+  .collection-listing-page .category-product-grid,
+  .collections-page .product-grid,
+  .collections-page .product-grid-three,
+  .collections-page .product-grid-five,
+  .collections-results .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+}
+
+/* =========================================================
+   NEW ARRIVALS — MOBILE
+   Desktop auto-scroll remains untouched.
+   Mobile shows 2 cards side-by-side.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-viewport {
+    width: 100% !important;
+    overflow: visible !important;
+    touch-action: manipulation !important;
+  }
+
+  .shop-page .new-arrivals-track {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    animation: none !important;
+  }
+
+  .shop-page .new-arrivals-set {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .shop-page .new-arrivals-set + .new-arrivals-set {
+    display: none !important;
+  }
+
+  .shop-page .new-arrivals-set .product-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: none !important;
+  }
+}
+
+/* =========================================================
+   MOBILE COLLECTION HEADER
+   Prevent long title / "View More" collision.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .homepage-category-showcase .collection-box-header,
+  .shop-page .category-editorial-group .collection-box-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 12px !important;
+    align-items: end !important;
+  }
+
+  .shop-page .homepage-category-showcase .collection-box-header > div,
+  .shop-page .category-editorial-group .collection-box-header > div {
+    min-width: 0 !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  .shop-page .homepage-category-showcase .collection-box-header h3,
+  .shop-page .category-editorial-group .collection-box-header h3 {
+    margin: 0 !important;
+    font-size: 28px !important;
+    line-height: 1.08 !important;
+  }
+
+  .shop-page .homepage-category-showcase .collection-box-header > a,
+  .shop-page .category-editorial-group .collection-box-header > a {
+    position: static !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    margin: 0 !important;
+    align-self: end !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+}
+
+
+/* =========================================================
+   FINAL STOREFRONT PRODUCT GRID — 4 DESKTOP / 2 MOBILE
+   Presentation-only. No store/business functionality.
+   ========================================================= */
+
+.storefront-product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .storefront-product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+}
+
+/* =========================================================
+   NEW ARRIVALS — MOBILE TOUCH CAROUSEL
+   Two cards visible at once.
+   Native horizontal scrolling enables finger swipe.
+   Desktop behavior is untouched.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-viewport {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+    scroll-snap-type: x mandatory !important;
+    scrollbar-width: none !important;
+    touch-action: pan-x !important;
+  }
+
+  .shop-page .new-arrivals-viewport::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .shop-page .new-arrivals-track {
+    display: block !important;
+    width: max-content !important;
+    max-width: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .shop-page .new-arrivals-set {
+    display: grid !important;
+    grid-auto-flow: column !important;
+    grid-template-rows: minmax(0, auto) !important;
+    grid-auto-columns: calc(
+      (100vw - 32px - 12px) / 2
+    ) !important;
+    gap: 12px !important;
+    width: max-content !important;
+    padding: 0 !important;
+    scroll-snap-align: start !important;
+  }
+
+  .shop-page .new-arrivals-set .product-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+
+  /*
+   * The second set exists only for the desktop seamless
+   * animation. On mobile we expose the real first set so
+   * the user can finger-scroll through the actual products
+   * without seeing duplicate cards.
+   */
+  .shop-page .new-arrivals-set + .new-arrivals-set {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   MOBILE COLLECTION HEADER
+   Keep heading and View More separated.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-section
+    .collection-box-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .shop-page .new-arrivals-section
+    .collection-box-header > div {
+    min-width: 0 !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  .shop-page .new-arrivals-section
+    .collection-box-header h3 {
+    margin: 0 !important;
+    font-size: 28px !important;
+    line-height: 1.08 !important;
+  }
+
+  .shop-page .new-arrivals-section
+    .collection-box-header > a {
+    position: static !important;
+    transform: none !important;
+    margin: 0 !important;
+    align-self: end !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+}
+
+/* =========================================================
+   NEW ARRIVALS — RESTORED CONTINUOUS MOVING RAIL
+   Desktop and mobile remain continuously moving.
+   Mobile supports finger drag/swipe.
+   ========================================================= */
+
+.shop-page .new-arrivals-viewport {
+  width: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+  touch-action: pan-y !important;
+  cursor: grab !important;
+  user-select: none !important;
+}
+
+.shop-page .new-arrivals-viewport:active {
+  cursor: grabbing !important;
+}
+
+.shop-page .new-arrivals-track {
+  display: flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  will-change: transform !important;
+  animation: none !important;
+}
+
+.shop-page .new-arrivals-set {
+  flex: 0 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: calc(100vw - 48px) !important;
+  margin: 0 !important;
+  padding: 0 24px !important;
+  box-sizing: border-box !important;
+}
+
+.shop-page .new-arrivals-set .product-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  flex: none !important;
+}
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-viewport {
+    overflow-x: hidden !important;
+    touch-action: pan-y !important;
+  }
+
+  .shop-page .new-arrivals-set {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: calc(100vw - 32px) !important;
+    padding: 0 16px !important;
+  }
+}
+
+/* =========================================================
+   COLLECTION HEADERS — RESPONSIVE AUTO-ADJUST
+   No absolute positioning on mobile.
+   Long future titles wrap naturally.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .collection-box-header {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    gap: 10px 12px !important;
+    width: 100% !important;
+  }
+
+  .shop-page .collection-box-header > div {
+    flex: 1 1 220px !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  .shop-page .collection-box-header h3 {
+    max-width: 100% !important;
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    line-height: 1.08 !important;
+  }
+
+  .shop-page .collection-box-header > a {
+    position: static !important;
+    flex: 0 0 auto !important;
+    align-self: flex-end !important;
+    margin: 0 0 2px auto !important;
+    transform: none !important;
+    white-space: nowrap !important;
+    line-height: 1.3 !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .shop-page .collection-box-header {
+    align-items: flex-start !important;
+  }
+
+  .shop-page .collection-box-header > div {
+    flex-basis: 100% !important;
+  }
+
+  .shop-page .collection-box-header > a {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    align-self: flex-start !important;
+  }
+}
+
+/* =========================================================
+   NEW ARRIVALS — RESTORE ORIGINAL DESKTOP RAIL
+   Desktop card dimensions intentionally restored to the
+   previous fixed 260px product-card design.
+   ========================================================= */
+
+.shop-page .new-arrivals-viewport {
+  width: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  touch-action: pan-y !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: grab !important;
+}
+
+.shop-page .new-arrivals-viewport:active {
+  cursor: grabbing !important;
+}
+
+.shop-page .new-arrivals-track {
+  display: flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  animation: none !important;
+  will-change: transform !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.shop-page .new-arrivals-set {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  gap: 24px !important;
+  width: max-content !important;
+  padding: 0 24px 0 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.shop-page .new-arrivals-set .product-card {
+  flex: 0 0 260px !important;
+  width: 260px !important;
+  min-width: 260px !important;
+  max-width: 260px !important;
+}
+
+/* Eliminate stray rail-side lines/borders. */
+.shop-page .new-arrivals-viewport::before,
+.shop-page .new-arrivals-viewport::after,
+.shop-page .new-arrivals-track::before,
+.shop-page .new-arrivals-track::after,
+.shop-page .new-arrivals-set::before,
+.shop-page .new-arrivals-set::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* =========================================================
+   NEW ARRIVALS — MOBILE
+   Two cards visible while the same rail continuously moves.
+   Finger drag controls the same moving rail.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-viewport {
+    overflow: hidden !important;
+    touch-action: pan-y !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .shop-page .new-arrivals-track {
+    display: flex !important;
+    width: max-content !important;
+    max-width: none !important;
+    animation: none !important;
+  }
+
+  .shop-page .new-arrivals-set {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    gap: 12px !important;
+    width: max-content !important;
+    padding: 0 16px 0 16px !important;
+    margin: 0 !important;
+  }
+
+  .shop-page .new-arrivals-set .product-card {
+    flex: 0 0 calc((100vw - 44px) / 2) !important;
+    width: calc((100vw - 44px) / 2) !important;
+    min-width: calc((100vw - 44px) / 2) !important;
+    max-width: calc((100vw - 44px) / 2) !important;
+  }
+}
+
+/* =========================================================
+   COLLECTION HEADERS — AUTOMATIC MOBILE ADJUSTMENT
+   Higher-specificity overrides neutralize old absolute
+   positioning. Long future client titles wrap naturally.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header,
+  .shop-page .homepage-category-showcase .collection-box-header {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    gap: 10px 12px !important;
+    width: 100% !important;
+    margin: 0 0 28px !important;
+    padding: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header > div,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header > div,
+  .shop-page .homepage-category-showcase .collection-box-header > div {
+    flex: 1 1 220px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    margin: 0 !important;
+    text-align: left !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header h3,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header h3,
+  .shop-page .homepage-category-showcase .collection-box-header h3 {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    line-height: 1.08 !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header > a,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header > a,
+  .shop-page .homepage-category-showcase .collection-box-header > a {
+    position: static !important;
+    flex: 0 1 auto !important;
+    min-width: max-content !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 0 2px auto !important;
+    padding: 0 !important;
+    transform: none !important;
+    white-space: nowrap !important;
+    align-self: flex-end !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header > div,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header > div,
+  .shop-page .homepage-category-showcase .collection-box-header > div {
+    flex-basis: 100% !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header > a,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header > a,
+  .shop-page .homepage-category-showcase .collection-box-header > a {
+    margin-left: 0 !important;
+    align-self: flex-start !important;
+  }
+}
+
+/* =========================================================
+   MOBILE COLLECTION HEADER — VIEW MORE BELOW HEADING
+   Mobile only. Preserve existing spacing to product cards.
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header,
+  .shop-page .homepage-category-showcase .collection-box-header {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 28px !important;
+    padding: 0 !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header > div,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header > div,
+  .shop-page .homepage-category-showcase .collection-box-header > div {
+    width: 100% !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header h3,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header h3,
+  .shop-page .homepage-category-showcase .collection-box-header h3 {
+    width: 100% !important;
+    margin: 0 !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.08 !important;
+  }
+
+  .shop-page .new-arrivals-section > .collection-box > .collection-box-header > a,
+  .shop-page .category-editorial-group .category-product-section .collection-box-header > a,
+  .shop-page .homepage-category-showcase .collection-box-header > a {
+    position: static !important;
+    display: inline-block !important;
+    width: auto !important;
+    margin: 6px 0 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    white-space: nowrap !important;
+    align-self: initial !important;
+  }
+}
+
+/* =========================================================
+   NEW ARRIVALS — FINAL MOVING RAIL
+   Native horizontal scroll + continuous automatic movement.
+   Product dimensions remain unchanged on desktop.
+   ========================================================= */
+
+.shop-page .new-arrivals-viewport {
+  width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  position: relative !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  touch-action: pan-x !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  cursor: grab !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.shop-page .new-arrivals-viewport::-webkit-scrollbar {
+  display: none !important;
+}
+
+.shop-page .new-arrivals-viewport:active {
+  cursor: grabbing !important;
+}
+
+/* Remove every previous transform/animation override. */
+.shop-page .new-arrivals-track {
+  display: flex !important;
+  width: max-content !important;
+  max-width: none !important;
+  animation: none !important;
+  transform: none !important;
+  will-change: auto !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.shop-page .new-arrivals-set {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  gap: 24px !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  padding: 0 24px 0 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Desktop: restore original product dimensions. */
+.shop-page .new-arrivals-set .product-card {
+  flex: 0 0 260px !important;
+  width: 260px !important;
+  min-width: 260px !important;
+  max-width: 260px !important;
+}
+
+/* Never show decorative vertical lines beside the rail. */
+.shop-page .new-arrivals-viewport::before,
+.shop-page .new-arrivals-viewport::after,
+.shop-page .new-arrivals-track::before,
+.shop-page .new-arrivals-track::after,
+.shop-page .new-arrivals-set::before,
+.shop-page .new-arrivals-set::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Mobile: exactly two cards visible. */
+@media (max-width: 768px) {
+  .shop-page .new-arrivals-set {
+    gap: 12px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .shop-page .new-arrivals-set .product-card {
+    flex: 0 0 calc((100vw - 44px) / 2) !important;
+    width: calc((100vw - 44px) / 2) !important;
+    min-width: calc((100vw - 44px) / 2) !important;
+    max-width: calc((100vw - 44px) / 2) !important;
+  }
+}

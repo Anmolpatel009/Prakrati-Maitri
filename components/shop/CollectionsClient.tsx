@@ -310,7 +310,7 @@ export default function CollectionsClient({
           </div>
 
           {filteredProducts.length > 0 ? (
-            <div className="product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="storefront-product-grid product-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {filteredProducts.map((product) => {
                 const discount =
                   product.compareAtPrice !== null &&

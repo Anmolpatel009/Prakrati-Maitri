@@ -130,6 +130,7 @@ export default function ProductCard({
       onMouseLeave={stopImageCycle}
       onFocus={startImageCycle}
       onBlur={stopImageCycle}
+
     >
       <div className="product-card-shared-image">
         {image ? (

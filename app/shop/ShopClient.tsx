@@ -68,7 +68,7 @@ export default function ShopClient({
         </div>
 
         {filteredProducts.length > 0 ? (
-          <div className="product-grid">
+          <div className="product-grid storefront-product-grid">
             {filteredProducts.map((product) => {
               const discount =
                 product.compareAtPrice &&
