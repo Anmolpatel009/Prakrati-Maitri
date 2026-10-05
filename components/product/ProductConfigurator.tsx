@@ -462,9 +462,56 @@ export default function ProductConfigurator({
             </p>
 
             {product.short_description && (
-              <p className="pdp-short">
-                {product.short_description}
-              </p>
+              <ul
+                className="pdp-short-list"
+                aria-label="Product highlights"
+              >
+                {product.short_description
+                  .trim()
+                  .replace(/\\s*[\\r\\n]+\\s*/g, " ")
+                  .split(/\\s*(?:•|\\u2022)\\s*/)
+                  .flatMap((part) =>
+                    part
+                      .split(
+                        /\\s+-\\s+(?=[A-Za-z][A-Za-z0-9 &/()%,.+-]{0,32}:\\s)/
+                      )
+                  )
+                  .map((item) => item.trim())
+                  .filter(Boolean)
+                  .map((item, index) => {
+                    const separator = item.indexOf(":");
+                    const hasLabel =
+                      separator > 0 &&
+                      separator <= 40;
+
+                    const label = hasLabel
+                      ? item.slice(0, separator).trim()
+                      : "";
+
+                    const value = hasLabel
+                      ? item.slice(separator + 1).trim()
+                      : item;
+
+                    return (
+                      <li key={`${index}-${item}`}>
+                        <span
+                          className="pdp-short-bullet"
+                          aria-hidden="true"
+                        />
+                        <span>
+                          {hasLabel ? (
+                            <>
+                              <strong>{label}:</strong>{" "}
+                              {value}
+                            </>
+                          ) : (
+                            value
+                          )}
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
             )}
 
             <p className="pdp-label">
@@ -502,28 +549,6 @@ export default function ProductConfigurator({
                 ref={customizationRef}
                 className="pdp-customization"
               >
-                <p className="pdp-label">
-                  Print side
-                </p>
-
-                <div className="pdp-chips">
-                  <button
-                    type="button"
-                    className="pdp-chip"
-                    aria-pressed="false"
-                  >
-                    Front
-                  </button>
-
-                  <button
-                    type="button"
-                    className="pdp-chip pdp-chip-active"
-                    aria-pressed="true"
-                  >
-                    Front + Back
-                  </button>
-                </div>
-
                 <p className="pdp-label">
                   Your logo
                 </p>
@@ -750,6 +775,9 @@ export default function ProductConfigurator({
           </div>
 
           <div className="pdp-faq">
+            <h3 className="pdp-faq-title">
+              Frequently asked questions
+            </h3>
             <details>
               <summary>
                 Bulk and corporate orders
@@ -776,6 +804,13 @@ export default function ProductConfigurator({
               <p>
                 Every order comes with a GST invoice
                 for your business records.
+              </p>
+            </details>
+            <details>
+              <summary>How can I order products with my logo?</summary>
+              <p>
+                Select the Custom logo option on the product page and upload your logo while configuring the product.
+                The available customization options depend on the product.
               </p>
             </details>
           </div>

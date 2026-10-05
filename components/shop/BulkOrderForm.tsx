@@ -20,13 +20,53 @@ type Props = {
   products: Product[];
 };
 
-export default function BulkOrderForm({
-  categories,
-  products,
-}: Props) {
-  const router = useRouter();
+const TIMELINE_OPTIONS = [
+  {
+    value: "urgent",
+    title: "Urgent",
+    subtitle: "as soon as possible",
+  },
+  {
+    value: "within_7_days",
+    title: "Within a week",
+    subtitle: "7 days",
+  },
+  {
+    value: "within_15_days",
+    title: "Within 15 days",
+    subtitle: "2 weeks",
+  },
+  {
+    value: "flexible",
+    title: "Flexible",
+    subtitle: "more than 15 days",
+  },
+] as const;
 
-  const [form, setForm] = useState({
+const PLANNING_OPTIONS = [
+  "Tote Bags",
+  "Printed Tote Bags",
+  "Conference Bags & Kits",
+  "Customize Bags",
+  "Hamper Bags",
+  "Hand Bags",
+  "Packaging Bags",
+  "Not sure yet",
+] as const;
+
+const PURPOSE_OPTIONS = [
+  "Corporate gifting",
+  "Business use",
+  "Events",
+  "Event or conference",
+  "Retail or shop packaging",
+  "Promotion or branding",
+  "Wedding or festive",
+  "Other",
+];
+
+function makeInitialForm() {
+  return {
     name: "",
     mobile: "",
     email: "",
@@ -36,13 +76,21 @@ export default function BulkOrderForm({
     quantity: "",
     purpose: "",
     message: "",
-  });
+    bagSize: "",
+    deliveryPincode: "",
+    deliveryTimeline: "",
+  };
+}
 
+export default function BulkOrderForm({ categories, products }: Props) {
+  const router = useRouter();
+
+  const [form, setForm] = useState(makeInitialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [referenceImage, setReferenceImage] =
-    useState<File | null>(null);
+  const [referenceImage, setReferenceImage] = useState<File | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     if (!form.categoryId) return products;
@@ -53,13 +101,29 @@ export default function BulkOrderForm({
   }, [products, form.categoryId]);
 
   function updateField(
-    field: keyof typeof form,
+    field: Exclude<keyof typeof form, "planning">,
     value: string
   ) {
     setForm((current) => ({
       ...current,
       [field]: value,
     }));
+  }
+
+  const [notSureSelected, setNotSureSelected] = useState(false);
+
+  function handleNotSureSelection() {
+    setNotSureSelected((current) => !current);
+    setForm((current) => ({
+      ...current,
+      categoryId: "",
+      productId: "",
+    }));
+    setMoreOpen(true);
+
+    window.setTimeout(() => {
+      document.getElementById("bulk-category")?.focus();
+    }, 0);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -71,8 +135,9 @@ export default function BulkOrderForm({
       return;
     }
 
-    if (form.mobile.trim().length < 10) {
-      setError("Please enter a valid mobile number.");
+    const mobileDigits = form.mobile.replace(/\D/g, "");
+    if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
+      setError("Please enter a valid 10-digit mobile number.");
       return;
     }
 
@@ -83,15 +148,33 @@ export default function BulkOrderForm({
 
     if (!form.categoryId && !form.productId) {
       setError(
-        "Please select a category or product you're interested in."
+        "Please select a category or product in Add more details for an accurate quote."
       );
+      setMoreOpen(true);
       return;
     }
 
     if (!form.purpose.trim()) {
-      setError(
-        "Please tell us the purpose of your bulk purchase."
-      );
+      setError("Please tell us the purpose of your bulk purchase.");
+      setMoreOpen(true);
+      return;
+    }
+
+    if (
+      form.deliveryPincode.trim() &&
+      !/^\d{6}$/.test(form.deliveryPincode.trim())
+    ) {
+      setError("Please enter a valid 6-digit delivery pincode.");
+      setMoreOpen(true);
+      return;
+    }
+
+    if (
+      form.email.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
+    ) {
+      setError("Please enter a valid email address.");
+      setMoreOpen(true);
       return;
     }
 
@@ -103,16 +186,14 @@ export default function BulkOrderForm({
       ];
 
       if (!allowedTypes.includes(referenceImage.type)) {
-        setError(
-          "Reference image must be JPG, PNG or WebP."
-        );
+        setError("Reference image must be JPG, PNG or WebP.");
+        setMoreOpen(true);
         return;
       }
 
       if (referenceImage.size > 5 * 1024 * 1024) {
-        setError(
-          "Reference image must be smaller than 5MB."
-        );
+        setError("Reference image must be smaller than 5MB.");
+        setMoreOpen(true);
         return;
       }
     }
@@ -129,8 +210,7 @@ export default function BulkOrderForm({
           "image/webp": "webp",
         };
 
-        const extension =
-          extensionByType[referenceImage.type];
+        const extension = extensionByType[referenceImage.type];
 
         referenceImagePath =
           `bulk-orders/${crypto.randomUUID()}.${extension}`;
@@ -147,13 +227,11 @@ export default function BulkOrderForm({
           }
         );
 
-        const uploadResult =
-          await uploadResponse.json();
+        const uploadResult = await uploadResponse.json();
 
         if (!uploadResponse.ok) {
           throw new Error(
-            uploadResult.error ||
-              "Unable to upload reference image."
+            uploadResult.error || "Unable to upload reference image."
           );
         }
 
@@ -168,6 +246,8 @@ export default function BulkOrderForm({
         },
         body: JSON.stringify({
           ...form,
+          mobile: `+91${mobileDigits}`,
+          message: form.message.trim() || null,
           referenceImagePath,
         }),
       });
@@ -181,10 +261,11 @@ export default function BulkOrderForm({
       }
 
       setSuccess(true);
-    } catch (err) {
+      router.refresh();
+    } catch (submitError) {
       setError(
-        err instanceof Error
-          ? err.message
+        submitError instanceof Error
+          ? submitError.message
           : "Unable to submit enquiry."
       );
     } finally {
@@ -192,194 +273,434 @@ export default function BulkOrderForm({
     }
   }
 
+  function resetForm() {
+    setForm(makeInitialForm());
+    setReferenceImage(null);
+    setError("");
+    setSuccess(false);
+    setMoreOpen(false);
+    setNotSureSelected(false);
+  }
+
+  const whatsappText = encodeURIComponent(
+    [
+      "Hi Prakriti Maitri, I would like a bulk quote.",
+      form.name && `Name: ${form.name}`,
+      form.mobile && `Mobile: +91 ${form.mobile.replace(/\D/g, "")}`,
+      form.quantity && `Quantity: ${form.quantity}`,
+      form.bagSize && `Bag size: ${form.bagSize}`,
+      form.deliveryPincode && `Pincode: ${form.deliveryPincode}`,
+      form.deliveryTimeline &&
+        `Needed: ${
+          TIMELINE_OPTIONS.find(
+            (item) => item.value === form.deliveryTimeline
+          )?.title ?? form.deliveryTimeline
+        }`,
+      form.purpose && `Purpose: ${form.purpose}`,
+      form.businessName && `Business: ${form.businessName}`,
+      form.message && `Notes: ${form.message}`,
+    ]
+      .filter(Boolean)
+      .join("\n")
+  );
+
+  const whatsappHref = `https://wa.me/919232040020?text=${whatsappText}`;
+
   if (success) {
     return (
-      <div className="bulk-order-success">
-        <span className="bulk-order-eyebrow">THANK YOU</span>
-
-        <h2>Your enquiry has been received.</h2>
-
+      <div className="bulk-order-reference-form-state">
+        <div className="bulk-order-reference-success-icon" aria-hidden="true">
+          ✓
+        </div>
+        <h2>Thank you{form.name ? `, ${form.name.split(/\s+/)[0]}` : ""}</h2>
         <p>
-          We&apos;ve received your bulk order interest. Our team will review
-          your requirements and get in touch with you.
+          Your bulk enquiry is in. Our team will connect with you on call or
+          WhatsApp.
         </p>
+
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bulk-order-reference-whatsapp"
+        >
+          Chat with us on WhatsApp
+        </a>
 
         <button
           type="button"
-          onClick={() => router.push("/shop")}
-          className="bulk-order-submit"
+          className="bulk-order-reference-link"
+          onClick={resetForm}
         >
-          Continue Shopping →
+          Send another enquiry
         </button>
       </div>
     );
   }
 
   return (
-    <form className="bulk-order-form" onSubmit={handleSubmit}>
-      <div className="bulk-order-form-heading">
-        <h2>Tell us what you need</h2>
-        <p>
-          Share a few details and we&apos;ll take it from there.
-        </p>
+    <form
+      className="bulk-order-reference-form"
+      onSubmit={handleSubmit}
+      noValidate
+    >
+      <div className="bulk-order-reference-form-heading">
+        <h2 id="bulk-order-quote-title">Get a bulk quote</h2>
+        <p>Three quick details. Our team will connect with you.</p>
       </div>
 
-      <div className="bulk-order-form-grid">
-        <label>
-          Full Name *
+      <fieldset>
+        <legend className="bulk-order-reference-label">
+          What are you planning? <span>optional</span>
+        </legend>
+
+        <div className="bulk-order-reference-tiles">
+          {PLANNING_OPTIONS.map((option) => {
+            const isNotSure = option === "Not sure yet";
+            const checked = isNotSure
+              ? notSureSelected
+              : false;
+
+            return (
+              <label
+                key={option}
+                className={`bulk-order-reference-tile${
+                  checked ? " is-selected" : ""
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={() => {
+                    if (isNotSure) {
+                      handleNotSureSelection();
+                    }
+                  }}
+                />
+                <span
+                  className="bulk-order-reference-tile-icon"
+                  aria-hidden="true"
+                >
+                  {isNotSure ? "?" : "◇"}
+                </span>
+                <span>{option}</span>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      <div className="bulk-order-reference-row2 first">
+        <div className="bulk-order-reference-field">
+          <label htmlFor="bulk-name">Full Name <span>*</span></label>
           <input
+            id="bulk-name"
             value={form.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            placeholder="Your name"
+            onChange={(event) => updateField("name", event.target.value)}
+            placeholder="Ravi Sharma"
+            autoComplete="name"
           />
-        </label>
+        </div>
 
-        <label>
-          Mobile Number *
-          <input
-            value={form.mobile}
-            onChange={(e) => updateField("mobile", e.target.value)}
-            placeholder="10-digit mobile number"
-            inputMode="tel"
-          />
-        </label>
-
-        <label>
-          Email
-          <input
-            type="email"
-            value={form.email}
-            onChange={(e) => updateField("email", e.target.value)}
-            placeholder="you@example.com"
-          />
-        </label>
-
-        <label>
-          Business Name
-          <input
-            value={form.businessName}
-            onChange={(e) =>
-              updateField("businessName", e.target.value)
-            }
-            placeholder="Business / organisation name"
-          />
-        </label>
-
-        <label>
-          Interested Category
-          <select
-            value={form.categoryId}
-            onChange={(e) => {
-              updateField("categoryId", e.target.value);
-              updateField("productId", "");
-            }}
-          >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Interested Product
-          <select
-            value={form.productId}
-            onChange={(e) =>
-              updateField("productId", e.target.value)
-            }
-          >
-            <option value="">Select a product</option>
-            {filteredProducts.map((product) => (
-              <option key={product.id} value={product.id}>
-                {product.name}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Expected Quantity *
-          <input
-            type="number"
-            min="1"
-            value={form.quantity}
-            onChange={(e) =>
-              updateField("quantity", e.target.value)
-            }
-            placeholder="e.g. 100"
-          />
-        </label>
-
-        <label>
-          Purpose of Purchase *
-          <select
-            value={form.purpose}
-            onChange={(e) =>
-              updateField("purpose", e.target.value)
-            }
-          >
-            <option value="">Select purpose</option>
-            <option value="Corporate gifting">
-              Corporate gifting
-            </option>
-            <option value="Business use">
-              Business use
-            </option>
-            <option value="Events">
-              Events
-            </option>
-            <option value="Retail / resale">
-              Retail / resale
-            </option>
-            <option value="Wedding / celebration">
-              Wedding / celebration
-            </option>
-            <option value="Personal bulk requirement">
-              Personal bulk requirement
-            </option>
-            <option value="Other">
-              Other
-            </option>
-          </select>
-        </label>
+        <div className="bulk-order-reference-field">
+          <label htmlFor="bulk-mobile">Mobile Number <span>*</span></label>
+          <div className="bulk-order-reference-phone">
+            <span aria-hidden="true">+91</span>
+            <input
+              id="bulk-mobile"
+              value={form.mobile}
+              onChange={(event) =>
+                updateField(
+                  "mobile",
+                  event.target.value.replace(/\D/g, "").slice(0, 10)
+                )
+              }
+              placeholder="98765 43210"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              maxLength={10}
+            />
+          </div>
+        </div>
       </div>
 
-      <label className="bulk-order-full-field">
-        Additional Requirements
-        <textarea
-          value={form.message}
-          onChange={(e) =>
-            updateField("message", e.target.value)
-          }
-          placeholder="Tell us about colours, customisation, delivery timeline, branding or anything else..."
-          rows={5}
-        />
-      </label>
+      <fieldset>
+        <legend className="bulk-order-reference-label">
+          Expected quantity <span>*</span>
+        </legend>
 
-      <label className="bulk-order-full-field">
-        Reference Image
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={(e) =>
-            setReferenceImage(e.target.files?.[0] ?? null)
-          }
-        />
-        <span className="bulk-order-file-help">
-          Optional. Upload a JPG, PNG or WebP reference image, up to 5MB.
-        </span>
-        {referenceImage && (
-          <span className="bulk-order-file-selected">
-            Selected: {referenceImage.name}
+        <div className="bulk-order-reference-pills">
+          {[
+            ["100", "100–499"],
+            ["500", "500–999"],
+            ["1000", "1,000–4,999"],
+            ["5000", "5,000+"],
+          ].map(([value, label]) => (
+            <label
+              key={value}
+              className={`bulk-order-reference-pill${
+                form.quantity === value ? " is-selected" : ""
+              }`}
+            >
+              <input
+                type="radio"
+                name="quantity"
+                value={value}
+                checked={form.quantity === value}
+                onChange={(event) =>
+                  updateField("quantity", event.target.value)
+                }
+              />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div
+        className={`bulk-order-reference-more${
+          moreOpen ? " is-open" : ""
+        }`}
+      >
+        <button
+          type="button"
+          className="bulk-order-reference-more-head"
+          aria-expanded={moreOpen}
+          onClick={() => setMoreOpen((open) => !open)}
+        >
+          <span className="bulk-order-reference-more-icon" aria-hidden="true">
+            ⊕
           </span>
+
+          <span>
+            <span className="bulk-order-reference-more-title">
+              Add more details
+              <span className="bulk-order-reference-badge">Faster quote</span>
+            </span>
+            <span className="bulk-order-reference-more-sub">
+              Bag size, delivery pincode, when you need it, purpose, reference image
+            </span>
+          </span>
+
+          <span className="bulk-order-reference-toggle" aria-hidden="true">
+            {moreOpen ? "−" : "+"}
+          </span>
+        </button>
+
+        {moreOpen && (
+          <div className="bulk-order-reference-more-body">
+            <div className="bulk-order-reference-row2">
+              <div className="bulk-order-reference-field">
+                <label htmlFor="bulk-size">Expected bag size</label>
+                <input
+                  id="bulk-size"
+                  value={form.bagSize}
+                  onChange={(event) =>
+                    updateField("bagSize", event.target.value)
+                  }
+                  placeholder="e.g. 14 x 16 inch"
+                />
+              </div>
+
+              <div className="bulk-order-reference-field">
+                <label htmlFor="bulk-pincode">Delivery pincode</label>
+                <input
+                  id="bulk-pincode"
+                  value={form.deliveryPincode}
+                  onChange={(event) =>
+                    updateField(
+                      "deliveryPincode",
+                      event.target.value.replace(/\D/g, "").slice(0, 6)
+                    )
+                  }
+                  placeholder="462016"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  maxLength={6}
+                />
+              </div>
+            </div>
+
+            <fieldset className="bulk-order-reference-field">
+              <legend>When do you need the bags?</legend>
+
+              <div className="bulk-order-reference-when">
+                {TIMELINE_OPTIONS.map((option) => (
+                  <label
+                    key={option.value}
+                    className={`bulk-order-reference-when-card${
+                      form.deliveryTimeline === option.value
+                        ? " is-selected"
+                        : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="deliveryTimeline"
+                      value={option.value}
+                      checked={form.deliveryTimeline === option.value}
+                      onChange={(event) =>
+                        updateField(
+                          "deliveryTimeline",
+                          event.target.value
+                        )
+                      }
+                    />
+                    <span>
+                      <strong>{option.title}</strong>
+                      <small>{option.subtitle}</small>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className="bulk-order-reference-field">
+              <label htmlFor="bulk-purpose">Purpose of purchase</label>
+              <select
+                id="bulk-purpose"
+                value={form.purpose}
+                onChange={(event) =>
+                  updateField("purpose", event.target.value)
+                }
+              >
+                <option value="">Select purpose</option>
+                {PURPOSE_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="bulk-order-reference-row2">
+              <div className="bulk-order-reference-field">
+                <label htmlFor="bulk-category">Interested Category</label>
+                <select
+                  id="bulk-category"
+                  value={form.categoryId}
+                  onChange={(event) => {
+                    updateField("categoryId", event.target.value);
+                    updateField("productId", "");
+                    setNotSureSelected(false);
+                  }}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="bulk-order-reference-field">
+                <label htmlFor="bulk-product">Interested Product</label>
+                <select
+                  id="bulk-product"
+                  value={form.productId}
+                  onChange={(event) => {
+                    updateField("productId", event.target.value);
+                    setNotSureSelected(false);
+                  }}
+                >
+                  <option value="">Select a product</option>
+                  {filteredProducts.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="bulk-order-reference-field" id="bulk-reference-file-field">
+              <span className="bulk-order-reference-field-label">
+                Reference image
+              </span>
+
+              <label
+                htmlFor="bulk-reference-image"
+                className="bulk-order-reference-drop"
+              >
+                <span className="bulk-order-reference-drop-icon" aria-hidden="true">
+                  ⇧
+                </span>
+                <strong>Upload a reference image or your logo</strong>
+                <small>JPG, PNG or WebP, up to 5MB</small>
+              </label>
+
+              <input
+                id="bulk-reference-image"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="bulk-order-reference-file-input"
+                onChange={(event) =>
+                  setReferenceImage(event.target.files?.[0] ?? null)
+                }
+              />
+
+              {referenceImage && (
+                <div className="bulk-order-reference-file-selected">
+                  <span>{referenceImage.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setReferenceImage(null)}
+                    aria-label="Remove reference image"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="bulk-order-reference-row2">
+              <div className="bulk-order-reference-field">
+                <label htmlFor="bulk-email">Email</label>
+                <input
+                  id="bulk-email"
+                  type="email"
+                  value={form.email}
+                  onChange={(event) =>
+                    updateField("email", event.target.value)
+                  }
+                  placeholder="name@company.com"
+                  autoComplete="email"
+                />
+              </div>
+
+              <div className="bulk-order-reference-field">
+                <label htmlFor="bulk-business">Business Name</label>
+                <input
+                  id="bulk-business"
+                  value={form.businessName}
+                  onChange={(event) =>
+                    updateField("businessName", event.target.value)
+                  }
+                  placeholder="Acme Pvt Ltd"
+                  autoComplete="organization"
+                />
+              </div>
+            </div>
+
+            <div className="bulk-order-reference-field">
+              <label htmlFor="bulk-message">Additional requirements</label>
+              <textarea
+                id="bulk-message"
+                value={form.message}
+                onChange={(event) =>
+                  updateField("message", event.target.value)
+                }
+                placeholder="Colour, logo printing, packaging..."
+                rows={4}
+              />
+            </div>
+          </div>
         )}
-      </label>
+      </div>
 
       {error && (
-        <div className="bulk-order-error">
+        <div className="bulk-order-reference-error" role="alert">
           {error}
         </div>
       )}
@@ -387,14 +708,28 @@ export default function BulkOrderForm({
       <button
         type="submit"
         disabled={loading}
-        className="bulk-order-submit"
+        className="bulk-order-reference-submit"
       >
-        {loading ? "Submitting..." : "Submit Bulk Enquiry →"}
+        {loading ? "Submitting..." : "Get my bulk quote"}{" "}
+        <span aria-hidden="true">→</span>
       </button>
 
-      <p className="bulk-order-note">
-        This is an enquiry only. No payment or purchase is made through this
-        form.
+      <div className="bulk-order-reference-or" aria-hidden="true">
+        <span>or</span>
+      </div>
+
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bulk-order-reference-whatsapp"
+      >
+        <span aria-hidden="true">◔</span>
+        Chat with us on WhatsApp
+      </a>
+
+      <p className="bulk-order-reference-note">
+        This is an enquiry only. No payment or purchase is made through this form.
       </p>
     </form>
   );
