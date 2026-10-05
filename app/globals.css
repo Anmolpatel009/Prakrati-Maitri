@@ -1516,10 +1516,13 @@
   }
 }
 
+
 /* ============================================================
-   BULK ORDER ENQUIRY
+   BULK ORDER REFERENCE PAGE
+   Source-of-truth design follows supplied bulk enquiry reference.
    ============================================================ */
 
+/* PM_BULK_POPUP_BASE_START */
 .bulk-order-popup-backdrop {
   position: fixed;
   inset: 0;
@@ -1603,430 +1606,814 @@
   background: transparent;
   color: #3d3d3d;
 }
+/* PM_BULK_POPUP_BASE_END */
 
-.bulk-order-page {
+.bulk-order-reference-page {
   min-height: 100vh;
-  padding-bottom: 80px;
-  background: var(--site-background, #f9f7f2);
+  background: #F8F3EA;
+  color: #2E2118;
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
 }
 
-.bulk-order-hero {
-  max-width: 850px;
-  margin: 0 auto;
-  padding: 100px 24px 50px;
-  text-align: center;
-}
-
-.bulk-order-hero h1 {
-  margin: 14px 0 20px;
-  color: #4a5d23;
-  font-family: Georgia, serif;
-  font-size: clamp(42px, 7vw, 72px);
-  line-height: 1.02;
-}
-
-.bulk-order-hero p {
-  max-width: 680px;
-  margin: 0 auto;
-  color: rgba(61, 61, 61, 0.68);
-  font-size: 17px;
-  line-height: 1.8;
-}
-
-.bulk-order-form-section {
-  width: min(900px, calc(100% - 32px));
+.bulk-order-reference-wrap {
+  width: min(1300px, calc(100% - 32px));
   margin: 0 auto;
 }
 
-.bulk-order-form,
-.bulk-order-success {
-  padding: 40px;
-  border: 1px solid rgba(61, 61, 61, 0.1);
-  border-radius: 24px;
-  background: white;
-  box-shadow: 0 16px 50px rgba(60, 50, 30, 0.07);
+.bulk-order-reference-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 624px);
+  gap: clamp(40px, 6vw, 80px);
+  align-items: start;
+  padding: clamp(34px, 4vw, 60px) 0 80px;
 }
 
-.bulk-order-form-heading {
-  margin-bottom: 28px;
-}
-
-.bulk-order-form-heading h2,
-.bulk-order-success h2 {
-  margin: 0 0 8px;
-  color: #3d3d3d;
-  font-family: Georgia, serif;
-  font-size: 32px;
-}
-
-.bulk-order-form-heading p,
-.bulk-order-success p {
+.bulk-order-reference-eyebrow {
   margin: 0;
-  color: rgba(61, 61, 61, 0.62);
+  color: #8B5A2B;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.6px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.bulk-order-reference-hero h1 {
+  margin: 16px 0 22px;
+  color: #4E3320;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 5vw, 62px);
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.bulk-order-reference-lead {
+  max-width: 570px;
+  margin: 0;
+  color: #6B5E52;
+  font-size: clamp(16px, 1.5vw, 19px);
   line-height: 1.7;
 }
 
-.bulk-order-form-grid {
+.bulk-order-reference-trust {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 10px;
+  max-width: 524px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.bulk-order-form label {
+.bulk-order-reference-trust li {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  color: #3d3d3d;
-  font-size: 13px;
+  align-items: center;
+  gap: 12px;
+  min-height: 51px;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: #EDF1E4;
+  color: #6B5139;
+  font-size: 15.5px;
+}
+
+.bulk-order-reference-icon {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  place-items: center;
+  color: #8B5A2B;
+  font-size: 18px;
   font-weight: 600;
 }
 
-.bulk-order-form input,
-.bulk-order-form select,
-.bulk-order-form textarea {
-  width: 100%;
-  border: 1px solid rgba(61, 61, 61, 0.15);
-  border-radius: 12px;
-  background: var(--site-background, #f9f7f2);
-  padding: 13px 14px;
-  color: #3d3d3d;
-  font: inherit;
+.bulk-order-reference-how {
+  margin-top: 38px;
+}
+
+.bulk-order-reference-steps {
+  display: grid;
+  gap: 18px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bulk-order-reference-steps li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+}
+
+.bulk-order-reference-num {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: #4E3320;
+  color: #fff;
   font-size: 14px;
-  outline: none;
-}
-
-.bulk-order-form textarea {
-  resize: vertical;
-}
-
-.bulk-order-form input:focus,
-.bulk-order-form select:focus,
-.bulk-order-form textarea:focus {
-  border-color: #4a5d23;
-  box-shadow: 0 0 0 3px rgba(74, 93, 35, 0.08);
-}
-
-.bulk-order-full-field {
-  margin-top: 20px;
-}
-
-.bulk-order-error {
-  margin-top: 20px;
-  border-radius: 12px;
-  background: #fff0ef;
-  padding: 13px 15px;
-  color: #a43b32;
-  font-size: 14px;
-}
-
-.bulk-order-submit {
-  width: 100%;
-  margin-top: 24px;
-}
-
-.bulk-order-submit:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.bulk-order-note {
-  margin-top: 14px;
-  text-align: center;
-  color: rgba(61, 61, 61, 0.45);
-  font-size: 12px;
-}
-
-.bulk-order-success {
-  max-width: 700px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.bulk-order-success h2 {
-  margin-top: 12px;
-}
-
-.bulk-order-success .bulk-order-submit {
-  max-width: 260px;
-}
-
-@media (max-width: 700px) {
-  .bulk-order-popup {
-    padding: 36px 24px 28px;
-  }
-
-  .bulk-order-popup h2 {
-    font-size: 30px;
-  }
-
-  .bulk-order-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .bulk-order-form,
-  .bulk-order-success {
-    padding: 26px 20px;
-  }
-
-  .bulk-order-hero {
-    padding-top: 70px;
-  }
-}
-
-/* ============================================================
-   BULK ORDER ENQUIRY
-   ============================================================ */
-
-.bulk-order-popup-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(30, 35, 24, 0.48);
-  backdrop-filter: blur(5px);
-}
-
-.bulk-order-popup {
-  position: relative;
-  width: min(560px, 100%);
-  padding: 48px;
-  border-radius: 24px;
-  background: var(--site-background, #f9f7f2);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
-}
-
-.bulk-order-popup-close {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  border: 0;
-  background: transparent;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.bulk-order-popup-eyebrow,
-.bulk-order-eyebrow {
-  color: #4a5d23;
-  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.16em;
 }
 
-.bulk-order-popup h2 {
-  margin: 14px 0 12px;
-  color: #3d3d3d;
-  font-family: Georgia, serif;
-  font-size: 38px;
+.bulk-order-reference-steps strong {
+  display: block;
+  color: #2E2118;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.bulk-order-reference-steps span:last-child {
+  display: block;
+  margin-top: 2px;
+  color: #6B5E52;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bulk-order-reference-card {
+  min-width: 0;
+}
+
+.bulk-order-reference-form {
+  padding: clamp(22px, 3vw, 36px);
+  border: 1px solid #E5D6BC;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(78, 51, 32, 0.04);
+}
+
+.bulk-order-reference-form-heading h2 {
+  margin: 0;
+  color: #4E3320;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 3vw, 38px);
+  font-weight: 500;
   line-height: 1.1;
 }
 
-.bulk-order-popup p {
-  color: rgba(61, 61, 61, 0.68);
-  font-size: 15px;
-  line-height: 1.7;
+.bulk-order-reference-form-heading p {
+  margin: 6px 0 0;
+  color: #8B5A2B;
+  font-size: 16px;
 }
 
-.bulk-order-popup-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 28px;
+.bulk-order-reference-label {
+  display: block;
+  margin: 26px 0 12px;
+  padding: 0;
+  color: #8B5A2B;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
-.bulk-order-popup-primary,
-.bulk-order-popup-secondary,
-.bulk-order-submit {
-  min-height: 50px;
-  border-radius: 12px;
-  padding: 12px 20px;
+.bulk-order-reference-label span {
+  margin-left: 8px;
+  color: #6B5E52;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.bulk-order-reference-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bulk-order-reference-tile {
+  position: relative;
+  display: grid;
+  min-height: 108px;
+  padding: 12px 8px;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  border: 1px solid #C8A26B;
+  border-radius: 8px;
+  background: #EADBC0;
+  color: #4E3320;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+
+.bulk-order-reference-tile input,
+.bulk-order-reference-pill input,
+.bulk-order-reference-when-card input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
   cursor: pointer;
 }
 
-.bulk-order-popup-primary,
-.bulk-order-submit {
-  border: 1px solid #4a5d23;
-  background: #4a5d23;
-  color: white;
+.bulk-order-reference-tile:hover {
+  border-color: #8B5A2B;
 }
 
-.bulk-order-popup-secondary {
-  border: 1px solid rgba(61, 61, 61, 0.18);
-  background: transparent;
-  color: #3d3d3d;
+.bulk-order-reference-tile.is-selected {
+  border-color: #4E3320;
+  background: #4E3320;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(78, 51, 32, 0.22);
 }
 
-.bulk-order-page {
-  min-height: 100vh;
-  padding-bottom: 80px;
-  background: var(--site-background, #f9f7f2);
+.bulk-order-reference-tile-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  color: #8B5A2B;
+  font-size: 22px;
 }
 
-.bulk-order-hero {
-  max-width: 850px;
-  margin: 0 auto;
-  padding: 100px 24px 50px;
-  text-align: center;
+.bulk-order-reference-tile.is-selected .bulk-order-reference-tile-icon {
+  color: #E9D3A8;
 }
 
-.bulk-order-hero h1 {
-  margin: 14px 0 20px;
-  color: #4a5d23;
-  font-family: Georgia, serif;
-  font-size: clamp(42px, 7vw, 72px);
-  line-height: 1.02;
-}
-
-.bulk-order-hero p {
-  max-width: 680px;
-  margin: 0 auto;
-  color: rgba(61, 61, 61, 0.68);
-  font-size: 17px;
-  line-height: 1.8;
-}
-
-.bulk-order-form-section {
-  width: min(900px, calc(100% - 32px));
-  margin: 0 auto;
-}
-
-.bulk-order-form,
-.bulk-order-success {
-  padding: 40px;
-  border: 1px solid rgba(61, 61, 61, 0.1);
-  border-radius: 24px;
-  background: white;
-  box-shadow: 0 16px 50px rgba(60, 50, 30, 0.07);
-}
-
-.bulk-order-form-heading {
-  margin-bottom: 28px;
-}
-
-.bulk-order-form-heading h2,
-.bulk-order-success h2 {
-  margin: 0 0 8px;
-  color: #3d3d3d;
-  font-family: Georgia, serif;
-  font-size: 32px;
-}
-
-.bulk-order-form-heading p,
-.bulk-order-success p {
-  margin: 0;
-  color: rgba(61, 61, 61, 0.62);
-  line-height: 1.7;
-}
-
-.bulk-order-form-grid {
+.bulk-order-reference-row2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
-.bulk-order-form label {
+.bulk-order-reference-row2.first {
+  margin-top: 28px;
+}
+
+.bulk-order-reference-field {
+  position: relative;
+  margin-top: 22px;
+  min-width: 0;
+}
+
+.bulk-order-reference-row2 .bulk-order-reference-field {
+  margin-top: 0;
+}
+
+.bulk-order-reference-field > label,
+.bulk-order-reference-field > legend,
+.bulk-order-reference-field-label {
+  display: block;
+  margin-bottom: 8px;
+  padding: 0;
+  color: #2E2118;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.bulk-order-reference-field > label span {
+  color: #4E3320;
+}
+
+.bulk-order-reference-field input,
+.bulk-order-reference-field select,
+.bulk-order-reference-field textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #C8A26B;
+  border-radius: 6px;
+  background: #fff;
+  color: #2E2118;
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.bulk-order-reference-field input,
+.bulk-order-reference-field select {
+  height: 56px;
+  padding: 0 16px;
+}
+
+.bulk-order-reference-field textarea {
+  min-height: 104px;
+  padding: 14px 16px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.bulk-order-reference-field input::placeholder,
+.bulk-order-reference-field textarea::placeholder {
+  color: #B5AA9C;
+}
+
+.bulk-order-reference-field input:focus,
+.bulk-order-reference-field select:focus,
+.bulk-order-reference-field textarea:focus {
+  border-color: #8B5A2B;
+  box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.16);
+}
+
+.bulk-order-reference-phone {
   display: flex;
-  flex-direction: column;
+  min-width: 0;
+}
+
+.bulk-order-reference-phone > span {
+  display: grid;
+  width: 60px;
+  flex: none;
+  place-items: center;
+  border: 1px solid #C8A26B;
+  border-right: 0;
+  border-radius: 6px 0 0 6px;
+  background: #F5EFE3;
+  color: #4E3320;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.bulk-order-reference-phone input {
+  border-radius: 0 6px 6px 0;
+}
+
+.bulk-order-reference-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bulk-order-reference-pill {
+  position: relative;
+  display: block;
+}
+
+.bulk-order-reference-pill span {
+  display: inline-flex;
+  height: 50px;
+  align-items: center;
+  padding: 0 22px;
+  border: 1px solid #C8A26B;
+  border-radius: 999px;
+  background: #fff;
+  color: #4E3320;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background .15s, color .15s, border-color .15s;
+}
+
+.bulk-order-reference-pill:hover span {
+  border-color: #8B5A2B;
+}
+
+.bulk-order-reference-pill.is-selected span {
+  border-color: #4E3320;
+  background: #4E3320;
+  color: #fff;
+}
+
+.bulk-order-reference-more {
+  margin-top: 26px;
+  overflow: hidden;
+  border: 1px solid #8B5A2B;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.bulk-order-reference-more-head {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 38px;
+  width: 100%;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: #EADBC0;
+  text-align: left;
+}
+
+.bulk-order-reference-more-head:hover {
+  background: #E6D5B6;
+}
+
+.bulk-order-reference-more-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 50%;
+  background: #4E3320;
+  color: #fff;
+  font-size: 24px;
+}
+
+.bulk-order-reference-more-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: #4E3320;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.bulk-order-reference-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: #4E3320;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.bulk-order-reference-more-sub {
+  display: block;
+  margin-top: 4px;
+  color: #2E2118;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bulk-order-reference-toggle {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1.5px solid #4E3320;
+  border-radius: 50%;
+  color: #4E3320;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.bulk-order-reference-more-body {
+  padding: 22px 22px 26px;
+}
+
+.bulk-order-reference-when {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bulk-order-reference-when-card {
+  position: relative;
+  display: block;
+}
+
+.bulk-order-reference-when-card > span {
+  display: grid;
+  min-height: 66px;
+  height: 100%;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  border: 1px solid #C8A26B;
+  border-radius: 8px;
+  background: #fff;
+  text-align: center;
+  transition: border-color .15s, background .15s;
+}
+
+.bulk-order-reference-when-card:hover > span {
+  border-color: #8B5A2B;
+}
+
+.bulk-order-reference-when-card.is-selected > span {
+  padding: 7px 5px;
+  border: 2px solid #4E3320;
+  background: #FBF8F2;
+}
+
+.bulk-order-reference-when-card strong {
+  color: #2E2118;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.bulk-order-reference-when-card small {
+  color: #6B5E52;
+  font-size: 11.5px;
+  line-height: 1.25;
+}
+
+.bulk-order-reference-drop {
+  display: grid;
+  justify-items: center;
   gap: 8px;
-  color: #3d3d3d;
-  font-size: 13px;
+  padding: 30px 16px;
+  border: 1.5px dashed #8B5A2B;
+  border-radius: 10px;
+  background: #FBF8F2;
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+
+.bulk-order-reference-drop:hover {
+  border-color: #4E3320;
+  background: #F6EEDD;
+}
+
+.bulk-order-reference-drop-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: #8B5A2B;
+  font-size: 23px;
   font-weight: 600;
 }
 
-.bulk-order-form input,
-.bulk-order-form select,
-.bulk-order-form textarea {
+.bulk-order-reference-drop strong {
+  color: #2E2118;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.bulk-order-reference-drop small {
+  color: #6B5E52;
+  font-size: 12.5px;
+}
+
+.bulk-order-reference-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bulk-order-reference-file-input:focus-visible + .bulk-order-reference-drop {
+  outline: 2px solid #8B5A2B;
+  outline-offset: 2px;
+}
+
+.bulk-order-reference-file-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border: 1px solid #E5D6BC;
+  border-radius: 8px;
+  background: #EDF1E4;
+  color: #4E3320;
+  font-size: 14px;
+}
+
+.bulk-order-reference-file-selected span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bulk-order-reference-file-selected button {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #4E3320;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.bulk-order-reference-error {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #F7E7E2;
+  color: #9A3B26;
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+
+.bulk-order-reference-submit {
+  display: flex;
   width: 100%;
-  border: 1px solid rgba(61, 61, 61, 0.15);
-  border-radius: 12px;
-  background: var(--site-background, #f9f7f2);
-  padding: 13px 14px;
-  color: #3d3d3d;
+  height: 62px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #4E3320;
+  color: #fff;
   font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+
+.bulk-order-reference-submit:hover {
+  background: #3F2919;
+}
+
+.bulk-order-reference-submit:active {
+  transform: translateY(1px);
+}
+
+.bulk-order-reference-submit:disabled {
+  opacity: .65;
+  cursor: progress;
+}
+
+.bulk-order-reference-or {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+  color: #6B5E52;
   font-size: 14px;
-  outline: none;
 }
 
-.bulk-order-form textarea {
-  resize: vertical;
+.bulk-order-reference-or::before,
+.bulk-order-reference-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #E5D6BC;
 }
 
-.bulk-order-form input:focus,
-.bulk-order-form select:focus,
-.bulk-order-form textarea:focus {
-  border-color: #4a5d23;
-  box-shadow: 0 0 0 3px rgba(74, 93, 35, 0.08);
-}
-
-.bulk-order-full-field {
-  margin-top: 20px;
-}
-
-.bulk-order-error {
-  margin-top: 20px;
-  border-radius: 12px;
-  background: #fff0ef;
-  padding: 13px 15px;
-  color: #a43b32;
-  font-size: 14px;
-}
-
-.bulk-order-submit {
+.bulk-order-reference-whatsapp {
+  display: flex;
   width: 100%;
-  margin-top: 24px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #4E3320;
+  border-radius: 8px;
+  background: #fff;
+  color: #4E3320;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s;
 }
 
-.bulk-order-submit:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+.bulk-order-reference-whatsapp:hover {
+  background: #F8F3EA;
 }
 
-.bulk-order-note {
-  margin-top: 14px;
+.bulk-order-reference-note {
+  margin: 18px 0 0;
+  color: #6B5E52;
+  font-size: 14px;
+  line-height: 1.55;
   text-align: center;
-  color: rgba(61, 61, 61, 0.45);
-  font-size: 12px;
 }
 
-.bulk-order-success {
-  max-width: 700px;
-  margin: 0 auto;
+.bulk-order-reference-form-state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px 0 8px;
   text-align: center;
 }
 
-.bulk-order-success h2 {
-  margin-top: 12px;
+.bulk-order-reference-success-icon {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  border-radius: 50%;
+  background: #EDF1E4;
+  color: #4E3320;
+  font-size: 32px;
+  font-weight: 600;
 }
 
-.bulk-order-success .bulk-order-submit {
-  max-width: 260px;
+.bulk-order-reference-form-state h2 {
+  margin: 0;
+  color: #4E3320;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 3vw, 38px);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.bulk-order-reference-form-state p {
+  max-width: 40ch;
+  margin: 0;
+  color: #6B5E52;
+}
+
+.bulk-order-reference-link {
+  margin-top: 6px;
+  border: 0;
+  background: none;
+  color: #8B5A2B;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+@media (max-width: 1060px) {
+  .bulk-order-reference-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .bulk-order-reference-card {
+    width: min(720px, 100%);
+  }
 }
 
 @media (max-width: 700px) {
-  .bulk-order-popup {
-    padding: 36px 24px 28px;
+  .bulk-order-reference-wrap {
+    width: min(100%, calc(100% - 32px));
   }
 
-  .bulk-order-popup h2 {
-    font-size: 30px;
+  .bulk-order-reference-hero {
+    padding-top: 36px;
+  }
+}
+
+@media (max-width: 560px) {
+  .bulk-order-reference-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .bulk-order-form-grid {
-    grid-template-columns: 1fr;
+  .bulk-order-reference-trust {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .bulk-order-form,
-  .bulk-order-success {
-    padding: 26px 20px;
+  .bulk-order-reference-more-head {
+    grid-template-columns: 40px minmax(0, 1fr) 34px;
+    gap: 12px;
+    padding: 16px 14px;
   }
 
-  .bulk-order-hero {
-    padding-top: 70px;
+  .bulk-order-reference-more-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bulk-order-reference-more-title {
+    font-size: 18px;
+  }
+
+  .bulk-order-reference-more-sub {
+    font-size: 14px;
+  }
+
+  .bulk-order-reference-more-body {
+    padding: 18px 16px 22px;
+  }
+}
+
+@media (max-width: 460px) {
+  .bulk-order-reference-row2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bulk-order-reference-row2 .bulk-order-reference-field + .bulk-order-reference-field {
+    margin-top: 22px;
+  }
+
+  .bulk-order-reference-more-body .bulk-order-reference-row2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bulk-order-reference-more-body .bulk-order-reference-row2 .bulk-order-reference-field + .bulk-order-reference-field {
+    margin-top: 0;
+  }
+
+  .bulk-order-reference-when {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bulk-order-reference-pill span {
+    height: 46px;
+    padding: 0 18px;
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bulk-order-reference-page *,
+  .bulk-order-reference-page *::before,
+  .bulk-order-reference-page *::after {
+    transition: none !important;
   }
 }
 
@@ -9265,3 +9652,190 @@
     max-width: calc((100vw - 44px) / 2) !important;
   }
 }
+
+
+/* PM_PDP_TRUST_SINGLE_ROW_FIX_START
+   PDP-only micro fixes:
+   1) Keep the four trust cards in one horizontal row.
+   2) Keep card contents contained so text never overlaps/crops.
+   3) Precisely center PDP detail icons without changing their size.
+   Existing dimensions, spacing, colors and PDP functionality remain untouched.
+*/
+.pdp-trust{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+
+.pdp-trust > div{
+  min-width:0!important;
+  width:100%!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  align-items:center!important;
+  justify-items:center!important;
+}
+
+.pdp-trust > div > span{
+  min-width:0!important;
+  max-width:100%!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+
+.pdp-trust .pdp-icon,
+.pdp-trust .pdp-trust-icon{
+  display:grid!important;
+  place-items:center!important;
+  margin-inline:auto!important;
+  flex:none!important;
+}
+
+.pdp-details-meta > div > :first-child{
+  display:grid!important;
+  place-items:center!important;
+  margin-inline:auto!important;
+}
+
+/* PM_PDP_TRUST_SINGLE_ROW_FIX_END */
+
+
+/* PM_PDP_FINAL_CLEANUP_V2_START
+   Current-state PDP corrections only.
+   Existing PDP dimensions/layout remain unchanged.
+*/
+
+/* ==========================================================
+   FEATURE ICONS
+   Keep existing 42x42 circles and 18x18 SVG dimensions.
+   Center the SVG box independently so parent text rules cannot
+   affect its alignment.
+   ========================================================== */
+
+.pdp-feature-icon{
+  position:relative!important;
+  display:block!important;
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  min-height:42px!important;
+  flex:0 0 42px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+
+.pdp-feature-icon .pdp-icon{
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  width:18px!important;
+  height:18px!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  flex:none!important;
+  line-height:0!important;
+  transform:translate(-50%,-50%)!important;
+}
+
+/* Keep every SVG path visually centered in its own 18x18 box. */
+.pdp-feature-icon .pdp-icon{
+  transform-box:fill-box!important;
+  transform-origin:center!important;
+}
+
+/* ==========================================================
+   SHORT DESCRIPTION
+   Clean, readable bullet presentation.
+   ========================================================== */
+
+.pdp-short-list{
+  list-style:none!important;
+  display:grid!important;
+  gap:8px!important;
+  width:100%!important;
+  max-width:60ch!important;
+  margin:13px 0 0!important;
+  padding:0!important;
+  color:var(--pdp-muted)!important;
+  font-size:14px!important;
+  line-height:1.6!important;
+}
+
+.pdp-short-list li{
+  display:grid!important;
+  grid-template-columns:6px minmax(0,1fr)!important;
+  column-gap:10px!important;
+  align-items:start!important;
+  min-width:0!important;
+}
+
+.pdp-short-bullet{
+  width:5px!important;
+  height:5px!important;
+  margin-top:.62em!important;
+  border-radius:50%!important;
+  background:var(--pdp-jute)!important;
+}
+
+.pdp-short-list li > span:last-child{
+  min-width:0!important;
+  overflow-wrap:anywhere!important;
+}
+
+.pdp-short-list li > span:last-child strong{
+  color:var(--pdp-bark)!important;
+  font-weight:600!important;
+}
+
+/* ==========================================================
+   FAQ
+   Uses the existing accordion; only gives it a proper heading
+   and clean spacing.
+   ========================================================== */
+
+.pdp-faq{
+  width:100%!important;
+  min-width:0!important;
+}
+
+.pdp-faq-title{
+  margin:0 0 14px!important;
+  color:var(--pdp-bark)!important;
+  font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif!important;
+  font-size:30px!important;
+  font-weight:600!important;
+  line-height:1.15!important;
+}
+
+.pdp-faq details{
+  border-top:1px solid var(--pdp-line)!important;
+  border-bottom:0!important;
+}
+
+.pdp-faq details:last-child{
+  border-bottom:1px solid var(--pdp-line)!important;
+}
+
+.pdp-faq summary{
+  min-width:0!important;
+}
+
+.pdp-faq details p{
+  min-width:0!important;
+}
+
+/* No print-side controls should be visible from any stale cached
+   markup; JSX has already removed them. */
+.pdp-customization .pdp-chips{
+  display:none!important;
+}
+
+/* PM_PDP_FINAL_CLEANUP_V2_END */

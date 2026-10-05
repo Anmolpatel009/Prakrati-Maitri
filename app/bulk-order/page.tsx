@@ -21,29 +21,78 @@ export default async function BulkOrderPage() {
   ]);
 
   return (
-    <main className="bulk-order-page">
-      <section className="bulk-order-hero">
-        <span className="bulk-order-eyebrow">
-          BULK ORDER ENQUIRY
-        </span>
+    <main className="bulk-order-reference-page">
+      <div className="bulk-order-reference-wrap">
+        <section className="bulk-order-reference-hero" aria-labelledby="bulk-order-page-title">
+          <div>
+            <p className="bulk-order-reference-eyebrow">Bulk order enquiry</p>
 
-        <h1>
-          Let&apos;s plan your bulk requirement.
-        </h1>
+            <h1 id="bulk-order-page-title">
+              Let&apos;s plan your
+              <br className="bulk-order-reference-break" />
+              bulk requirement.
+            </h1>
 
-        <p>
-          Whether you need sustainable bags for your business, events,
-          corporate gifting or a large personal requirement, tell us what
-          you&apos;re looking for. Our team will connect with you.
-        </p>
-      </section>
+            <p className="bulk-order-reference-lead">
+              Sustainable bags for your business, events and corporate gifting,
+              made in our own factory and printed with your logo.
+            </p>
 
-      <section className="bulk-order-form-section">
-        <BulkOrderForm
-          categories={categories ?? []}
-          products={products ?? []}
-        />
-      </section>
+            <ul className="bulk-order-reference-trust">
+              <li>
+                <span className="bulk-order-reference-icon" aria-hidden="true">⌂</span>
+                <span>Manufacturer</span>
+              </li>
+              <li>
+                <span className="bulk-order-reference-icon" aria-hidden="true">▣</span>
+                <span>PAN India delivery</span>
+              </li>
+              <li>
+                <span className="bulk-order-reference-icon" aria-hidden="true">▤</span>
+                <span>GST invoice</span>
+              </li>
+              <li>
+                <span className="bulk-order-reference-icon" aria-hidden="true">▭</span>
+                <span>Your logo printed</span>
+              </li>
+            </ul>
+
+            <div className="bulk-order-reference-how">
+              <p className="bulk-order-reference-eyebrow">How it works</p>
+              <ol className="bulk-order-reference-steps">
+                <li>
+                  <span className="bulk-order-reference-num">1</span>
+                  <div>
+                    <strong>Share your requirement</strong>
+                    <span>Takes under a minute.</span>
+                  </div>
+                </li>
+                <li>
+                  <span className="bulk-order-reference-num">2</span>
+                  <div>
+                    <strong>Get your quote</strong>
+                    <span>Our team connects with you on call or WhatsApp.</span>
+                  </div>
+                </li>
+                <li>
+                  <span className="bulk-order-reference-num">3</span>
+                  <div>
+                    <strong>Approve and we produce</strong>
+                    <span>Delivered anywhere in India.</span>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <section className="bulk-order-reference-card" aria-labelledby="bulk-order-quote-title">
+            <BulkOrderForm
+              categories={categories ?? []}
+              products={products ?? []}
+            />
+          </section>
+        </section>
+      </div>
     </main>
   );
 }

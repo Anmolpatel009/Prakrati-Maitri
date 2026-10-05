@@ -19,6 +19,12 @@ export async function POST(request: Request) {
     const purpose = String(body.purpose ?? "").trim();
     const message =
       String(body.message ?? "").trim() || null;
+    const bagSize =
+      String(body.bagSize ?? "").trim() || null;
+    const deliveryPincode =
+      String(body.deliveryPincode ?? "").trim() || null;
+    const deliveryTimeline =
+      String(body.deliveryTimeline ?? "").trim() || null;
 
     const referenceImagePath =
       typeof body.referenceImagePath === "string" &&
@@ -75,6 +81,33 @@ export async function POST(request: Request) {
       );
     }
 
+    if (
+      deliveryPincode &&
+      !/^\d{6}$/.test(deliveryPincode)
+    ) {
+      return NextResponse.json(
+        { error: "A valid 6-digit delivery pincode is required." },
+        { status: 400 }
+      );
+    }
+
+    const allowedTimelines = new Set([
+      "urgent",
+      "within_7_days",
+      "within_15_days",
+      "flexible",
+    ]);
+
+    if (
+      deliveryTimeline &&
+      !allowedTimelines.has(deliveryTimeline)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid delivery timeline." },
+        { status: 400 }
+      );
+    }
+
     const supabase = await createClient();
 
     const { error } = await supabase
@@ -89,6 +122,9 @@ export async function POST(request: Request) {
         quantity,
         purpose,
         message,
+        bag_size: bagSize,
+        delivery_pincode: deliveryPincode,
+        delivery_timeline: deliveryTimeline,
         reference_image_path: referenceImagePath,
       });
 
