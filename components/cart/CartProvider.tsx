@@ -7,6 +7,7 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export type CartCustomization = {
   type: "standard" | "custom";
@@ -63,7 +64,12 @@ const CartContext =
     undefined
   );
 
-const STORAGE_KEY = "prakratri-matri-cart";
+const LEGACY_STORAGE_KEY = "prakratri-matri-cart";
+const GUEST_STORAGE_KEY = "prakratri-matri-cart-guest";
+
+function getUserStorageKey(userId: string): string {
+  return `prakratri-matri-cart-user-${userId}`;
+}
 
 function createCartItemId(): string {
   if (
@@ -98,32 +104,145 @@ export function CartProvider({
   children: ReactNode;
 }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [storageKey, setStorageKey] =
+    useState(GUEST_STORAGE_KEY);
   const [hydrated, setHydrated] = useState(false);
 
   // =====================================================
-  // LOAD CART
+  // LOAD CART + AUTH OWNERSHIP
   // =====================================================
 
   useEffect(() => {
-    try {
-      const storedCart =
-        localStorage.getItem(STORAGE_KEY);
+    const supabase = createClient();
+    let mounted = true;
 
-      if (storedCart) {
-        const parsedCart = JSON.parse(storedCart);
+    function loadCartForKey(
+      key: string,
+      clearLegacyGuestCart = false
+    ) {
+      try {
+        let storedCart = localStorage.getItem(key);
 
-        if (Array.isArray(parsedCart)) {
-          setItems(parsedCart);
+        // Preserve carts created before cart ownership was introduced.
+        if (
+          key === GUEST_STORAGE_KEY &&
+          !storedCart
+        ) {
+          storedCart =
+            localStorage.getItem(LEGACY_STORAGE_KEY);
+
+          if (storedCart) {
+            localStorage.setItem(
+              GUEST_STORAGE_KEY,
+              storedCart
+            );
+            localStorage.removeItem(
+              LEGACY_STORAGE_KEY
+            );
+          }
+        }
+
+        if (clearLegacyGuestCart) {
+          localStorage.removeItem(
+            LEGACY_STORAGE_KEY
+          );
+        }
+
+        const parsedCart = storedCart
+          ? JSON.parse(storedCart)
+          : [];
+
+        setItems(
+          Array.isArray(parsedCart)
+            ? parsedCart
+            : []
+        );
+        setStorageKey(key);
+      } catch (error) {
+        console.error(
+          "Unable to load cart:",
+          error
+        );
+        setItems([]);
+        setStorageKey(key);
+      }
+    }
+
+    async function initializeCart() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!mounted) {
+          return;
+        }
+
+        if (session?.user) {
+          // Never import the anonymous/legacy cart
+          // into an authenticated account.
+          loadCartForKey(
+            getUserStorageKey(session.user.id),
+            true
+          );
+        } else {
+          loadCartForKey(GUEST_STORAGE_KEY);
+        }
+      } finally {
+        if (mounted) {
+          setHydrated(true);
         }
       }
-    } catch (error) {
-      console.error(
-        "Unable to load cart:",
-        error
-      );
-    } finally {
-      setHydrated(true);
     }
+
+    void initializeCart();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (!mounted) {
+          return;
+        }
+
+        if (event === "SIGNED_IN" && session?.user) {
+          // Authentication creates a new cart boundary.
+          // Guest items must never enter the account cart.
+          setHydrated(false);
+
+          try {
+            localStorage.removeItem(
+              GUEST_STORAGE_KEY
+            );
+            localStorage.removeItem(
+              LEGACY_STORAGE_KEY
+            );
+          } catch (error) {
+            console.error(
+              "Unable to clear guest cart:",
+              error
+            );
+          }
+
+          loadCartForKey(
+            getUserStorageKey(session.user.id)
+          );
+          setHydrated(true);
+          return;
+        }
+
+        if (event === "SIGNED_OUT") {
+          setHydrated(false);
+          loadCartForKey(GUEST_STORAGE_KEY);
+          setHydrated(true);
+        }
+      }
+    );
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   // =====================================================
@@ -137,7 +256,7 @@ export function CartProvider({
 
     try {
       localStorage.setItem(
-        STORAGE_KEY,
+        storageKey,
         JSON.stringify(items)
       );
     } catch (error) {
@@ -146,7 +265,7 @@ export function CartProvider({
         error
       );
     }
-  }, [items, hydrated]);
+  }, [items, storageKey, hydrated]);
 
   // =====================================================
   // ADD ITEM

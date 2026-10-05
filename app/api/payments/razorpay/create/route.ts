@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createRazorpayOrder } from "@/lib/payments/razorpay";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
+
 
 export async function POST(request: Request) {
   try {
@@ -10,12 +12,16 @@ export async function POST(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "You must be logged in." },
-        { status: 401 }
-      );
-    }
+    const adminSupabase = createServiceRoleClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
 
     const body = await request.json();
     const items = body?.items;
@@ -48,12 +54,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data: order, error: orderError } = await supabase
+    const orderClient = user ? supabase : adminSupabase;
+
+    let orderQuery = orderClient
       .from("orders")
       .select("id, total, payment_status, status")
-      .eq("id", orderId)
-      .eq("user_id", user.id)
-      .single();
+      .eq("id", orderId);
+
+    if (user) {
+      orderQuery = orderQuery.eq("user_id", user.id);
+    }
+
+    const { data: order, error: orderError } =
+      await orderQuery.single();
 
     if (orderError || !order) {
       return NextResponse.json(
@@ -79,30 +92,54 @@ export async function POST(request: Request) {
         localOrderId: order.id,
       });
     } catch (error) {
-      await supabase.rpc("cancel_pending_online_order", {
-        p_order_id: order.id,
-        p_reason:
-          error instanceof Error
-            ? error.message
-            : "Razorpay order creation failed.",
-      });
+      await (user ? supabase : adminSupabase).rpc(
+        "cancel_pending_online_order",
+        {
+          p_order_id: order.id,
+          p_reason:
+            error instanceof Error
+              ? error.message
+              : "Razorpay order creation failed.",
+        }
+      );
 
       throw error;
     }
 
-    const { error: attachError } = await supabase.rpc(
-      "attach_razorpay_order_id",
-      {
-        p_order_id: order.id,
-        p_razorpay_order_id: razorpayOrder.id,
-      }
-    );
+    let attachError;
+
+    if (user) {
+      const result = await supabase.rpc(
+        "attach_razorpay_order_id",
+        {
+          p_order_id: order.id,
+          p_razorpay_order_id: razorpayOrder.id,
+        }
+      );
+
+      attachError = result.error;
+    } else {
+      const result = await adminSupabase
+        .from("orders")
+        .update({
+          razorpay_order_id: razorpayOrder.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", order.id)
+        .eq("status", "pending")
+        .eq("payment_method", "online");
+
+      attachError = result.error;
+    }
 
     if (attachError) {
-      await supabase.rpc("cancel_pending_online_order", {
-        p_order_id: order.id,
-        p_reason: "Could not save Razorpay order ID.",
-      });
+      await (user ? supabase : adminSupabase).rpc(
+        "cancel_pending_online_order",
+        {
+          p_order_id: order.id,
+          p_reason: "Could not save Razorpay order ID.",
+        }
+      );
 
       return NextResponse.json(
         { error: "Could not initialize payment." },

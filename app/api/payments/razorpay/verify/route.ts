@@ -14,12 +14,26 @@ export async function POST(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+    if (!supabaseUrl || !serviceRoleKey) {
       return NextResponse.json(
-        { error: "You must be logged in." },
-        { status: 401 }
+        { error: "Payment verification service is not configured." },
+        { status: 500 }
       );
     }
+
+    const adminSupabase = createServiceRoleClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
 
     const body = await request.json();
 
@@ -38,14 +52,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data: order, error: orderError } = await supabase
+    const orderClient = user ? supabase : adminSupabase;
+
+    let orderQuery = orderClient
       .from("orders")
       .select(
         "id,total,status,payment_status,payment_method,razorpay_order_id"
       )
-      .eq("user_id", user.id)
-      .eq("razorpay_order_id", razorpayOrderId)
-      .single();
+      .eq("razorpay_order_id", razorpayOrderId);
+
+    if (user) {
+      orderQuery = orderQuery.eq("user_id", user.id);
+    }
+
+    const { data: order, error: orderError } =
+      await orderQuery.single();
 
     if (orderError || !order) {
       return NextResponse.json(
@@ -104,31 +125,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-    if (!supabaseUrl || !serviceRoleKey) {
-      console.error(
-        "Payment confirmation failed: Supabase service-role credentials are not configured."
-      );
-
-      return NextResponse.json(
-        { error: "Payment verified but order confirmation failed." },
-        { status: 500 }
-      );
-    }
-
-    const adminSupabase = createServiceRoleClient(
-      supabaseUrl,
-      serviceRoleKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    );
 
     const { data: updatedOrder, error: updateError } = await adminSupabase
       .from("orders")

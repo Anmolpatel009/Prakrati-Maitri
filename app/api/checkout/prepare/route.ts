@@ -15,22 +15,12 @@ export async function POST(request: Request) {
     const supabase = await createClient();
 
     // --------------------------------------------------
-    // 1. Verify authenticated user
+    // 1. Read authenticated user when available
     // --------------------------------------------------
 
     const {
       data: { user },
-      error: authError,
     } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        {
-          error: "You must be logged in to checkout.",
-        },
-        { status: 401 }
-      );
-    }
 
     // --------------------------------------------------
     // 2. Parse request
@@ -332,7 +322,7 @@ export async function POST(request: Request) {
       success: true,
 
       checkout: {
-        userId: user.id,
+        userId: user?.id ?? null,
 
         items: preparedItems,
 
