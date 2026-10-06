@@ -1,5 +1,6 @@
 import CartBadge from "@/components/cart/CartBadge";
 import ShopNavDropdown from "@/components/shop/ShopNavDropdown";
+import ShopModeSwitcher from "@/components/shop/ShopModeSwitcher";
 import type { NavbarCustomizationConfig } from "@/lib/shop/navbar-customization";
 
 type Category = {
@@ -64,19 +65,9 @@ export default function GlobalStorefrontHeader({
             <span className="shop-brand-word">PRAKRITI MAITRI</span>
           </a>
 
-          <a
-            href="/shop"
-            className="shop-brand-center"
-            aria-label="PRAKRITI MAITRI home"
-          >
-            <span className="shop-brand-seal">
-              <img
-                src="/prakrati-maitri-logo.jpg"
-                alt="PRAKRITI MAITRI"
-                className="shop-brand-logo"
-              />
-            </span>
-          </a>
+          <div className="shop-brand-center">
+            <ShopModeSwitcher />
+          </div>
 
           <div className="shop-nav-actions">
             <a href="/account" aria-label="Account">
