@@ -345,9 +345,6 @@ export default async function ShopPage({
         index,
         category,
         subcategory,
-        banner: resolvedCategoryId
-          ? categoryBannerById.get(resolvedCategoryId) ?? null
-          : null,
         products: productsForCard,
         href,
         eyebrow,
@@ -549,7 +546,6 @@ export default async function ShopPage({
         ({
           card,
           index,
-          banner,
           products,
           href,
           eyebrow,
@@ -562,8 +558,6 @@ export default async function ShopPage({
               index + 1
             } category-editorial-group-tall-banner`}
           >
-            <CategoryBannerView banner={banner} />
-
             <CategoryProductSection
               productCardStyling={productCardStyling}
               title={card.heading}

@@ -1268,12 +1268,12 @@
   }
 
   .category-circle-item {
-    width: 115px;
+    width: 105px;
   }
 
   .category-circle {
-    width: 90px;
-    height: 90px;
+    width: 82px;
+    height: 82px;
   }
 
   .shop-hero {
@@ -6322,7 +6322,7 @@
   > .category-banner-frame {
   width: 100% !important;
   height: auto !important;
-  aspect-ratio: auto !important;
+  aspect-ratio: 1920 / 650 !important;
   overflow: hidden !important;
 }
 
@@ -6340,9 +6340,9 @@
   .category-banner-image {
   display: block !important;
   width: 100% !important;
-  height: auto !important;
+  height: 100% !important;
   max-width: none !important;
-  object-fit: initial !important;
+  object-fit: cover !important;
   object-position: center !important;
 }
 
@@ -6369,6 +6369,75 @@
     .category-banner-image {
     width: 100% !important;
     height: auto !important;
+  }
+}
+
+/*
+  CMS category banner canvas.
+  Keep the storefront category-banner artwork at the established
+  desktop proportion regardless of the source image's intrinsic height.
+  Scoped to the standalone category-page promo slot so homepage/master
+  category layouts are not altered.
+*/
+.shop-listing-promo-slot
+  > .category-banner-section
+  > .category-banner-frame {
+  width: 100% !important;
+  aspect-ratio: 1920 / 650 !important;
+  height: auto !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.shop-listing-promo-slot
+  > .category-banner-section
+  > .category-banner-frame
+  picture {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.shop-listing-promo-slot
+  > .category-banner-section
+  > .category-banner-frame
+  .category-banner-image {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+@media (max-width: 768px) {
+  /*
+    Category-page mobile banners should preserve the uploaded
+    artwork ratio instead of being forced into a 1080x720 crop.
+  */
+  .shop-listing-promo-slot
+    > .category-banner-section
+    > .category-banner-frame {
+    aspect-ratio: auto !important;
+    height: auto !important;
+  }
+
+  .shop-listing-promo-slot
+    > .category-banner-section
+    > .category-banner-frame
+    picture {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .shop-listing-promo-slot
+    > .category-banner-section
+    > .category-banner-frame
+    .category-banner-image {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    object-position: center !important;
   }
 }
 
