@@ -67,19 +67,141 @@ const testimonials = [
   },
 ];
 
-export default async function ShopPage() {
+type ShopPageProps = {
+  searchParams: Promise<{
+    door?: string;
+  }>;
+};
+
+export default async function ShopPage({
+  searchParams,
+}: ShopPageProps) {
+  const params = await searchParams;
+  const isBulkMode = params.door === "bulk";
+
   const supabase = await createClient();
+
+  const [
+    { categories, subcategories },
+  ] = await Promise.all([
+    getShopNavbarData(),
+  ]);
+
+  if (isBulkMode) {
+    const bulkCategory = categories.find(
+      (category) =>
+        category.name.trim().toLowerCase() === "corporate & bulk",
+    );
+
+    if (!bulkCategory) {
+      return (
+        <main className="min-h-screen bg-[#F9F7F2] px-6 py-20 text-center">
+          <h1 className="font-serif text-4xl font-semibold text-[#4A5D23]">
+            Corporate & Bulk
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-[#3D3D3D]/70">
+            The Corporate & Bulk catalogue is currently unavailable.
+          </p>
+        </main>
+      );
+    }
+
+    const { data: bulkProducts, error: bulkProductsError } =
+      await supabase
+        .from("products")
+        .select(`
+          id,
+          name,
+          slug,
+          description,
+          price,
+          compare_at_price,
+          category_id,
+          subcategory_id,
+          display_order,
+          product_images (
+            image_url,
+            alt_text,
+            display_order
+          )
+        `)
+        .eq("category_id", bulkCategory.id)
+        .eq("is_active", true)
+        .order("display_order", {
+          ascending: true,
+          nullsFirst: false,
+        })
+        .order("created_at", { ascending: false });
+
+    if (bulkProductsError) {
+      console.error(
+        "Corporate & Bulk products fetch error:",
+        bulkProductsError,
+      );
+    }
+
+    const bulkProductCardStyling =
+      await getProductCardStyling();
+
+    return (
+      <main className="min-h-screen bg-[#F9F7F2] text-[#3D3D3D] shop-listing-page">
+        <section className="shop-listing-promo">
+          <div className="mx-auto max-w-7xl px-6 py-10 md:px-10 lg:px-16">
+            <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-16 text-center md:px-12 md:py-24">
+              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
+                Prakriti Maitri
+              </p>
+
+              <h1 className="font-serif text-4xl font-semibold text-[#4A5D23] md:text-5xl">
+                Corporate & Bulk
+              </h1>
+
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#3D3D3D]/75 md:text-lg">
+                Explore our Corporate & Bulk catalogue for
+                business orders, gifting and custom requirements.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 pb-20 md:px-10 lg:px-16">
+          <div className="mx-auto max-w-7xl">
+            {bulkProducts && bulkProducts.length > 0 ? (
+              <div className="product-grid product-grid-three storefront-product-grid">
+                {bulkProducts.map((product) => (
+                  <SharedProductCard
+                    key={product.id}
+                    product={product}
+                    config={bulkProductCardStyling}
+                    isBulkEnquiry
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-white px-6 py-20 text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.15em] text-[#4A5D23]">
+                  Coming Soon
+                </p>
+
+                <h2 className="mt-3 font-serif text-3xl font-semibold text-[#4A5D23]">
+                  More products are on the way.
+                </h2>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   const categoryBannersPromise = getCategoryBanners();
 
   const [
-    { categories, subcategories },
     navCards,
     videos,
     homepageSections,
     homepageBanners,
   ] = await Promise.all([
-    getShopNavbarData(),
     getStorefrontNavCards(),
     getStorefrontVideos(),
     getHomepageSections(),
@@ -163,6 +285,17 @@ export default async function ShopPage() {
   const categoryBannerById = new Map(
     categoryBanners.map((banner) => [banner.category_id, banner]),
   );
+
+  const homepageCategoryRows = categories
+    .map((category, index) => ({
+      category,
+      index,
+      banner: categoryBannerById.get(category.id) ?? null,
+      products: products
+        .filter((product) => product.category_id === category.id)
+        .slice(0, 4),
+    }))
+    .filter((row) => row.products.length > 0);
 
   const homepageCollectionCards = merchandisingConfig.collectionCards
     .slice(0, 3)
@@ -483,38 +616,61 @@ export default async function ShopPage() {
 
         <div className="master-category-grid">
 
-          {categories.map((category) => (
-            <a
-              href={`/shop/${category.slug}`}
-              className="master-category-card"
-              key={category.id}
-            >
-              <div className="master-category-placeholder">
-                {category.image_url ? (
-                  <img
-                    src={category.image_url}
-                    alt={category.name}
-                    className="master-category-image"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span>{category.name}</span>
-                )}
+          {homepageCategoryRows.map(
+            ({ category, banner, products: categoryProducts, index }) => (
+              <div
+                className={`master-category-row ${
+                  index % 2 === 1 ? "is-flip" : ""
+                }`}
+                key={category.id}
+              >
+                <a
+                  href={`/shop/${category.slug}`}
+                  className="master-category-row-banner"
+                  aria-label={`Explore ${category.name}`}
+                >
+                  {banner ? (
+                    <CategoryBannerView banner={banner} />
+                  ) : (
+                    <section
+                      className="category-banner-section"
+                      aria-label={`${category.name} category banner`}
+                    >
+                      <div className="category-banner-frame">
+                        {category.image_url ? (
+                          <img
+                            src={category.image_url}
+                            alt={category.name}
+                            className="category-banner-image"
+                            loading="lazy"
+                            draggable={false}
+                          />
+                        ) : (
+                          <div className="master-category-banner-fallback">
+                            {category.name}
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
+                </a>
+
+                <div className="master-category-row-products">
+                  {categoryProducts.map((product) => (
+                    <SharedProductCard
+                      key={product.id}
+                      product={product}
+                      config={productCardStyling}
+                      isBulkEnquiry={
+                        category.name.trim().toLowerCase() ===
+                        "corporate & bulk"
+                      }
+                    />
+                  ))}
+                </div>
               </div>
-
-              <div className="master-category-content">
-                <h3>{category.name}</h3>
-
-                <p>
-                  Explore products from our {category.name.toLowerCase()} collection.
-                </p>
-
-                <span>
-                  Explore →
-                </span>
-              </div>
-            </a>
-          ))}
+            ),
+          )}
 
         </div>
 

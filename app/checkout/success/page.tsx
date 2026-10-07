@@ -1,4 +1,11 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { createClient as createServiceRoleClient } from "@supabase/supabase-js";
+import { getProductCardStyling } from "@/lib/shop/product-card-styling";
+import SharedProductCard, {
+  type SharedProductCardProduct,
+} from "@/components/shop/ProductCard";
+import styles from "./success.module.css";
 
 type SuccessPageProps = {
   searchParams: Promise<{
@@ -6,173 +13,562 @@ type SuccessPageProps = {
   }>;
 };
 
+type OrderItem = {
+  id: string;
+  product_name: string;
+  product_sku: string | null;
+  quantity: number;
+  unit_price: number;
+  line_total: number;
+};
+
+type Order = {
+  id: string;
+  status: string;
+  subtotal: number;
+  shipping_fee: number;
+  total: number;
+  shipping_first_name: string | null;
+  shipping_last_name: string | null;
+  shipping_phone: string | null;
+  shipping_address: string | null;
+  shipping_city: string | null;
+  shipping_state: string | null;
+  shipping_country: string | null;
+  shipping_postal_code: string | null;
+  created_at: string;
+  order_items: OrderItem[];
+};
+
+function currency(value: number) {
+  return `₹${value.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
+function formatDate(value: string) {
+  return new Date(value).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default async function SuccessPage({
   searchParams,
 }: SuccessPageProps) {
   const params = await searchParams;
   const orderId = params.order;
 
+  let order: Order | null = null;
+  let customerEmail: string | null = null;
+  let suggestedProducts: SharedProductCardProduct[] = [];
+
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    customerEmail = user?.email ?? null;
+
+    // Order-specific data is fetched only when a real order exists.
+    // Authenticated customers remain restricted to their own orders.
+    // Guest orders are loaded server-side by their returned order ID.
+    if (orderId) {
+      const orderClient = user
+        ? supabase
+        : createServiceRoleClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            {
+              auth: {
+                autoRefreshToken: false,
+                persistSession: false,
+              },
+            }
+          );
+
+      let orderQuery = orderClient
+        .from("orders")
+        .select(`
+          id,
+          status,
+          subtotal,
+          shipping_fee,
+          total,
+          shipping_first_name,
+          shipping_last_name,
+          shipping_phone,
+          shipping_address,
+          shipping_city,
+          shipping_state,
+          shipping_country,
+          shipping_postal_code,
+          created_at,
+          order_items (
+            id,
+            product_name,
+            product_sku,
+            quantity,
+            unit_price,
+            line_total
+          )
+        `)
+        .eq("id", orderId);
+
+      if (user) {
+        orderQuery = orderQuery.eq("user_id", user.id);
+      }
+
+      const { data } = await orderQuery.single();
+
+      if (data) {
+        order = data as Order;
+      }
+    }
+
+    // Presentation-only product suggestions are loaded even
+    // during direct design preview without an order ID.
+    const { data: products } = await supabase
+      .from("products")
+      .select(`
+        id,
+        name,
+        slug,
+        price,
+        product_images (
+          id,
+          image_url,
+          alt_text,
+          display_order
+        )
+      `)
+      .order("display_order", {
+        ascending: true,
+        nullsFirst: false,
+      })
+      .limit(4);
+
+    suggestedProducts =
+      (products as SharedProductCardProduct[] | null) ?? [];
+  } catch (error) {
+    console.error(
+      "Unable to load post-payment display data:",
+      error,
+    );
+  }
+
+  const itemCount =
+    order?.order_items?.reduce(
+      (sum, item) => sum + Number(item.quantity || 0),
+      0,
+    ) ?? 0;
+
+  const productCardStyling = await getProductCardStyling();
+
+  const whatsappHref =
+    "https://wa.me/919232040020";
+
+  const displayOrderId = order?.id ?? orderId ?? "Created";
+
   return (
-    <main className="min-h-screen bg-[#F9F7F2] px-5 py-12 sm:px-8 lg:py-16">
-      <div className="mx-auto max-w-4xl">
+    <div className={styles.page}>
+      <div className={styles.announce}>
+        Free shipping on Order above 500/-
+      </div>
 
-        {/* ================================================= */}
-        {/* SUCCESS CARD */}
-        {/* ================================================= */}
+      <header className={styles.header}>
+        <div className={`${styles.wrap} ${styles.headerRow}`}>
+          <Link href="/shop" className={styles.logo}>
+            PRAKRITI MAITRI
+          </Link>
 
-        <section className="overflow-hidden rounded-3xl border border-[#D2B48C]/50 bg-white shadow-sm">
+          <span className={styles.secure}>
+            Payment secured
+          </span>
+        </div>
+      </header>
 
-          {/* HEADER */}
+      <main>
+        <section className={`${styles.wrap} ${styles.hero}`}>
+          <div className={styles.tick}>✓</div>
 
-          <div className="bg-[#EDE5D4] px-6 py-12 text-center sm:px-10 sm:py-16">
+          <p className={styles.eyebrow}>
+            Order confirmed
+          </p>
 
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#4A5D23] text-2xl text-white shadow-sm">
-              ✓
+          <h1 className={styles.heroTitle}>
+            Thank you
+          </h1>
+
+          <p className={styles.heroSub}>
+            Your order{" "}
+            <span className={styles.orderNo}>
+              #{displayOrderId}
+            </span>{" "}
+            has been successfully confirmed.
+          </p>
+
+          {order && (
+            <>
+              <div className={styles.facts}>
+                <div className={styles.fact}>
+                  <span>Items</span>
+                  <b>{itemCount} items</b>
+                </div>
+
+                <div className={styles.fact}>
+                  <span>Paid</span>
+                  <b>{currency(Number(order.total))}</b>
+                </div>
+
+                <div className={styles.fact}>
+                  <span>Payment</span>
+                  <b>Paid</b>
+                </div>
+
+                <div className={styles.fact}>
+                  <span>Order date</span>
+                  <b>{formatDate(order.created_at)}</b>
+                </div>
+              </div>
+
+              <p className={styles.eco}>
+                Every bag you carry replaces single-use plastic.
+              </p>
+            </>
+          )}
+        </section>
+
+        <section className={`${styles.wrap} ${styles.cols}`}>
+          <div className={styles.stack}>
+            <div className={styles.card}>
+              <h2 className={styles.cardTitle}>
+                What happens next
+              </h2>
+
+              <ol className={styles.timeline}>
+                <li
+                  className={`${styles.timelineItem} ${styles.done}`}
+                >
+                  <span className={styles.dot} />
+                  <div>
+                    <b>Order placed</b>
+                    <span>
+                      Your order has been received successfully.
+                    </span>
+                  </div>
+                </li>
+
+                <li
+                  className={`${styles.timelineItem} ${styles.done}`}
+                >
+                  <span className={styles.dot} />
+                  <div>
+                    <b>Order approved</b>
+                    <span>
+                      Your order has been approved for fulfilment.
+                    </span>
+                  </div>
+                </li>
+
+                <li
+                  className={`${styles.timelineItem} ${styles.done}`}
+                >
+                  <span className={styles.dot} />
+                  <div>
+                    <b>Order confirmed</b>
+                    <span>
+                      Your order is confirmed and will move through fulfilment.
+                    </span>
+                  </div>
+                </li>
+
+                <li className={styles.timelineItem}>
+                  <span className={styles.dot} />
+                  <div>
+                    <b>Delivered</b>
+                    <span>
+                      Delivery updates will be available later.
+                    </span>
+                  </div>
+                </li>
+              </ol>
             </div>
 
-            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
-              Prakriti Maitri
-            </p>
+            {order ? (
+              <div className={styles.card}>
+                <div className={styles.summaryHeader}>
+                  <h2 className={styles.cardTitle}>
+                    Order summary
+                  </h2>
 
-            <h1 className="mt-3 font-serif text-4xl text-[#4A5D23] sm:text-5xl">
-              Thank You for Shopping
-            </h1>
+                  <span className={styles.paidTag}>
+                    Paid
+                  </span>
+                </div>
 
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#3D3D3D]/65 sm:text-base">
-              Thank you for shopping with us. Your order has
-              been successfully confirmed.
-            </p>
+                {order.order_items.map((item) => (
+                  <div
+                    className={styles.item}
+                    key={item.id}
+                  >
+                    <span className={styles.thumb}>
+                      PM
+                    </span>
 
-          </div>
+                    <div>
+                      <div className={styles.itemName}>
+                        {item.product_name}
+                      </div>
 
-          {/* ================================================= */}
-          {/* ORDER DETAILS */}
-          {/* ================================================= */}
+                      <p className={styles.itemOpts}>
+                        {item.quantity} ×{" "}
+                        {currency(Number(item.unit_price))}
+                        {item.product_sku
+                          ? ` · SKU ${item.product_sku}`
+                          : ""}
+                      </p>
+                    </div>
 
-          <div className="px-6 py-8 sm:px-10 sm:py-10">
+                    <span className={styles.amount}>
+                      {currency(Number(item.line_total))}
+                    </span>
+                  </div>
+                ))}
 
-            {orderId ? (
-              <div className="rounded-2xl border border-[#D2B48C]/50 bg-[#F9F7F2] p-5 sm:p-6">
+                <table className={styles.sum}>
+                  <tbody>
+                    <tr>
+                      <td>Subtotal</td>
+                      <td>
+                        {currency(Number(order.subtotal))}
+                      </td>
+                    </tr>
 
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#3D3D3D]/50">
-                  Order ID
-                </p>
+                    <tr>
+                      <td>Shipping</td>
+                      <td>
+                        {Number(order.shipping_fee) === 0
+                          ? "Free"
+                          : currency(
+                              Number(order.shipping_fee),
+                            )}
+                      </td>
+                    </tr>
 
-                <p className="mt-2 break-all font-mono text-sm font-semibold text-[#4A5D23] sm:text-base">
-                  {orderId}
-                </p>
+                    <tr className={styles.total}>
+                      <td>Total paid</td>
+                      <td>
+                        {currency(Number(order.total))}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
-                <p className="mt-3 text-xs leading-5 text-[#3D3D3D]/50">
-                  Keep this order ID for your records.
-                </p>
+                <div className={styles.meta}>
+                  <div>
+                    <p className={styles.label}>
+                      Delivering to
+                    </p>
 
+                    <p className={styles.metaValue}>
+                      {order.shipping_first_name}{" "}
+                      {order.shipping_last_name}
+                      <br />
+                      {order.shipping_address}
+                      <br />
+                      {order.shipping_city},{" "}
+                      {order.shipping_state}{" "}
+                      {order.shipping_postal_code}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className={styles.label}>
+                      Payment
+                    </p>
+
+                    <p className={styles.metaValue}>
+                      Payment received successfully.
+                      {customerEmail && (
+                        <>
+                          <br />
+                          {customerEmail}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-[#D2B48C]/50 bg-[#F9F7F2] p-5 text-sm text-[#3D3D3D]/65">
-                Your order has been created successfully.
+              <div className={styles.card}>
+                <h2 className={styles.cardTitle}>
+                  Order received
+                </h2>
+
+                <p className={styles.mutedText}>
+                  Your order has been created successfully.
+                  Keep your order ID for your records.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <aside className={styles.stack}>
+            {order && (
+              <div className={styles.card}>
+                <p className={styles.label}>
+                  GST invoice
+                </p>
+
+                <p
+                  className={`${styles.mutedText} ${styles.invoiceText}`}
+                >
+                  Your GST invoice for order #
+                  {displayOrderId.slice(0, 8)} is ready
+                  to download.
+                </p>
+
+                <div className={styles.btns}>
+                  <a
+                    className={`${styles.btn} ${styles.primary}`}
+                    href={`/api/invoices/${encodeURIComponent(order.id)}`}
+                  >
+                    Download GST invoice
+                  </a>
+
+                  <a
+                    className={`${styles.btn} ${styles.secondary}`}
+                    href={`mailto:support@prakritimaitri.com?subject=Invoice%20request%20${encodeURIComponent(
+                      order.id.slice(0, 8),
+                    )}`}
+                  >
+                    Email invoice
+                  </a>
+                </div>
               </div>
             )}
 
-            {/* ================================================= */}
-            {/* WHAT HAPPENS NEXT */}
-            {/* ================================================= */}
-
-            <div className="mt-8">
-
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
-                What's next?
+            <div
+              className={`${styles.card} ${styles.waCard}`}
+            >
+              <p className={styles.label}>
+                Order updates
               </p>
 
-              <h2 className="mt-2 font-serif text-2xl text-[#4A5D23] sm:text-3xl">
-                Your order is now with us
-              </h2>
+              <p className={styles.waNumber}>
+                Get updates on WhatsApp
+              </p>
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <p className={styles.mutedText}>
+                Contact our team for mockup approval,
+                dispatch and delivery updates.
+              </p>
 
-                <div className="rounded-2xl border border-[#D2B48C]/40 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EDE5D4] text-sm font-bold text-[#4A5D23]">
-                    1
-                  </div>
-
-                  <p className="mt-4 font-semibold text-[#3D3D3D]">
-                    Order received
-                  </p>
-
-                  <p className="mt-2 text-xs leading-5 text-[#3D3D3D]/55">
-                    Your order has been recorded
-                    successfully.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-[#D2B48C]/40 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EDE5D4] text-sm font-bold text-[#4A5D23]">
-                    2
-                  </div>
-
-                  <p className="mt-4 font-semibold text-[#3D3D3D]">
-                    Order processing
-                  </p>
-
-                  <p className="mt-2 text-xs leading-5 text-[#3D3D3D]/55">
-                    Your order can now move through
-                    the fulfilment workflow.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-[#D2B48C]/40 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EDE5D4] text-sm font-bold text-[#4A5D23]">
-                    3
-                  </div>
-
-                  <p className="mt-4 font-semibold text-[#3D3D3D]">
-                    Track your order
-                  </p>
-
-                  <p className="mt-2 text-xs leading-5 text-[#3D3D3D]/55">
-                    View your orders from your account
-                    whenever you need them.
-                  </p>
-                </div>
-
-              </div>
-
+              <a
+                className={`${styles.btn} ${styles.primary}`}
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+              >
+                WhatsApp +91 9232040020
+              </a>
             </div>
 
-            {/* ================================================= */}
-            {/* ACTIONS */}
-            {/* ================================================= */}
+            <div className={`${styles.card} ${styles.help}`}>
+              <p className={styles.label}>
+                Need help?
+              </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <p>
+                <span>☎</span>
+                <span>Call or WhatsApp</span>
+                <a
+                  className={styles.helpLink}
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  +91 9232040020
+                </a>
+              </p>
 
-              <Link
-                href="/account/orders"
-                className="inline-flex flex-1 items-center justify-center rounded-full bg-[#4A5D23] px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#3D4D1D] hover:shadow-lg"
-              >
-                View My Orders
-              </Link>
+              <p>
+                <span>✉</span>
+                <span>Email</span>
+                <a
+                  className={styles.helpLink}
+                  href="mailto:support@prakritimaitri.com"
+                >
+                  support@prakritimaitri.com
+                </a>
+              </p>
 
-              <Link
-                href="/shop"
-                className="inline-flex flex-1 items-center justify-center rounded-full border border-[#D2B48C] bg-white px-6 py-4 text-sm font-semibold text-[#4A5D23] transition hover:border-[#4A5D23] hover:bg-[#F9F7F2]"
-              >
-                Continue Shopping
-              </Link>
-
+              {/* Track order intentionally removed. */}
             </div>
 
-          </div>
+            <div className={`${styles.card} ${styles.bulk}`}>
+              <p className={styles.bulkTitle}>
+                Ordering for an event or your team?
+              </p>
 
+              <p className={styles.mutedText}>
+                Get a custom quote for bulk orders,
+                gifting and corporate branding.
+              </p>
+
+              <Link
+                href="/bulk-order"
+                className={`${styles.btn} ${styles.primary}`}
+              >
+                Request a bulk quote
+              </Link>
+            </div>
+          </aside>
         </section>
 
-        {/* ================================================= */}
-        {/* FOOTER MESSAGE */}
-        {/* ================================================= */}
+        {suggestedProducts.length > 0 && (
+          <section className={styles.more}>
+            <div className={styles.wrap}>
+              <div className={styles.moreHead}>
+                <h2 className={styles.moreTitle}>
+                  Reorder or add more
+                </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-5 text-[#3D3D3D]/45">
-          Thoughtfully created with care by Prakriti Maitri.
-        </p>
+                <Link
+                  href="/shop"
+                  className={styles.moreLink}
+                >
+                  View all bags →
+                </Link>
+              </div>
 
-      </div>
-    </main>
+              <div className={styles.suggestedGrid}>
+                {suggestedProducts.map((product) => (
+                  <SharedProductCard
+                    key={product.id}
+                    product={product}
+                    config={productCardStyling}
+                  />
+                ))}
+              </div>
+
+              <div className={styles.continueWrap}>
+                <Link
+                  href="/shop"
+                  className={`${styles.btn} ${styles.primary} ${styles.continueButton}`}
+                >
+                  Continue shopping
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
   );
 }

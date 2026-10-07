@@ -33,6 +33,7 @@ type ProductCardProps = {
   product: SharedProductCardProduct;
   config: ProductCardStylingConfig;
   href?: string;
+  isBulkEnquiry?: boolean;
 };
 
 const animationClass: Record<ProductCardAnimation, string> = {
@@ -45,6 +46,7 @@ export default function ProductCard({
   product,
   config,
   href,
+  isBulkEnquiry = false,
 }: ProductCardProps) {
   const images = useMemo(
     () =>
@@ -102,7 +104,9 @@ export default function ProductCard({
     return () => clearImageCycle();
   }, []);
 
-  const destination = href ?? `/products/${product.slug}`;
+  const destination = isBulkEnquiry
+    ? `/bulk-order?product=${encodeURIComponent(product.id)}`
+    : href ?? `/products/${product.slug}`;
   const image = images[activeImageIndex] ?? null;
 
   const rating = Math.max(
@@ -167,9 +171,15 @@ export default function ProductCard({
           </span>
         </div>
 
-        <div className="product-card-shared-price">
-          ₹{product.price.toFixed(0)}
-        </div>
+        {isBulkEnquiry ? (
+          <span className="product-card-shared-bulk-enquiry">
+            Bulk Enquiry
+          </span>
+        ) : (
+          <div className="product-card-shared-price">
+            ₹{product.price.toFixed(0)}
+          </div>
+        )}
       </div>
     </Link>
   );

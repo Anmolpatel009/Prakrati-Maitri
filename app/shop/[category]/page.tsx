@@ -70,6 +70,9 @@ export default async function CategoryPage({
     notFound();
   }
 
+  const isBulkCategory =
+    categoryData.name.trim().toLowerCase() === "corporate & bulk";
+
   const categoryBanner = await getCategoryBanner(categoryData.id);
 
 
@@ -287,6 +290,7 @@ export default async function CategoryPage({
                     product_images: product.images,
                   }}
                   config={productCardStyling}
+                  isBulkEnquiry={isBulkCategory}
                 />
                 );
               })}

@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Category = {
   id: string;
@@ -84,6 +84,8 @@ function makeInitialForm() {
 
 export default function BulkOrderForm({ categories, products }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedProductId = searchParams.get("product");
 
   const [form, setForm] = useState(makeInitialForm);
   const [loading, setLoading] = useState(false);
@@ -91,6 +93,24 @@ export default function BulkOrderForm({ categories, products }: Props) {
   const [success, setSuccess] = useState(false);
   const [referenceImage, setReferenceImage] = useState<File | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
+
+  useEffect(() => {
+    if (!preselectedProductId) return;
+
+    const product = products.find(
+      (item) => item.id === preselectedProductId
+    );
+
+    if (!product) return;
+
+    setForm((current) => ({
+      ...current,
+      categoryId: product.category_id ?? "",
+      productId: product.id,
+    }));
+
+    setMoreOpen(true);
+  }, [preselectedProductId, products]);
 
   const filteredProducts = useMemo(() => {
     if (!form.categoryId) return products;
