@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
@@ -33,6 +33,10 @@ export default function CheckoutPage() {
   });
 
   const [error, setError] = useState("");
+  const [preparing, setPreparing] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState("");
+  const [pincodeLookup, setPincodeLookup] = useState(false);
 
   function updateField(
     field: keyof CheckoutForm,
@@ -41,10 +45,200 @@ export default function CheckoutPage() {
     setForm((current) => ({
       ...current,
       [field]: value,
+      ...(field === "postalCode"
+        ? { city: "", state: "" }
+        : {}),
     }));
   }
 
-  function handleSubmit(
+  useEffect(() => {
+    const postalCode = form.postalCode.trim();
+
+    if (!/^\d{6}$/.test(postalCode)) {
+      setPincodeLookup(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setPincodeLookup(true);
+
+    fetch(
+      `/api/location/pincode?pincode=${encodeURIComponent(postalCode)}`,
+      {
+        signal: controller.signal,
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            data.error || "Unable to find this PIN code."
+          );
+        }
+
+        return data;
+      })
+      .then((data) => {
+        setForm((current) => {
+          if (current.postalCode.trim() != postalCode) {
+            return current;
+          }
+
+          return {
+            ...current,
+            city: data.city || current.city,
+            state: data.state || current.state,
+            country: data.country || current.country,
+          };
+        });
+      })
+      .catch((error) => {
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
+
+        console.warn("PIN code lookup failed:", error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setPincodeLookup(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, [form.postalCode]);
+
+  async function handleUseCurrentLocation() {
+    if (locating) {
+      return;
+    }
+
+    setLocationError("");
+
+    if (!navigator.geolocation) {
+      setLocationError(
+        "Location is not supported by this browser."
+      );
+      return;
+    }
+
+    setLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const url = new URL(
+            "https://api.bigdatacloud.net/data/reverse-geocode-client"
+          );
+
+          url.searchParams.set(
+            "latitude",
+            String(position.coords.latitude)
+          );
+          url.searchParams.set(
+            "longitude",
+            String(position.coords.longitude)
+          );
+          url.searchParams.set(
+            "localityLanguage",
+            "en"
+          );
+
+          const response = await fetch(url.toString(), {
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              "Unable to resolve your current location."
+            );
+          }
+
+          const data = await response.json();
+
+          const city =
+            data.city ||
+            data.locality ||
+            "";
+
+          const locality =
+            data.locality ||
+            "";
+
+          const suggestedAddress = [
+            locality,
+            city,
+          ]
+            .filter(Boolean)
+            .filter(
+              (value, index, values) =>
+                values.indexOf(value) === index
+            )
+            .join(", ");
+
+          setForm((current) => ({
+            ...current,
+            address:
+              suggestedAddress || current.address,
+            city:
+              city || current.city,
+            state:
+              data.principalSubdivision ||
+              current.state,
+            country:
+              data.countryName ||
+              current.country,
+            postalCode:
+              data.postcode ||
+              current.postalCode,
+          }));
+        } catch (error) {
+          console.error(
+            "Current location lookup failed:",
+            error
+          );
+
+          setLocationError(
+            error instanceof Error
+              ? error.message
+              : "Unable to detect your current location."
+          );
+        } finally {
+          setLocating(false);
+        }
+      },
+      (error) => {
+        setLocating(false);
+
+        if (error.code === 1) {
+          setLocationError(
+            "Location permission was denied. You can enter your address manually."
+          );
+        } else if (error.code === 3) {
+          setLocationError(
+            "Location detection timed out. Please try again or enter the address manually."
+          );
+        } else {
+          setLocationError(
+            "Unable to detect your location. Please enter the address manually."
+          );
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000,
+      }
+    );
+  }
+
+  async function handleSubmit(
     event: FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
@@ -66,12 +260,61 @@ export default function CheckoutPage() {
       return;
     }
 
-    sessionStorage.setItem(
-      "prakratri-matri-checkout",
-      JSON.stringify(form)
-    );
+    setPreparing(true);
+    setError("");
 
-    router.push("/checkout/review");
+    try {
+      const response = await fetch(
+        "/api/checkout/prepare",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+            })),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ||
+            "Unable to verify your order right now."
+        );
+      }
+
+      if (!data.success || !data.checkout) {
+        throw new Error(
+          "Unable to verify your order right now."
+        );
+      }
+
+      sessionStorage.setItem(
+        "prakratri-matri-checkout",
+        JSON.stringify(form)
+      );
+
+      router.push("/checkout/payment");
+    } catch (err) {
+      console.error(
+        "Checkout preparation failed:",
+        err
+      );
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to verify your order right now."
+      );
+    } finally {
+      setPreparing(false);
+    }
   }
 
   // =====================================================
@@ -259,7 +502,42 @@ export default function CheckoutPage() {
 
               {/* ================================================= */}
               {/* ADDRESS */}
-              {/* ================================================= */}
+              {/* ================================================= */}              <div className="mb-5 rounded-2xl border border-[#D2B48C]/50 bg-[#EDE5D4]/55 px-4 py-4 sm:px-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-[#3D3D3D]">
+                      Autofill from your location
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
+                      Allow location access to prefill your area, city, state and PIN code.
+                      You can edit everything before placing the order.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleUseCurrentLocation}
+                    disabled={locating}
+                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[#4A5D23]/35 bg-white px-5 py-2.5 text-xs font-semibold text-[#4A5D23] transition hover:border-[#4A5D23] hover:bg-[#F9F7F2] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {locating
+                      ? "Detecting..."
+                      : "Use my location"}
+                  </button>
+                </div>
+
+                {locationError ? (
+                  <p className="mt-3 text-xs leading-5 text-[#9A4D21]">
+                    {locationError}
+                  </p>
+                ) : null}
+
+                <p className="mt-3 text-[10px] leading-4 text-[#3D3D3D]/45">
+                  Location is requested only when you tap the button.
+                </p>
+              </div>
+
+
 
               <div className="mt-5">
                 <label
@@ -383,7 +661,11 @@ export default function CheckoutPage() {
                     htmlFor="postalCode"
                     className="mb-2 block text-sm font-semibold text-[#3D3D3D]"
                   >
-                    Postal code
+                    Postal code{pincodeLookup ? (
+                      <span className="ml-2 text-[10px] font-medium text-[#4A5D23]/70">
+                        Finding city &amp; state...
+                      </span>
+                    ) : null}
                   </label>
 
                   <input
@@ -425,9 +707,10 @@ export default function CheckoutPage() {
 
               <button
                 type="submit"
+                  disabled={preparing}
                 className="mt-7 w-full rounded-full bg-[#4A5D23] px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#3D4D1D] hover:shadow-lg active:translate-y-0"
               >
-                Continue to Review →
+                {preparing ? "Verifying order..." : "Review & Place Order →"}
               </button>
 
               <p className="mt-4 text-center text-xs text-[#3D3D3D]/50">
