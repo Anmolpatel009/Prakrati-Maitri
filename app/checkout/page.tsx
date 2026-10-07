@@ -323,7 +323,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-[#EDE5D4] px-6 py-16 text-center sm:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
@@ -352,7 +352,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F9F7F2] px-5 py-10 sm:px-8 lg:py-14">
+    <main className="min-h-screen bg-[#F9F7F2] px-5 py-10 sm:px-8 lg:py-14 pm-storefront-canvas-page">
       <div className="mx-auto max-w-6xl">
 
         {/* ================================================= */}

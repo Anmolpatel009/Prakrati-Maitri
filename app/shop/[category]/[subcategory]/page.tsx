@@ -271,31 +271,6 @@ export default async function SubcategoryPage({
       </section>
 
       {/* ================================================= */}
-      {/* HERO */}
-      {/* ================================================= */}
-
-      <section className="shop-listing-promo">
-        <div className="mx-auto max-w-7xl">
-          <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-14 text-center md:px-12 md:py-20">
-
-            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
-              {categoryData.name}
-            </p>
-
-            <h1 className="font-serif text-4xl font-semibold text-[#4A5D23] md:text-5xl">
-              {subcategoryData.name}
-            </h1>
-
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#3D3D3D]/75 md:text-lg">
-              {subcategoryData.description ||
-                `Explore our ${subcategoryData.name.toLowerCase()} collection.`}
-            </p>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================= */}
       {/* NAVIGATION */}
       {/* ================================================= */}
 
@@ -329,17 +304,7 @@ export default async function SubcategoryPage({
       {/* PRODUCT COUNT */}
       {/* ================================================= */}
 
-      <section className="border-y border-[#D2B48C]/30 bg-[#F9F7F2] px-6 py-5 md:px-10 lg:px-16">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm text-[#3D3D3D]/65">
-            {preparedProducts.length}{" "}
-            {preparedProducts.length === 1
-              ? "product"
-              : "products"}{" "}
-            in this collection
-          </p>
-        </div>
-      </section>
+
 
       {/* ================================================= */}
       {/* PRODUCTS */}

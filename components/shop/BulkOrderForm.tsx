@@ -131,9 +131,16 @@ export default function BulkOrderForm({ categories, products }: Props) {
   }
 
   const [notSureSelected, setNotSureSelected] = useState(false);
+  const [selectedPlanning, setSelectedPlanning] = useState<string[]>([]);
 
   function handleNotSureSelection() {
-    setNotSureSelected((current) => !current);
+    setNotSureSelected((current) => {
+      const next = !current;
+      if (next) {
+        setSelectedPlanning([]);
+      }
+      return next;
+    });
     setForm((current) => ({
       ...current,
       categoryId: "",
@@ -300,6 +307,7 @@ export default function BulkOrderForm({ categories, products }: Props) {
     setSuccess(false);
     setMoreOpen(false);
     setNotSureSelected(false);
+    setSelectedPlanning([]);
   }
 
   const whatsappText = encodeURIComponent(
@@ -379,7 +387,7 @@ export default function BulkOrderForm({ categories, products }: Props) {
             const isNotSure = option === "Not sure yet";
             const checked = isNotSure
               ? notSureSelected
-              : false;
+              : selectedPlanning.includes(option);
 
             return (
               <label
@@ -394,7 +402,15 @@ export default function BulkOrderForm({ categories, products }: Props) {
                   onChange={() => {
                     if (isNotSure) {
                       handleNotSureSelection();
+                      return;
                     }
+
+                    setNotSureSelected(false);
+                    setSelectedPlanning((current) =>
+                      current.includes(option)
+                        ? current.filter((item) => item !== option)
+                        : [...current, option],
+                    );
                   }}
                 />
                 <span

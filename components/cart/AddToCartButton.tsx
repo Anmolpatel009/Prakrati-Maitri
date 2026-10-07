@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "./CartProvider";
 
 type AddToCartButtonProps = {
@@ -30,6 +31,7 @@ export default function AddToCartButton({
   quantity = 1,
   customization = null,
 }: AddToCartButtonProps) {
+  const router = useRouter();
   const { addItem } = useCart();
 
   const [added, setAdded] = useState(false);
@@ -50,9 +52,7 @@ export default function AddToCartButton({
 
     setAdded(true);
 
-    window.setTimeout(() => {
-      setAdded(false);
-    }, 1800);
+    router.push("/cart");
   }
 
   return (

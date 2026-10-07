@@ -146,18 +146,6 @@ export default function CollectionsClient({
 
   return (
     <main className="collections-page">
-      <section className="collections-hero">
-        <p className="shop-eyebrow">PRAKRITI MAITRI</p>
-
-        <h1>Our Collection</h1>
-
-        <p>
-          Explore our complete collection of thoughtfully
-          made bags, designed for everyday use, gifting,
-          packaging and more.
-        </p>
-      </section>
-
       <section className="collections-layout">
         <aside className="collections-filters">
           <div className="collections-filter-header">

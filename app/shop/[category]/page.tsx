@@ -180,28 +180,11 @@ export default async function CategoryPage({
       {/* HERO */}
       {/* ================================================= */}
 
-              {categoryBanner ? (
-          <div className="shop-listing-promo-slot"><CategoryBanner banner={categoryBanner} /></div>
-        ) : (
-<section className="shop-listing-promo">
-        <div className="mx-auto max-w-7xl">
-          <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-16 text-center md:px-12 md:py-24">
-            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
-              Prakriti Maitri Collection
-            </p>
-
-            <h1 className="font-serif text-4xl font-semibold text-[#4A5D23] md:text-5xl lg:text-6xl">
-              {categoryData.name}
-            </h1>
-
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#3D3D3D]/75 md:text-lg">
-              Explore our thoughtfully selected{" "}
-              {categoryData.name.toLowerCase()} collection.
-            </p>
-          </div>
+      {categoryBanner ? (
+        <div className="shop-listing-promo-slot">
+          <CategoryBanner banner={categoryBanner} />
         </div>
-      </section>
-        )}
+      ) : null}
 
 
       {/* ================================================= */}
@@ -224,38 +207,6 @@ export default async function CategoryPage({
             >
               {categoryData.name}
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ================================================= */}
-      {/* FILTER / SORT */}
-      {/* ================================================= */}
-
-      <section className="border-y border-[#D2B48C]/30 bg-[#F9F7F2] px-6 py-5 md:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-[#3D3D3D]/65">
-            {preparedProducts.length}{" "}
-            {preparedProducts.length === 1
-              ? "product"
-              : "products"}{" "}
-            in this collection
-          </p>
-
-          <div className="flex gap-3">
-            <button
-              type="button"
-              className="rounded-full border border-[#D2B48C]/60 bg-white px-5 py-2.5 text-sm transition hover:border-[#4A5D23]"
-            >
-              Filter
-            </button>
-
-            <button
-              type="button"
-              className="rounded-full border border-[#D2B48C]/60 bg-white px-5 py-2.5 text-sm transition hover:border-[#4A5D23]"
-            >
-              Sort by
-            </button>
           </div>
         </div>
       </section>
