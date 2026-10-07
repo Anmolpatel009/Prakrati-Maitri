@@ -361,7 +361,7 @@ export default function PaymentPage() {
 
   if (!loaded) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-white p-12 text-center">
             <div className="mx-auto h-9 w-9 animate-spin rounded-full border-2 border-[#D2B48C] border-t-[#4A5D23]" />
@@ -381,7 +381,7 @@ export default function PaymentPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-[#EDE5D4] px-6 py-16 text-center sm:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
@@ -414,7 +414,7 @@ export default function PaymentPage() {
 
   if (!checkout) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-white p-10 text-center sm:p-14">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
@@ -447,7 +447,7 @@ export default function PaymentPage() {
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#F9F7F2] px-5 py-10 sm:px-8 lg:py-14">
+    <main className="min-h-screen bg-[#F9F7F2] px-5 py-10 sm:px-8 lg:py-14 pm-storefront-canvas-page">
       <div className="mx-auto max-w-6xl">
 
         {/* ================================================= */}
@@ -608,24 +608,6 @@ export default function PaymentPage() {
                   </div>
                 </button>
                 )}
-
-              </div>
-
-              {/* ================================================= */}
-              {/* LIVE PAYMENT INFORMATION */}
-              {/* ================================================= */}
-
-              <div className="mt-6 rounded-2xl border border-[#D2B48C]/40 bg-[#EDE5D4]/50 p-5">
-
-                <p className="text-sm font-semibold text-[#4A5D23]">
-                  Secure online payment
-                </p>
-
-                <p className="mt-1 text-xs leading-5 text-[#3D3D3D]/60">
-                  Your payment is processed securely through Razorpay.
-                  You will be redirected to Razorpay&apos;s checkout to
-                  complete your payment.
-                </p>
 
               </div>
 

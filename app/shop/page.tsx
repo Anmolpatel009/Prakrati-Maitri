@@ -143,27 +143,12 @@ export default async function ShopPage({
     const bulkProductCardStyling =
       await getProductCardStyling();
 
+    const bulkNavCards = await getStorefrontNavCards();
+
     return (
       <main className="min-h-screen bg-[#F9F7F2] text-[#3D3D3D] shop-listing-page">
-        <section className="shop-listing-promo">
-          <div className="mx-auto max-w-7xl px-6 py-10 md:px-10 lg:px-16">
-            <div className="rounded-[2rem] border border-[#D2B48C]/40 bg-[#E8E1D2] px-6 py-16 text-center md:px-12 md:py-24">
-              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#4A5D23]">
-                Prakriti Maitri
-              </p>
 
-              <h1 className="font-serif text-4xl font-semibold text-[#4A5D23] md:text-5xl">
-                Corporate & Bulk
-              </h1>
-
-              <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#3D3D3D]/75 md:text-lg">
-                Explore our Corporate & Bulk catalogue for
-                business orders, gifting and custom requirements.
-              </p>
-            </div>
-          </div>
-        </section>
-
+        <CategoryRail navCards={bulkNavCards} />
         <section className="px-6 pb-20 md:px-10 lg:px-16">
           <div className="mx-auto max-w-7xl">
             {bulkProducts && bulkProducts.length > 0 ? (

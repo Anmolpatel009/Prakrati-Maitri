@@ -37,11 +37,7 @@ export default function GlobalStorefrontHeader({
   return (
     <>
       <div className="shop-promo-bar">
-        <button type="button" aria-label="Previous promotion">
-          ‹
-        </button>
-
-        <span>Free shipping on Order above 500/-</span>
+        <span>Free delivery over ₹100 order value</span>
 
         <button type="button" aria-label="Next promotion">
           ›
@@ -87,7 +83,13 @@ export default function GlobalStorefrontHeader({
         </div>
 
         <nav className="shop-nav">
-          {customization.items.map((item) => {
+          {customization.items
+            .filter(
+              (item) =>
+                item.key.trim().toLowerCase() !== "prev" &&
+                item.label?.trim().toUpperCase() !== "PREV",
+            )
+            .map((item) => {
             if (item.type === "new") {
               return (
                 <a key={item.key} href={item.href ?? "/shop"}>
@@ -183,7 +185,7 @@ export default function GlobalStorefrontHeader({
                 {subcategory.name.toUpperCase()}
               </a>
             );
-          })}
+            })}
         </nav>
       </header>
     </>

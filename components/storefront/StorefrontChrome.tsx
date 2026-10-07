@@ -39,9 +39,9 @@ export default function StorefrontChrome({
     <div
       className="storefront-global-shell"
       style={{
-        backgroundColor,
+        backgroundColor: "transparent",
         minHeight: "100vh",
-        ["--site-background" as string]: backgroundColor,
+        ["--site-background" as string]: "transparent",
       }}
     >
       {header}

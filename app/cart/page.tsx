@@ -19,7 +19,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-6 py-16">
+      <main className="min-h-screen bg-[#F9F7F2] px-6 py-16 pm-storefront-canvas-page">
         <div className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-center justify-center text-center">
           <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#E8F5E9] text-3xl">
             🛍️
@@ -55,7 +55,7 @@ export default function CartPage() {
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#F9F7F2] px-6 py-12 sm:py-16">
+    <main className="min-h-screen bg-[#F9F7F2] px-6 py-12 sm:py-16 pm-storefront-canvas-page">
       <div className="mx-auto max-w-7xl">
         {/* ================================================= */}
         {/* HEADER */}

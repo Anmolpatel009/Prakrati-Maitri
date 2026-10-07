@@ -142,7 +142,7 @@ export default function CheckoutReviewPage() {
 
   if (!loaded) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-white p-12 text-center">
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[#D2B48C] border-t-[#4A5D23]" />
@@ -162,7 +162,7 @@ export default function CheckoutReviewPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-[#EDE5D4] px-6 py-16 text-center sm:px-10">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#4A5D23]">
@@ -195,7 +195,7 @@ export default function CheckoutReviewPage() {
 
   if (!checkout) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-white p-10 text-center sm:p-14">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A5D23]">
@@ -230,7 +230,7 @@ export default function CheckoutReviewPage() {
 
   if (preparing) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-white p-10 text-center sm:p-14">
             <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-[#D2B48C] border-t-[#4A5D23]" />
@@ -255,7 +255,7 @@ export default function CheckoutReviewPage() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-red-200 bg-white p-10 text-center sm:p-14">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-600">
@@ -296,7 +296,7 @@ export default function CheckoutReviewPage() {
 
   if (!serverCheckout) {
     return (
-      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8">
+      <main className="min-h-screen bg-[#F9F7F2] px-5 py-16 sm:px-8 pm-storefront-canvas-page">
         <div className="mx-auto max-w-3xl">
           <div className="rounded-3xl border border-[#D2B48C]/50 bg-white p-10 text-center sm:p-14">
             <h1 className="font-serif text-4xl text-[#4A5D23]">
@@ -324,7 +324,7 @@ export default function CheckoutReviewPage() {
   // =====================================================
 
   return (
-    <main className="min-h-screen bg-[#F9F7F2] px-5 py-10 sm:px-8 lg:py-14">
+    <main className="min-h-screen bg-[#F9F7F2] px-5 py-10 sm:px-8 lg:py-14 pm-storefront-canvas-page">
       <div className="mx-auto max-w-6xl">
 
         {/* ================================================= */}
