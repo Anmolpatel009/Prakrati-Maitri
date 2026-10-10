@@ -38,6 +38,7 @@ export default function WeddingReturnGiftHero({
   const [guests, setGuests] = useState("100\u2013300");
   const [gift, setGift] = useState("Jute hamper bag");
   const [formNotice, setFormNotice] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const displayedBride = bride.trim() || DEFAULT_BRIDE;
   const displayedGroom = groom.trim() || DEFAULT_GROOM;
@@ -52,11 +53,41 @@ export default function WeddingReturnGiftHero({
     }, 450);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setFormNotice(
-      "Your form is ready. Enquiry saving and Admin-panel management will be connected in the next phase; this form does not submit or store data yet.",
-    );
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setFormNotice("");
+
+    try {
+      const response = await fetch("/api/wedding-return-gift-enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brideName: bride.trim(),
+          groomName: groom.trim(),
+          weddingDate,
+          guestRange: guests,
+          giftChoice: gift,
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || "Unable to submit your enquiry. Please try again.");
+      }
+
+      setFormNotice("Your wedding return-gift enquiry has been received and saved.");
+    } catch (error) {
+      setFormNotice(
+        error instanceof Error
+          ? error.message
+          : "Unable to submit your enquiry. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -188,7 +219,7 @@ export default function WeddingReturnGiftHero({
               {RETURN_GIFTS.map((option) => <option key={option}>{option}</option>)}
             </select>
           </label>
-          <button className={`${styles["pm-wed-btn"]} ${styles["pm-wed-btn--solid"]} ${styles["pm-wed-go"]}`} type="submit">Get my quote <span aria-hidden="true">&#8594;</span></button>
+          <button className={`${styles["pm-wed-btn"]} ${styles["pm-wed-btn--solid"]} ${styles["pm-wed-go"]}`} type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Get my quote"} <span aria-hidden="true">&#8594;</span></button>
         </div>
         <p className={styles["pm-wed-hint"]}>Type the couple's names to see them on the tag above.</p>
         {formNotice ? <p className={styles["pm-wed-notice"]} role="status" aria-live="polite">{formNotice}</p> : null}

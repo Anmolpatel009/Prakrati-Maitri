@@ -1,5 +1,6 @@
 import TwoDoorsHeader from "@/components/storefront/TwoDoorsHeader";
 import type { NavbarCustomizationConfig } from "@/lib/shop/navbar-customization";
+import type { StorefrontAnnouncementConfig } from "@/lib/shop/announcement-strip";
 
 type Category = {
   id: string;
@@ -21,6 +22,7 @@ type Subcategory = {
 type Props = {
   navbarData: { categories: Category[]; subcategories: Subcategory[] };
   customization: NavbarCustomizationConfig;
+  announcementConfig: StorefrontAnnouncementConfig;
 };
 
 export default function GlobalStorefrontHeader(props: Props) {

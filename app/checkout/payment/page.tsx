@@ -98,6 +98,15 @@ export default function PaymentPage() {
     clearCart,
   } = useCart();
 
+  const [pricing, setPricing] = useState<{
+    subtotal: number; shippingFee: number; extraChargesTotal: number;
+    extraCharges: Array<{ id?: string; label: string; amount: number }>;
+    promoCode: string | null; promoDiscount: number; validPromo: boolean; total: number;
+  } | null>(null);
+  const [promoInput, setPromoInput] = useState('');
+  const [appliedPromoCode, setAppliedPromoCode] = useState('');
+  const [promoMessage, setPromoMessage] = useState('');
+
   const [checkout, setCheckout] =
     useState<CheckoutForm | null>(null);
 
@@ -111,7 +120,32 @@ export default function PaymentPage() {
 
   const [error, setError] = useState("");
 
-  useEffect(() => {
+    useEffect(() => {
+    if (!items.length) { setPricing(null); return; }
+    const controller = new AbortController();
+    fetch("/api/checkout/pricing", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+        promoCode: appliedPromoCode,
+      }),
+      signal: controller.signal,
+    }).then(async (response) => {
+      const data = await response.json();
+      if (!response.ok || !data?.success) throw new Error(data?.error || "Could not calculate pricing.");
+      setPricing(data.pricing);
+      if (appliedPromoCode) {
+        setPromoMessage(data.pricing?.validPromo ? "Promo code applied." : "Promo code is invalid or inactive.");
+      } else {
+        setPromoMessage("");
+      }
+    }).catch((error) => {
+      if (error?.name !== "AbortError") console.error("Checkout pricing preview failed:", error);
+    });
+    return () => controller.abort();
+  }, [items, appliedPromoCode]);
+useEffect(() => {
     if (!loaded || items.length === 0) return;
     trackMetaEvent("InitiateCheckout", {
       content_type: "product",
@@ -175,11 +209,11 @@ export default function PaymentPage() {
           productId: item.productId,
           quantity: item.quantity,
         })),
-        shipping: checkout,
+        shipping: { ...checkout, _promoCode: appliedPromoCode },
       };
 
       // -------------------------------------------------
-      // COD — preserve the existing order flow
+      // COD â€” preserve the existing order flow
       // -------------------------------------------------
       if (paymentMethod === "cod") {
         const response = await fetch("/api/orders/create", {
@@ -221,7 +255,7 @@ export default function PaymentPage() {
       }
 
       // -------------------------------------------------
-      // ONLINE — create the local order + Razorpay order
+      // ONLINE â€” create the local order + Razorpay order
       // -------------------------------------------------
       const razorpayLoaded = await loadRazorpay();
 
@@ -449,7 +483,7 @@ export default function PaymentPage() {
               href="/checkout"
               className="mt-7 inline-flex rounded-full bg-[#4A5D23] px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-[#3D4D1D]"
             >
-              ← Back to Checkout
+              â† Back to Checkout
             </Link>
           </div>
         </div>
@@ -474,7 +508,7 @@ export default function PaymentPage() {
             href="/checkout/review"
             className="text-sm text-[#3D3D3D]/60 transition hover:text-[#4A5D23]"
           >
-            ← Back to Review
+            â† Back to Review
           </Link>
 
           <div className="mt-7 rounded-3xl border border-[#D2B48C]/50 bg-[#EDE5D4] px-6 py-10 text-center sm:px-10">
@@ -738,7 +772,7 @@ export default function PaymentPage() {
                             maximumFractionDigits: 2,
                           }
                         )}{" "}
-                        × {item.quantity}
+                        Ã— {item.quantity}
                       </p>
 
                     </div>
@@ -771,7 +805,7 @@ export default function PaymentPage() {
 
                   <span>
                     ₹
-                    {subtotal.toLocaleString(
+                    {(pricing?.subtotal ?? subtotal).toLocaleString(
                       "en-IN",
                       {
                         minimumFractionDigits: 2,
@@ -783,7 +817,7 @@ export default function PaymentPage() {
 
                 <div className="mt-3 flex justify-between text-sm text-[#3D3D3D]/65">
                   <span>Shipping</span>
-                  <span>₹{(subtotal >= 999 ? 0 : 80).toLocaleString(
+                  <span>₹{(pricing?.shippingFee ?? (subtotal >= 999 ? 0 : 80)).toLocaleString(
                       "en-IN",
                       {
                         minimumFractionDigits: 2,
@@ -792,7 +826,25 @@ export default function PaymentPage() {
                     )}</span>
                 </div>
 
-                <div className="mt-5 border-t border-[#D2B48C]/30 pt-5">
+                                {pricing?.extraCharges?.map((charge, index) => (
+                  <div key={charge.id ?? `${charge.label}-${index}`} className="mt-3 flex justify-between gap-4 text-sm text-[#3D3D3D]/65">
+                    <span>{charge.label}</span>
+                    <span>₹{Number(charge.amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  </div>
+                ))}
+                {pricing !== null && pricing.promoDiscount > 0 && (
+                  <div className="mt-3 flex justify-between text-sm text-[#4A5D23]">
+                    <span>Promo discount{pricing?.promoCode ? ` (${pricing.promoCode})` : ""}</span>
+                    <span>−₹{Number(pricing.promoDiscount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  </div>
+                )}
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <input value={promoInput} onChange={(event) => setPromoInput(event.target.value.toUpperCase())} placeholder="Promo code" aria-label="Promo code" className="min-w-0 flex-1 rounded-xl border border-[#D2B48C]/60 px-4 py-3 text-sm outline-none focus:border-[#4A5D23]" />
+                  <button type="button" onClick={() => setAppliedPromoCode(promoInput.trim().toUpperCase())} className="rounded-xl border border-[#4A5D23] px-4 py-3 text-sm font-semibold text-[#4A5D23] hover:bg-[#4A5D23]/5">Apply code</button>
+                  {appliedPromoCode && <button type="button" onClick={() => { setAppliedPromoCode(""); setPromoInput(""); }} className="rounded-xl px-3 py-3 text-sm text-[#3D3D3D]/60 hover:text-[#3D3D3D]">Remove</button>}
+                </div>
+                {promoMessage && <p role="status" className="mt-2 text-xs text-[#4A5D23]">{promoMessage}</p>}
+<div className="mt-5 border-t border-[#D2B48C]/30 pt-5">
 
                   <p className="text-sm text-[#3D3D3D]/55">
                     Total
@@ -800,7 +852,7 @@ export default function PaymentPage() {
 
                   <p className="mt-1 font-serif text-3xl text-[#4A5D23]">
                     ₹
-                    {(subtotal + (subtotal >= 999 ? 0 : 80)).toLocaleString(
+                    {(pricing?.total ?? (subtotal + (subtotal >= 999 ? 0 : 80))).toLocaleString(
                       "en-IN",
                       {
                         minimumFractionDigits: 2,
