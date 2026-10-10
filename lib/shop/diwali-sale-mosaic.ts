@@ -7,6 +7,9 @@ export type DiwaliProductSlotConfig = {
 
 export type DiwaliSaleMosaicConfig = {
   enabled: boolean;
+  eyebrow: string;
+  title: string;
+  endsText: string;
   toteCategoryId: string | null;
   productSlots: DiwaliProductSlotConfig[];
   saleEnd: string;
@@ -22,6 +25,9 @@ const emptySlot = (): DiwaliProductSlotConfig => ({
 
 const defaultConfig = (): DiwaliSaleMosaicConfig => ({
   enabled: true,
+  eyebrow: "LIMITED PERIOD",
+  title: "Diwali Sale",
+  endsText: "Ends Diwali night",
   toteCategoryId: null,
   productSlots: [emptySlot(), emptySlot(), emptySlot()],
   saleEnd: DEFAULT_DIWALI_SALE_END,
@@ -70,6 +76,9 @@ export function parseDiwaliSaleMosaicConfig(
 
     return {
       enabled: raw.enabled !== false,
+      eyebrow: typeof raw.eyebrow === "string" ? raw.eyebrow : "LIMITED PERIOD",
+      title: typeof raw.title === "string" ? raw.title : "Diwali Sale",
+      endsText: typeof raw.endsText === "string" ? raw.endsText : "Ends Diwali night",
       toteCategoryId: nullableString(raw.toteCategoryId ?? raw.tote_category_id),
       productSlots,
       saleEnd,

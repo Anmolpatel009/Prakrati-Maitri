@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import CartBadge from "@/components/cart/CartBadge";
 import type { NavbarCustomizationConfig, NavbarItem } from "@/lib/shop/navbar-customization";
+import type { StorefrontAnnouncementConfig } from "@/lib/shop/announcement-strip";
 
 type StoreCategory = {
   id: string;
@@ -24,6 +25,7 @@ type StoreSubcategory = {
 type Props = {
   navbarData: { categories: StoreCategory[]; subcategories: StoreSubcategory[] };
   customization: NavbarCustomizationConfig;
+  announcementConfig: StorefrontAnnouncementConfig;
 };
 
 type LinkItem = { label: string; note?: string | null; href: string };
@@ -38,22 +40,9 @@ type CategoryView = {
   groups: { title: string; links: LinkItem[] }[];
 };
 type NavRow = { key: string; label: string; type: "category" | "link"; catKey?: string; href?: string };
-type BulkTile = { name: string; note: string; img: string };
 type Door = "shop" | "bulk";
 
 const BULK_URL = "/bulk-order";
-const BULK_TILES: BulkTile[] = [
-  { name: "Canvas-Front Jute", note: "5 sizes", img: "/images/header/bulk-canvas-front-jute.webp" },
-  { name: "Cotton Tote Bags", note: "150–350 GSM", img: "/images/header/menu-tote-thumb.webp" },
-  { name: "Conference Bags", note: "Fits A4 files", img: "/images/header/bulk-conference-bags.webp" },
-  { name: "Window Hampers", note: "4 sizes", img: "/images/header/menu-hamper-thumb.webp" },
-  { name: "Drawstring Bags", note: "10 sizes", img: "/images/header/menu-packaging-thumb.webp" },
-  { name: "Saree Covers", note: "Packs of 6 / 12 / 24", img: "/images/header/bulk-saree-covers.webp" },
-  { name: "Jute Zipper Bags", note: "5 sizes", img: "/images/header/menu-hand-thumb.webp" },
-  { name: "Natural Jute Hampers", note: "3 sizes", img: "/images/header/bulk-natural-jute-hampers.webp" },
-  { name: "Checks Hampers", note: "3 colours", img: "/images/header/bulk-checks-hampers.webp" },
-  { name: "Small Pouches", note: "Jewellery & favours", img: "/images/header/menu-packaging-thumb.webp" },
-];
 
 function fallbackCategoryImage(slug: string, name: string): string {
   const key = `${slug} ${name}`.toLowerCase();
@@ -135,7 +124,7 @@ function CategoryGroups({ category }: { category: CategoryView }) {
   </>;
 }
 
-export default function TwoDoorsHeader({ navbarData, customization }: Props) {
+export default function TwoDoorsHeader({ navbarData, customization, announcementConfig }: Props) {
   const categories = useMemo(() => makeCategoryViews(navbarData.categories, navbarData.subcategories), [navbarData.categories, navbarData.subcategories]);
   const navRows = useMemo(() => makeNavRows(customization.items, categories, navbarData.categories, navbarData.subcategories), [customization.items, categories, navbarData.categories, navbarData.subcategories]);
   const defaultCategory = categories.find((category) => category.href.endsWith("/hamper-bags"))?.key || categories[0]?.key || "";
@@ -156,7 +145,7 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
     const update = () => setIsPhone(mediaQuery.matches);
     update();
     mediaQuery.addEventListener("change", update);
-    if (window.location.hash === "#bulk" || new URLSearchParams(window.location.search).get("door") === "bulk") setDoor("bulk");
+    if (window.location.pathname === BULK_URL || window.location.hash === "#bulk" || new URLSearchParams(window.location.search).get("door") === "bulk") setDoor("bulk");
     return () => mediaQuery.removeEventListener("change", update);
   }, []);
 
@@ -192,13 +181,13 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
   }, [open, door]);
 
   const clickShop = () => {
-    if (door !== "shop") {
-      setDoor("shop");
-      setOpenState(true);
-      return;
-    }
-    setOpenState((current) => !current);
-  };
+  if (window.location.pathname === BULK_URL) {
+    window.location.href = "/";
+    return;
+  }
+  setDoor("shop");
+  setOpenState(false);
+};
   const clickCategory = (key: string) => {
     if (!isPhone && open && active === key) {
       setOpenState(false);
@@ -208,14 +197,22 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
     setAccordion(key);
     setOpenState(true);
   };
-  const chooseBulk = () => { setDoor("bulk"); setOpenState(false); };
+  const chooseBulk = () => { window.location.href = BULK_URL; };
 
   return <header className="pm-hd" id="top">
-    <div className="pm-hd-strip">
-      <p className="pm-hd-strip-d">Free delivery over ₹100 order value</p>
-      <p className="pm-hd-strip-m">Bulk orders · custom logo · PAN India delivery</p>
-      <div className="pm-hd-strip-r"><a href={BULK_URL}>Bulk enquiries <Arrow /></a></div>
-    </div>
+    {announcementConfig.enabled && (
+      <div className="pm-hd-strip">
+        <p className="pm-hd-strip-d">{announcementConfig.desktopText}</p>
+        <p className="pm-hd-strip-m">{announcementConfig.mobileText}</p>
+        {announcementConfig.bulkLinkEnabled && (
+          <div className="pm-hd-strip-r">
+            <a href={announcementConfig.bulkLinkUrl || BULK_URL}>
+              {announcementConfig.bulkLinkText} <Arrow />
+            </a>
+          </div>
+        )}
+      </div>
+    )}
 
     <div className="pm-hd-main">
       <button type="button" className="pm-hd-burger" aria-label="Open shop menu" onClick={() => { setDoor("shop"); setOpenState(true); }}>
@@ -223,12 +220,12 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
       </button>
       <a className="pm-hd-logo" href="/shop" aria-label="Prakriti Maitri home">
         <span className="pm-hd-mark" aria-hidden="true"><img src="/prakrati-maitri-logo.jpg" alt="" /></span>
-        <span className="pm-hd-name" style={{ color: "#4E3320" }}><b style={{ fontFamily: customization.brand_font_family, fontSize: `${Math.min(Math.max(customization.brand_font_size, 20), 32)}px`, fontWeight: customization.brand_font_weight, fontStyle: customization.brand_font_style, color: "#4E3320" }}>PRAKRITI MAITRI</b><small>Eco bags · Manufacturer</small></span>
+        <span className="pm-hd-name" style={{ color: "#4E3320" }}><b style={{ fontFamily: customization.brand_font_family, fontSize: `${Math.min(Math.max(customization.brand_font_size, 20), 32)}px`, fontWeight: customization.brand_font_weight, fontStyle: customization.brand_font_style, color: "#4E3320" }}>PRAKRITI MAITRI</b><small>Jute bags · Manufacturer</small></span>
       </a>
       <div className="pm-hd-doors" role="tablist" aria-label="Choose shopping experience">
         <button ref={shopButton} type="button" role="tab" id="pm-door-shop" aria-selected={door === "shop"} aria-expanded={open} aria-controls="pm-dd" onClick={clickShop}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9h16M9 20v-6h6v6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /> </svg>
-          Shop <svg className="pm-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          Shop
         </button>
         <button type="button" role="tab" id="pm-door-bulk" aria-selected={door === "bulk"} aria-controls="pm-bk" onClick={chooseBulk}><Building />Corporate &amp; Bulk</button>
       </div>
@@ -239,7 +236,7 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
       </div>
     </div>
 
-    <div className="pm-hd-shop" hidden={door !== "shop"}>
+    <div className="pm-hd-shop" hidden={door !== "shop"} style={{ display: door === "shop" ? undefined : "none" }}>
       <nav className="pm-hd-nav" aria-label="Shop categories"><ul>
         {/* NAV CLEANUP - REMOVE PREV AND REVIEWS */}
         {navRows.filter((row) => !["PREV", "REVIEWS"].includes(row.label.trim().toUpperCase())).map((row) => <li key={row.key}>
@@ -247,6 +244,30 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
             {row.label}<svg className="pm-nav-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button> : <a href={row.href || "/shop"}>{row.label}</a>}
         </li>)}
+                <li className="pm-hd-bulk-cta-item" style={{ flexShrink: 0, marginLeft: "10px", display: "flex", alignItems: "center" }}>
+          <a
+            href={BULK_URL}
+            className="pm-hd-navbtn pm-hd-bulk-cta"
+            aria-label="Bulk Order"
+            style={{
+              alignItems: "center",
+              backgroundColor: "#8B4513",
+              border: "1px solid #8B4513",
+              borderRadius: "9999px",
+              color: "#FFFFFF",
+              display: "inline-flex",
+              gap: "6px",
+              height: "30px",
+              justifyContent: "center",
+              padding: "0 11px",
+              textDecoration: "none",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap"
+            }}
+          >
+            Bulk Order <Arrow />
+          </a>
+        </li>
       </ul></nav>
 
       <div className="pm-dd" id="pm-dd" hidden={!open}>
@@ -278,26 +299,5 @@ export default function TwoDoorsHeader({ navbarData, customization }: Props) {
       </div>
     </div>
 
-    <div className="pm-bk" id="pm-bk" hidden={door !== "bulk"}>
-      <div className="pm-bk-in"><div className="pm-bk-l">
-        <div className="pm-bk-head"><h2>Branded bags for your business</h2><span>Bulk price on every product</span></div>
-        <ul className="pm-bk-tiles">{BULK_TILES.map((tile) => <li key={tile.name}><a className="pm-bk-tile" href={`${BULK_URL}?source=header&product=${encodeURIComponent(tile.name)}`}>
-          <span className="pm-bk-pic"><img src={tile.img} alt={tile.name} width={200} height={200} loading="lazy" /></span><b>{tile.name}</b><small>{tile.note}</small>
-        </a></li>)}</ul>
-      </div>
-      <form className="pm-bk-form" action={BULK_URL} method="get">
-        <input type="hidden" name="source" value="header" /><span className="pm-bk-eb">Bulk quote</span><h3>Tell us the bag, quantity and logo.</h3>
-        <label className="pm-sr" htmlFor="pm-bk-product">Product</label><input id="pm-bk-product" name="product" placeholder="Product · e.g. canvas jute bag 14×16" required />
-        <div className="pm-bk-row"><label className="pm-sr" htmlFor="pm-bk-qty">Quantity</label><input id="pm-bk-qty" name="quantity" type="number" min="1" inputMode="numeric" placeholder="Quantity" required />
-          <label className="pm-sr" htmlFor="pm-bk-city">City</label><input id="pm-bk-city" name="city" placeholder="City" required /></div>
-        <button type="submit">Get bulk price <Arrow /></button>
-        <ul className="pm-bk-trust">
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10l5 3V10l5 3V10l5 3V4h3v16z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>Direct manufacturer</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" /><path d="M8 12.5l2.6 2.5L16 9.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>Custom logo printing</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>GST invoice</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h11v10H2zM13 10h5l3 3v3h-8z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /><circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" strokeWidth="1.6" /><circle cx="17" cy="18" r="2" fill="none" stroke="currentColor" strokeWidth="1.6" /></svg>PAN India delivery</li>
-        </ul>
-      </form></div>
-    </div>
   </header>;
 }

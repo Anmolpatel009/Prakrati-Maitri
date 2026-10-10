@@ -205,7 +205,7 @@ export default function DiwaliSaleMosaic({ products, categories, config }: Props
   const slotBadges = ["FEATURED PICK", "FEATURED PICK", "FEATURED PICK"];
 
   return (
-    <section className={styles["pm-dm"]} id="diwali-sale" aria-label="Diwali Sale">
+    <section className={styles["pm-dm"]} id="diwali-sale" aria-label={config.title}>
       <svg className={styles["pm-dm-toran"]} viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">
   <line x1="0" y1="12" x2="100" y2="12" stroke="#8B5A2B" strokeWidth="1.2" />
 </svg>
@@ -215,13 +215,13 @@ export default function DiwaliSaleMosaic({ products, categories, config }: Props
           <div className={styles["pm-dm-heading"]}>
             <DiyaIcon />
             <div>
-              <span className={styles["pm-dm-eyebrow"]}>LIMITED PERIOD</span>
-              <h2 className={styles["pm-dm-h2"]}>Diwali Sale</h2>
+              <span className={styles["pm-dm-eyebrow"]}>{config.eyebrow}</span>
+              <h2 className={styles["pm-dm-h2"]}>{config.title}</h2>
             </div>
           </div>
           <div className={styles["pm-dm-timer-wrap"]}>
             <DiwaliCountdown saleEnd={config.saleEnd} hideAfterEnd={config.hideAfterEnd} />
-            <span className={styles["pm-dm-ends"]}>Ends Diwali night</span>
+            <span className={styles["pm-dm-ends"]}>{config.endsText}</span>
           </div>
         </div>
 

@@ -11,6 +11,7 @@ import {
   type NavbarItem,
 } from "@/lib/shop/navbar-customization";
 import { getSiteAppearance } from "@/lib/shop/site-appearance";
+import { getStorefrontAnnouncementConfig } from "@/lib/shop/announcement-strip";
 
 const GA_MEASUREMENT_ID = "G-KJ3V8XMPCC";
 
@@ -26,6 +27,7 @@ export default async function RootLayout({
 }>) {
   const navbarData = await getShopNavbarData();
   const siteAppearance = await getSiteAppearance();
+  const announcementConfig = await getStorefrontAnnouncementConfig();
 
   const fallbackItems: NavbarItem[] = [
     { key: "new", type: "new" },
@@ -66,10 +68,11 @@ export default async function RootLayout({
           <StorefrontChrome
             backgroundColor={siteAppearance.background_color}
             header={
-              <GlobalStorefrontHeader
-                navbarData={navbarData}
-                customization={navbarCustomization}
-              />
+                <GlobalStorefrontHeader
+                  navbarData={navbarData}
+                  customization={navbarCustomization}
+                  announcementConfig={announcementConfig}
+                />
             }
           >
             {children}
