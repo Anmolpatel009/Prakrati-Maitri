@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const data = body as Record<string, unknown>;
     const brideName = typeof data.brideName === "string" ? data.brideName.trim() : "";
     const groomName = typeof data.groomName === "string" ? data.groomName.trim() : "";
-    const weddingDate = typeof data.weddingDate === "string" ? data.weddingDate.trim() : "";
+    const contactNumber = typeof data.contactNumber === "string" ? data.contactNumber.trim().replace(/[\s-]/g, "") : "";
     const guestRange = typeof data.guestRange === "string" ? data.guestRange : "";
     const giftChoice = typeof data.giftChoice === "string" ? data.giftChoice : "";
 
@@ -36,8 +36,9 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    if (weddingDate && !isValidDate(weddingDate)) {
-      return NextResponse.json({ error: "Please enter a valid wedding date." }, { status: 400 });
+    const normalizedContactNumber = contactNumber.startsWith("+91") ? contactNumber.slice(3) : contactNumber;
+    if (!/^[6-9]\d{9}$/.test(normalizedContactNumber) || !/^\+?\d+$/.test(contactNumber)) {
+      return NextResponse.json({ error: "Please enter a valid 10-digit Indian mobile number, optionally with +91." }, { status: 400 });
     }
     if (!allowedGuestRanges.has(guestRange)) {
       return NextResponse.json({ error: "Please select a valid guest range." }, { status: 400 });
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
     const { error } = await db.from("wedding_return_gift_enquiries").insert({
       bride_name: brideName,
       groom_name: groomName,
-      wedding_date: weddingDate || null,
+      contact_number: contactNumber.startsWith("+91") ? "+91" + normalizedContactNumber : normalizedContactNumber,
       guest_range: guestRange,
       gift_choice: giftChoice,
     });

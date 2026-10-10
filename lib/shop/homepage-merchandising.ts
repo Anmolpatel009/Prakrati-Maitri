@@ -63,6 +63,48 @@ const DEFAULT_COLLECTION_CARDS: HomepageCollectionCard[] = [
     textColor: "#3D3D3D",
     backgroundColor: "#FFFFFF",
   },
+  {
+    slot: 4,
+    type: "category",
+    categoryId: null,
+    subcategoryId: null,
+    heading: "",
+    subheading: "",
+    fontFamily: "inherit",
+    fontSize: 28,
+    fontStyle: "normal",
+    fontWeight: 600,
+    textColor: "#3D3D3D",
+    backgroundColor: "#FFFFFF",
+  },
+  {
+    slot: 5,
+    type: "category",
+    categoryId: null,
+    subcategoryId: null,
+    heading: "",
+    subheading: "",
+    fontFamily: "inherit",
+    fontSize: 28,
+    fontStyle: "normal",
+    fontWeight: 600,
+    textColor: "#3D3D3D",
+    backgroundColor: "#FFFFFF",
+  },
+  {
+    slot: 6,
+    type: "category",
+    categoryId: null,
+    subcategoryId: null,
+    heading: "",
+    subheading: "",
+    fontFamily: "inherit",
+    fontSize: 28,
+    fontStyle: "normal",
+    fontWeight: 600,
+    textColor: "#3D3D3D",
+    backgroundColor: "#FFFFFF",
+  },
 ];
 
 const DEFAULT_CONFIG: HomepageMerchandisingConfig = {
@@ -232,8 +274,12 @@ export function parseHomepageMerchandising(
     return {
       config: {
         collectionCards:
-          normalizedCards.length === 3
-            ? normalizedCards
+          normalizedCards.length > 0
+            ? [1, 2, 3, 4, 5, 6].map(
+                (slot) =>
+                  normalizedCards.find((card) => card.slot === slot) ??
+                  DEFAULT_COLLECTION_CARDS.find((card) => card.slot === slot)!,
+              )
             : DEFAULT_COLLECTION_CARDS,
         newArrivals: Array.isArray(raw.newArrivals)
           ? raw.newArrivals.filter(

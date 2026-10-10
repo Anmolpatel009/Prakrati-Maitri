@@ -35,6 +35,7 @@ export default function WeddingReturnGiftHero({
   const [bride, setBride] = useState("");
   const [groom, setGroom] = useState("");
   const [weddingDate, setWeddingDate] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
   const [guests, setGuests] = useState("100\u2013300");
   const [gift, setGift] = useState("Jute hamper bag");
   const [formNotice, setFormNotice] = useState("");
@@ -67,7 +68,7 @@ export default function WeddingReturnGiftHero({
         body: JSON.stringify({
           brideName: bride.trim(),
           groomName: groom.trim(),
-          weddingDate,
+          contactNumber: contactNumber.trim(),
           guestRange: guests,
           giftChoice: gift,
         }),
@@ -206,8 +207,8 @@ export default function WeddingReturnGiftHero({
           <label className={styles["pm-wed-f-groom"]} htmlFor="pm-wed-groom">Groom's name
             <input id="pm-wed-groom" name="groom" placeholder="Rohan" autoComplete="off" maxLength={24} value={groom} onChange={(event) => { setGroom(event.target.value); setFormNotice(""); }} required />
           </label>
-          <label className={styles["pm-wed-f-date"]} htmlFor="pm-wed-date">Wedding date
-            <input id="pm-wed-date" name="wedding_date" type="date" value={weddingDate} onChange={(event) => { setWeddingDate(event.target.value); setFormNotice(""); }} />
+          <label className={styles["pm-wed-f-date"]} htmlFor="pm-wed-contact">Contact number
+            <input id="pm-wed-contact" name="contact_number" type="tel" inputMode="tel" autoComplete="tel" placeholder="98765 43210" value={contactNumber} onChange={(event) => { setContactNumber(event.target.value); setFormNotice(""); }} pattern="(?:\+91[ -]?)?[6-9][0-9]{9}" title="Enter a valid 10-digit Indian mobile number, optionally with +91." maxLength={14} required />
           </label>
           <label className={styles["pm-wed-f-guests"]} htmlFor="pm-wed-guests">Guests
             <select id="pm-wed-guests" name="guests" value={guests} onChange={(event) => { setGuests(event.target.value); setFormNotice(""); }}>

@@ -250,7 +250,7 @@ export default function AdvertisingVideoSection({
 
         <a
           className="pm-vid-instagram"
-          href="https://www.instagram.com/prakritimaitri/"
+          href="https://instagram.com/prakriti_maitri?rpxt=amU3MG4xNmg2ZXZj"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -260,7 +260,7 @@ export default function AdvertisingVideoSection({
 
           <span>
             <strong>
-              @prakritimaitri
+              @prakriti_maitri
             </strong>
 
             <small>
@@ -568,7 +568,7 @@ export default function AdvertisingVideoSection({
 
                 <a
                   className="pm-vid-lightbox-instagram"
-                  href="https://www.instagram.com/prakritimaitri/"
+                  href="https://instagram.com/prakriti_maitri?rpxt=amU3MG4xNmg2ZXZj"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

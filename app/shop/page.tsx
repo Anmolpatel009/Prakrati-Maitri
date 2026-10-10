@@ -7,8 +7,10 @@ import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
 import CategoryRail from "@/components/shop/CategoryRail";
 import WeddingReturnGiftHero from "@/components/shop/WeddingReturnGiftHero";
-import DiwaliSaleMosaic from "@/components/shop/DiwaliSaleMosaic";
+import HomepagePromotionalBannersMosaic from "@/components/shop/HomepagePromotionalBannersMosaic";
+import { getHomepageBanners } from "@/lib/shop/homepage-banners";
 import { parseDiwaliSaleMosaicConfig } from "@/lib/shop/diwali-sale-mosaic";
+
 import {
   getCategoryBanners,
 } from "@/lib/shop/category-banners";
@@ -181,6 +183,7 @@ export default async function ShopPage({
   }
 
   const categoryBannersPromise = getCategoryBanners();
+const homepageBannersPromise = getHomepageBanners();
 
   const [
     navCards,
@@ -193,6 +196,7 @@ export default async function ShopPage({
   ]);
 
     const categoryBanners = await categoryBannersPromise;
+    const homepageBanners = await homepageBannersPromise;
 
     const homepageSectionMap = Object.fromEntries(
       homepageSections.map((section) => [
@@ -249,6 +253,7 @@ export default async function ShopPage({
   } = parseHomepageMerchandising(homepageSections);
   const diwaliSaleConfig = parseDiwaliSaleMosaicConfig(homepageSections);
 
+
   const productById = new Map(
     products.map((product) => [product.id, product]),
   );
@@ -283,7 +288,8 @@ export default async function ShopPage({
     .filter((row) => row.products.length > 0);
 
   const homepageCollectionCards = merchandisingConfig.collectionCards
-    .slice(0, 3)
+    .slice(0, 6)
+    .filter((card) => Boolean(card.categoryId || card.subcategoryId))
     .map((card, index) => {
       const category = card.categoryId
         ? categories.find((item) => item.id === card.categoryId) ?? null
@@ -313,13 +319,16 @@ export default async function ShopPage({
               )
               .slice(0, 4);
 
+      const hrefCategory =
+        card.type === "subcategory" && subcategory
+          ? categories.find((item) => item.id === subcategory.category_id) ?? category
+          : category;
+
       const href =
-        card.type === "subcategory" &&
-        category &&
-        subcategory
-          ? `/shop/${category.slug}/${subcategory.slug}`
-          : category
-            ? `/shop/${category.slug}`
+        card.type === "subcategory" && hrefCategory && subcategory
+          ? `/shop/${hrefCategory.slug}/${subcategory.slug}`
+          : hrefCategory
+            ? `/shop/${hrefCategory.slug}`
             : "/collections";
 
       const eyebrow =
@@ -400,7 +409,7 @@ export default async function ShopPage({
       <CategoryRail navCards={navCards} />
 
 
-      <DiwaliSaleMosaic products={products} categories={categories} config={diwaliSaleConfig} />
+      <HomepagePromotionalBannersMosaic banners={homepageBanners} config={diwaliSaleConfig} />
 
 {/* =====================================================
           MAIN HERO
@@ -461,6 +470,39 @@ export default async function ShopPage({
       </section>
 
 
+
+
+
+      {homepageCollectionCards.map(
+        ({
+          card,
+          index,
+          products,
+          href,
+          eyebrow,
+          boxStyle,
+          headingStyle,
+        }) => (
+          <div
+            key={card.slot || index}
+            className={`category-editorial-group category-editorial-group-0${
+              index + 1
+            } category-editorial-group-tall-banner`}
+          >
+            <CategoryProductSection
+              productCardStyling={productCardStyling}
+              title={card.heading}
+              eyebrow={eyebrow}
+              subheading={card.subheading}
+              href={href}
+              products={products}
+              boxStyle={boxStyle}
+              headingStyle={headingStyle}
+            />
+          </div>
+        ),
+      )}
+
       {/* =====================================================
           HERO / BANNER #2
       ===================================================== */}
@@ -503,37 +545,6 @@ export default async function ShopPage({
         </div>
 
       </section>
-
-
-      {homepageCollectionCards.map(
-        ({
-          card,
-          index,
-          products,
-          href,
-          eyebrow,
-          boxStyle,
-          headingStyle,
-        }) => (
-          <div
-            key={card.slot || index}
-            className={`category-editorial-group category-editorial-group-0${
-              index + 1
-            } category-editorial-group-tall-banner`}
-          >
-            <CategoryProductSection
-              productCardStyling={productCardStyling}
-              title={card.heading}
-              eyebrow={eyebrow}
-              subheading={card.subheading}
-              href={href}
-              products={products}
-              boxStyle={boxStyle}
-              headingStyle={headingStyle}
-            />
-          </div>
-        ),
-      )}
 
       {/* =====================================================
           MASTER CATEGORIES
