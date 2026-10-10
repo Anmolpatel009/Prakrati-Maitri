@@ -1,0 +1,294 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=DM+Mono:wght@500&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap");
+
+.pm-wed {
+  --pm-wed-kumkum: #7A1E24;
+  --pm-wed-maroon: #4C1015;
+  --pm-wed-gold: #C9952F;
+  --pm-wed-gold-soft: #E7C98E;
+  --pm-wed-cream: #FBF4E8;
+  --pm-wed-paper: #FFFDF8;
+  --pm-wed-ring: #FFF8EC;
+  --pm-wed-field: #FFFBF6;
+  --pm-wed-field-line: #E2CDBF;
+  --pm-wed-bark: #4E3320;
+  --pm-wed-ink: #2E2118;
+  --pm-wed-sub: #6B5A4A;
+  --pm-wed-photo-bg: #EAD9BF;
+  --pm-wed-glow: rgba(242, 196, 107, .22);
+  --pm-wed-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --pm-wed-sans: Montserrat, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --pm-wed-script: "Great Vibes", "Brush Script MT", cursive;
+  --pm-wed-mono: "DM Mono", ui-monospace, Menlo, monospace;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(70% 90% at 85% 40%, var(--pm-wed-glow), transparent 60%), var(--pm-wed-cream);
+  color: var(--pm-wed-ink);
+  font-family: var(--pm-wed-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pm-wed *, .pm-wed *::before, .pm-wed *::after { box-sizing: border-box; }
+.pm-wed a { color: inherit; text-decoration: none; }
+.pm-wed :where(h1, h2, p, ul) { margin: 0; }
+.pm-wed :focus-visible { outline: 2px solid var(--pm-wed-gold); outline-offset: 3px; }
+.pm-wed-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.pm-wed-toran { display: block; width: 100%; height: 44px; }
+
+.pm-wed-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 72px;
+  align-items: center;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 56px 120px;
+}
+.pm-wed-copy { min-width: 0; }
+.pm-wed-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 700 12px/1.4 var(--pm-wed-sans);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--pm-wed-kumkum);
+}
+.pm-wed-eyebrow::before, .pm-wed-eyebrow::after { content: ""; width: 28px; height: 1px; background: currentColor; opacity: .6; }
+.pm-wed-h1 {
+  margin-top: 14px !important;
+  font: 600 74px/1 var(--pm-wed-display);
+  color: var(--pm-wed-maroon);
+  letter-spacing: -.005em;
+  text-wrap: balance;
+}
+.pm-wed-h1 em { display: inline; font-style: italic; font-weight: 500; color: var(--pm-wed-kumkum); }
+.pm-wed-sub { margin-top: 22px !important; max-width: 33em; font: 400 17.5px/1.7 var(--pm-wed-sans); color: var(--pm-wed-sub); }
+.pm-wed-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.pm-wed-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 8px;
+  padding: 16px 28px;
+  font: 600 15px/1.2 var(--pm-wed-sans);
+  text-align: center;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.pm-wed-btn--solid { background: var(--pm-wed-kumkum); color: #FFF6EA !important; }
+.pm-wed-btn--solid:hover { background: var(--pm-wed-maroon); }
+.pm-wed-btn--line { border: 1.5px solid var(--pm-wed-kumkum); color: var(--pm-wed-kumkum); background: transparent; }
+.pm-wed-btn--line:hover { background: var(--pm-wed-kumkum); color: #FFF6EA; }
+.pm-wed-btn svg { width: 16px; height: 16px; flex: none; }
+.pm-wed-points { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 34px !important; padding: 0; list-style: none; }
+.pm-wed-points li { display: inline-flex; align-items: center; gap: 8px; font: 600 13px/1.3 var(--pm-wed-sans); color: var(--pm-wed-bark); }
+.pm-wed-points svg { width: 18px; height: 18px; color: var(--pm-wed-gold); flex: none; }
+
+.pm-wed-art { position: relative; justify-self: center; width: 520px; max-width: 100%; }
+.pm-wed-mandap { position: relative; aspect-ratio: 520 / 640; }
+.pm-wed-mandap-clip { position: absolute; inset: 0; clip-path: url(#pm-wed-arch); background: var(--pm-wed-photo-bg); }
+.pm-wed-mandap-clip img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 70%; }
+.pm-wed-image-fallback { display: flex; height: 100%; padding: 24px; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; background: linear-gradient(160deg, #EAD9BF, #FBF4E8); color: var(--pm-wed-bark); }
+.pm-wed-image-fallback span { font: 600 26px var(--pm-wed-display); }
+.pm-wed-image-fallback small { max-width: 240px; font-size: 12px; line-height: 1.6; }
+.pm-wed-rim { position: absolute; inset: -14px; width: calc(100% + 28px); height: calc(100% + 28px); overflow: visible; color: var(--pm-wed-gold); pointer-events: none; }
+.pm-wed-badge { position: absolute; right: -30px; top: 30px; width: 92px; height: 92px; border-radius: 50%; background: var(--pm-wed-paper); display: grid; place-items: center; text-align: center; box-shadow: 0 14px 26px -14px rgba(76,16,21,.5); }
+.pm-wed-badge b { display: block; font: 600 24px/1 var(--pm-wed-display); color: var(--pm-wed-kumkum); }
+.pm-wed-badge small { display: block; margin-top: 3px; font: 600 8.5px/1.3 var(--pm-wed-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--pm-wed-sub); }
+.pm-wed-tag { position: absolute; left: -58px; bottom: 72px; display: inline-flex; max-width: calc(100% + 80px); flex-direction: column; align-items: center; padding: 10px 16px 9px; border: 1px solid var(--pm-wed-gold-soft); border-radius: 6px; background: var(--pm-wed-paper); box-shadow: 0 18px 30px -18px rgba(76,16,21,.5); transform: rotate(-4deg); }
+.pm-wed-tag small { font: 500 9px/1.4 var(--pm-wed-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--pm-wed-sub); }
+.pm-wed-tag b { font: 400 26px/1.1 var(--pm-wed-script); color: var(--pm-wed-kumkum); white-space: nowrap; }
+.pm-wed-tag i { font: 600 10px/1.4 var(--pm-wed-sans); letter-spacing: .2em; color: var(--pm-wed-gold); font-style: normal; }
+
+.pm-wed-quote {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 240px);
+  max-width: 1200px;
+  margin: 0 auto 72px;
+  padding: 28px 36px 22px;
+  background: var(--pm-wed-paper);
+  border: 1px solid var(--pm-wed-gold-soft);
+  box-shadow: 0 0 0 8px var(--pm-wed-ring), 0 0 0 9px rgba(201,149,47,.55), 0 36px 60px -36px rgba(76,16,21,.45);
+}
+.pm-wed-quote::before { content: ""; position: absolute; inset: 10px; border: 1px solid rgba(201,149,47,.35); pointer-events: none; }
+.pm-wed-corner { position: absolute; top: 14px; width: 44px; height: 44px; color: var(--pm-wed-gold); pointer-events: none; }
+.pm-wed-corner--l { left: 14px; }
+.pm-wed-corner--r { right: 14px; transform: scaleX(-1); }
+.pm-wed-quote-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 0 22px; }
+.pm-wed-quote-head { max-width: 560px; }
+.pm-wed-script { display: block; font: 400 40px/1.08 var(--pm-wed-script); color: var(--pm-wed-kumkum); }
+.pm-wed-quote-head p { margin-top: 6px !important; font: 400 14px/1.5 var(--pm-wed-sans); color: var(--pm-wed-sub); }
+.pm-wed-ticks { display: flex; flex-wrap: wrap; gap: 18px; padding: 0; list-style: none; }
+.pm-wed-ticks li { display: inline-flex; align-items: center; gap: 6px; font: 600 12px/1.3 var(--pm-wed-sans); color: var(--pm-wed-bark); }
+.pm-wed-ticks span { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; background: rgba(201,149,47,.15); color: var(--pm-wed-gold); font-size: 11px; }
+.pm-wed-fields { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr) minmax(0,1fr) minmax(100px,.8fr) minmax(150px,1.25fr) auto; gap: 12px; align-items: end; margin-top: 20px; padding: 20px 22px 0; border-top: 1px dashed rgba(201,149,47,.5); }
+.pm-wed-quote label { display: flex; flex-direction: column; gap: 6px; min-width: 0; font: 700 10.5px/1.2 var(--pm-wed-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--pm-wed-bark); }
+.pm-wed-quote input, .pm-wed-quote select { width: 100%; min-width: 0; height: 48px; padding: 0 12px; border: 1px solid var(--pm-wed-field-line); border-radius: 10px; background: var(--pm-wed-field); font: 500 14px var(--pm-wed-sans); letter-spacing: 0; text-transform: none; color: var(--pm-wed-ink); }
+.pm-wed-quote select { appearance: auto; }
+.pm-wed-quote input:focus, .pm-wed-quote select:focus { outline: 2px solid var(--pm-wed-gold); outline-offset: 1px; border-color: var(--pm-wed-gold); }
+.pm-wed-amp { padding-bottom: 8px; font: 400 34px/1 var(--pm-wed-script); color: var(--pm-wed-gold); }
+.pm-wed-go { min-height: 48px; padding: 0 20px; white-space: nowrap; }
+.pm-wed-hint { margin: 12px 22px 0 !important; font: italic 500 14px/1.4 var(--pm-wed-display); color: var(--pm-wed-sub); }
+.pm-wed-notice { position: relative; margin: 12px 22px 0 !important; padding: 10px 12px; border: 1px solid var(--pm-wed-gold-soft); border-radius: 8px; font: 500 12px/1.5 var(--pm-wed-sans); color: var(--pm-wed-maroon); background: var(--pm-wed-cream); }
+
+@media (max-width: 1250px) {
+  .pm-wed-in { gap: 48px; padding: 48px 64px; }
+  .pm-wed-h1 { font-size: 64px; }
+  .pm-wed-art { width: 460px; }
+  .pm-wed-quote { width: calc(100% - 128px); }
+  .pm-wed-fields { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr) minmax(0,1fr); row-gap: 14px; }
+  .pm-wed-f-date { grid-column: 1 / 3; }
+  .pm-wed-f-guests { grid-column: 3 / 4; }
+  .pm-wed-f-gift { grid-column: 1 / 3; }
+  .pm-wed-go { grid-column: 3 / 5; }
+}
+
+@media (max-width: 1100px) {
+  .pm-wed-in { gap: 40px; padding: 48px 40px; }
+  .pm-wed-h1 { font-size: 58px; }
+  .pm-wed-art { width: 420px; }
+  .pm-wed-tag { left: -30px; }
+  .pm-wed-badge { right: -14px; }
+  .pm-wed-quote { width: calc(100% - 80px); }
+}
+
+@media (max-width: 767px) {
+  .pm-wed-toran { height: 34px; }
+  .pm-wed-in { grid-template-columns: minmax(0,1fr); gap: 44px; padding: 24px 20px 36px; }
+  .pm-wed-h1 { max-width: 12em; margin-top: 12px !important; font-size: 44px; line-height: 1.02; }
+  .pm-wed-sub { margin-top: 14px !important; font-size: 15px; }
+  .pm-wed-ctas { flex-direction: column; margin-top: 22px; }
+  .pm-wed-ctas .pm-wed-btn { width: 100%; padding: 14px 18px; font-size: 14px; }
+  .pm-wed-points { gap: 8px 16px; margin-top: 22px !important; }
+  .pm-wed-points li { font-size: 12px; }
+  .pm-wed-art { width: 280px; }
+  .pm-wed-tag { left: -24px; bottom: 40px; max-width: calc(100% + 40px); }
+  .pm-wed-tag b { font-size: 21px; }
+  .pm-wed-badge { right: -14px; top: 10px; width: 74px; height: 74px; }
+  .pm-wed-badge b { font-size: 19px; }
+  .pm-wed-quote { width: calc(100% - 32px); margin-bottom: 40px; padding: 24px 16px 18px; }
+  .pm-wed-corner { width: 30px; height: 30px; }
+  .pm-wed-quote-top { gap: 12px; padding: 0 6px; }
+  .pm-wed-script { font-size: 32px; }
+  .pm-wed-ticks { gap: 8px 14px; }
+  .pm-wed-ticks li { font-size: 11px; }
+  .pm-wed-fields { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); row-gap: 14px; padding: 16px 6px 0; }
+  .pm-wed-f-date, .pm-wed-f-guests, .pm-wed-f-gift, .pm-wed-go { grid-column: 1 / -1; }
+  .pm-wed-amp { align-self: end; padding-bottom: 12px; }
+  .pm-wed-go { width: 100%; }
+  .pm-wed-hint, .pm-wed-notice { margin-left: 6px !important; margin-right: 6px !important; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-wed-btn { transition: none; }
+}
+/* WEDDING QUOTE FORM - SIMPLE TYPOGRAPHY */
+.pm-wed-quote,
+.pm-wed-quote label,
+.pm-wed-quote input,
+.pm-wed-quote select,
+.pm-wed-quote button,
+.pm-wed-quote p,
+.pm-wed-quote li {
+  font-family: var(--pm-wed-sans), Arial, sans-serif !important;
+}
+
+.pm-wed-quote .pm-wed-script {
+  font-family: var(--pm-wed-sans), Arial, sans-serif !important;
+  font-size: clamp(25px, 2.1vw, 30px) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.pm-wed-quote label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0.06em !important;
+}
+
+.pm-wed-quote input,
+.pm-wed-quote select {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+}
+
+.pm-wed-quote button {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.pm-wed-quote .pm-wed-amp {
+  font-family: var(--pm-wed-sans), Arial, sans-serif !important;
+  font-size: 27px !important;
+  font-weight: 500 !important;
+}
+
+.pm-wed-quote .pm-wed-hint {
+  font-family: var(--pm-wed-sans), Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  line-height: 1.5 !important;
+}
+/* WEDDING QUOTE FORM - SIMPLE FONT AND ENCODING FIX V2 */
+.pm-wed-quote,
+.pm-wed-quote label,
+.pm-wed-quote input,
+.pm-wed-quote select,
+.pm-wed-quote button,
+.pm-wed-quote p,
+.pm-wed-quote li {
+  font-family: Montserrat, Arial, sans-serif !important;
+}
+
+.pm-wed-quote .pm-wed-script {
+  font-family: Montserrat, Arial, sans-serif !important;
+  font-size: clamp(25px, 2.1vw, 30px) !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.pm-wed-quote label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0.06em !important;
+}
+
+.pm-wed-quote input,
+.pm-wed-quote select {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+}
+
+.pm-wed-quote button {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.pm-wed-quote .pm-wed-amp {
+  font-family: Montserrat, Arial, sans-serif !important;
+  font-size: 27px !important;
+  font-weight: 500 !important;
+}
+
+.pm-wed-quote .pm-wed-hint {
+  font-family: Montserrat, Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  line-height: 1.5 !important;
+}

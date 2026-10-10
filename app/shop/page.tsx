@@ -6,8 +6,9 @@ import { getHomepageSections } from "@/lib/shop/homepage";
 import AdvertisingVideoSection from "@/components/shop/AdvertisingVideoSection";
 import BulkOrderPopup from "@/components/shop/BulkOrderPopup";
 import CategoryRail from "@/components/shop/CategoryRail";
-import HomepagePromotionalBannerCarousel from "@/components/shop/HomepagePromotionalBannerCarousel";
-import { getHomepageBanners } from "@/lib/shop/homepage-banners";
+import WeddingReturnGiftHero from "@/components/shop/WeddingReturnGiftHero";
+import DiwaliSaleMosaic from "@/components/shop/DiwaliSaleMosaic";
+import { parseDiwaliSaleMosaicConfig } from "@/lib/shop/diwali-sale-mosaic";
 import {
   getCategoryBanners,
 } from "@/lib/shop/category-banners";
@@ -185,12 +186,10 @@ export default async function ShopPage({
     navCards,
     videos,
     homepageSections,
-    homepageBanners,
   ] = await Promise.all([
     getStorefrontNavCards(),
     getStorefrontVideos(),
     getHomepageSections(),
-    getHomepageBanners(),
   ]);
 
     const categoryBanners = await categoryBannersPromise;
@@ -248,6 +247,7 @@ export default async function ShopPage({
     config: merchandisingConfig,
     hasSavedConfig: hasSavedMerchandisingConfig,
   } = parseHomepageMerchandising(homepageSections);
+  const diwaliSaleConfig = parseDiwaliSaleMosaicConfig(homepageSections);
 
   const productById = new Map(
     products.map((product) => [product.id, product]),
@@ -400,53 +400,16 @@ export default async function ShopPage({
       <CategoryRail navCards={navCards} />
 
 
-      <HomepagePromotionalBannerCarousel banners={homepageBanners} />
+      <DiwaliSaleMosaic products={products} categories={categories} config={diwaliSaleConfig} />
 
 {/* =====================================================
           MAIN HERO
       ===================================================== */}
 
-      <section className="shop-hero">
-
-        <div className="hero-content">
-
-          <span className="eyebrow">
-            ECO-FRIENDLY COLLECTION
-          </span>
-
-          <h1>
-            Thoughtful products.
-            <br />
-            Meaningful choices.
-          </h1>
-
-          <p>
-            Sustainable bags designed for everyday life,
-            gifting, celebrations and businesses.
-          </p>
-
-          <a href="/shop?category=new" className="primary-button">
-            Explore Collection
-          </a>
-
-        </div>
-
-        <div className="hero-placeholder">
-          {heroSection?.media_url ? (
-            <img
-              src={heroSection.media_url}
-              alt={heroSection.title || "PRAKRITI MAITRI"}
-              className="homepage-cms-image"
-            />
-          ) : (
-            <>
-              <span>Hero Image</span>
-              <small>Image will be added later</small>
-            </>
-          )}
-        </div>
-
-      </section>
+      <WeddingReturnGiftHero
+        imageUrl={heroSection?.media_url}
+        collectionHref="/shop/hamper-bags"
+      />
 
 
       {/* =====================================================

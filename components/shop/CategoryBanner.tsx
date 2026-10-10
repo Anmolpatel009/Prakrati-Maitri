@@ -22,12 +22,7 @@ export default function CategoryBanner({ banner }: Props) {
         }
       >
         <picture>
-          {banner.mobile_image_url && (
-            <source
-              media="(max-width: 768px)"
-              srcSet={banner.mobile_image_url}
-            />
-          )}
+
           <img
             src={banner.image_url}
             alt={banner.alt_text || "Category banner"}
