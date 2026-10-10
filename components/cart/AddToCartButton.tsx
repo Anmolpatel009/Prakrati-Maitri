@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "./CartProvider";
+import { trackMetaEvent } from "@/components/analytics/MetaPixel";
 
 type AddToCartButtonProps = {
   productId: string;
@@ -50,6 +51,14 @@ export default function AddToCartButton({
       quantity
     );
 
+    trackMetaEvent("AddToCart", {
+      content_type: "product",
+      content_ids: [productId],
+      contents: [{ id: productId, quantity }],
+      content_name: name,
+      value: price * quantity,
+      currency: "INR",
+    });
     setAdded(true);
 
     router.push("/cart");

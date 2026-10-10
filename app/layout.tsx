@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import GlobalStorefrontHeader from "@/components/storefront/GlobalStorefrontHeader";
 import StorefrontChrome from "@/components/storefront/StorefrontChrome";
+import MetaPixel from "@/components/analytics/MetaPixel";
 import { getShopNavbarData } from "@/lib/shop/navbar";
 import {
   getNavbarCustomization,
@@ -44,6 +45,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
+        <MetaPixel />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
           strategy="afterInteractive"

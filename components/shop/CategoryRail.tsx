@@ -26,7 +26,9 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
     }
 
     let animationFrame = 0;
+    let initialFrame = 0;
     let lastTime = performance.now();
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
 
     /*
      * Same visual speed as the previous 28s CSS animation,
@@ -71,6 +73,11 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
     };
 
     const animate = (now: number) => {
+      if (mobileQuery.matches) {
+        animationFrame = 0;
+        return;
+      }
+
       const delta = Math.min(now - lastTime, 50);
       lastTime = now;
 
@@ -102,11 +109,43 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
       lastTime = performance.now();
     };
 
-    const initialFrame = requestAnimationFrame(() => {
-      startAtMiddle();
-      lastTime = performance.now();
-      animationFrame = requestAnimationFrame(animate);
-    });
+    const stopAnimation = () => {
+      if (initialFrame) cancelAnimationFrame(initialFrame);
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      initialFrame = 0;
+      animationFrame = 0;
+    };
+
+    const startAnimation = () => {
+      if (mobileQuery.matches) {
+        rail.scrollLeft = 0;
+        return;
+      }
+
+      initialFrame = requestAnimationFrame(() => {
+        initialFrame = 0;
+
+        if (mobileQuery.matches) return;
+
+        startAtMiddle();
+        lastTime = performance.now();
+        animationFrame = requestAnimationFrame(animate);
+      });
+    };
+
+    const handleBreakpointChange = () => {
+      stopAnimation();
+      interactingRef.current = false;
+
+      if (mobileQuery.matches) {
+        rail.scrollLeft = 0;
+      } else {
+        startAnimation();
+      }
+    };
+
+    startAnimation();
+    mobileQuery.addEventListener("change", handleBreakpointChange);
 
     rail.addEventListener("pointerdown", handlePointerDown);
     rail.addEventListener("pointerup", handlePointerUp);
@@ -119,6 +158,7 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
       rail.removeEventListener("pointerdown", handlePointerDown);
       rail.removeEventListener("pointerup", handlePointerUp);
       rail.removeEventListener("pointercancel", handlePointerCancel);
+      mobileQuery.removeEventListener("change", handleBreakpointChange);
 
     };
   }, [navCards.length]);

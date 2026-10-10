@@ -3,12 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
+  useEffect,
   useRef,
   useState,
   type ChangeEvent,
   type ComponentProps,
 } from "react";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import { trackMetaEvent } from "@/components/analytics/MetaPixel";
 import SharedProductCard, {
   type SharedProductCardProduct,
 } from "@/components/shop/ProductCard";
@@ -173,6 +175,16 @@ export default function ProductConfigurator({
   suggestedProducts,
   suggestedProductCardConfig,
 }: ProductConfiguratorProps) {
+  useEffect(() => {
+    trackMetaEvent("ViewContent", {
+      content_type: "product",
+      content_ids: [product.id],
+      content_name: product.name,
+      value: product.price,
+      currency: "INR",
+    });
+  }, [product.id, product.name, product.price]);
+
   const customizationRef =
     useRef<HTMLDivElement | null>(null);
 
@@ -530,7 +542,7 @@ export default function ProductConfigurator({
                 }
                 onClick={handleStandardMode}
               >
-                Plain
+                Standard
               </button>
 
               <button

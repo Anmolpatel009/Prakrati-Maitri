@@ -6,6 +6,7 @@ import SharedProductCard, {
   type SharedProductCardProduct,
 } from "@/components/shop/ProductCard";
 import styles from "./success.module.css";
+import MetaPurchaseTracker from "@/components/analytics/MetaPurchaseTracker";
 
 type SuccessPageProps = {
   searchParams: Promise<{
@@ -25,6 +26,7 @@ type OrderItem = {
 type Order = {
   id: string;
   status: string;
+  payment_status: string | null;
   subtotal: number;
   shipping_fee: number;
   total: number;
@@ -96,6 +98,7 @@ export default async function SuccessPage({
         .select(`
           id,
           status,
+          payment_status,
           subtotal,
           shipping_fee,
           total,
@@ -174,6 +177,8 @@ export default async function SuccessPage({
 
   const displayOrderId = order?.id ?? orderId ?? "Created";
 
+  const paidOrderForTracking =
+    order && order.payment_status === "paid" ? order : null;
   return (
     <div className={styles.page}>
       <div className={styles.announce}>
@@ -193,6 +198,10 @@ export default async function SuccessPage({
       </header>
 
       <main>
+      {paidOrderForTracking ? (
+        <MetaPurchaseTracker orderId={paidOrderForTracking.id} value={paidOrderForTracking.total} />
+      ) : null}
+
         <section className={`${styles.wrap} ${styles.hero}`}>
           <div className={styles.tick}>✓</div>
 

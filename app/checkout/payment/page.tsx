@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
+import { trackMetaEvent } from "@/components/analytics/MetaPixel";
 
 declare global {
   interface Window {
@@ -110,6 +111,20 @@ export default function PaymentPage() {
 
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!loaded || items.length === 0) return;
+    trackMetaEvent("InitiateCheckout", {
+      content_type: "product",
+      content_ids: items.map((item) => item.productId),
+      contents: items.map((item) => ({
+        id: item.productId,
+        quantity: item.quantity,
+      })),
+      num_items: items.reduce((total, item) => total + item.quantity, 0),
+      value: subtotal,
+      currency: "INR",
+    });
+  }, [loaded, items, subtotal]);
   // =====================================================
   // LOAD CHECKOUT INFORMATION
   // =====================================================

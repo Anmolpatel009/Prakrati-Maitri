@@ -4,8 +4,6 @@ import { getProductCardStyling } from "@/lib/shop/product-card-styling";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import CategoryBanner from "@/components/shop/CategoryBanner";
-import { getCategoryBanner } from "@/lib/shop/category-banners";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -72,8 +70,6 @@ export default async function CategoryPage({
 
   const isBulkCategory =
     categoryData.name.trim().toLowerCase() === "corporate & bulk";
-
-  const categoryBanner = await getCategoryBanner(categoryData.id);
 
 
   // =====================================================
@@ -180,14 +176,8 @@ export default async function CategoryPage({
       {/* HERO */}
       {/* ================================================= */}
 
-      {categoryBanner ? (
-        <div className="shop-listing-promo-slot">
-          <CategoryBanner banner={categoryBanner} />
-        </div>
-      ) : null}
 
-
-      {/* ================================================= */}
+{/* ================================================= */}
       {/* CATEGORY NAVIGATION */}
       {/* ================================================= */}
 

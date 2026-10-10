@@ -73,7 +73,10 @@ export default function GlobalStorefrontFooter() {
                 </svg>
                 <span>
                   <small>Call / WhatsApp</small>
-                  <span>+91 XXXXX XXXXX</span>
+                  <span className="pm-foot-phone-links">
+  <a href="tel:+919407884087">+91 94078 84087</a>
+  <a href="tel:+916263996328">+91 62639 96328</a>
+</span>
                 </span>
               </li>
 
@@ -123,7 +126,7 @@ export default function GlobalStorefrontFooter() {
                 </svg>
                 <span>
                   <small>Factory</small>
-                  <span>[Address, City – PIN]</span>
+                  <span>G-8, Deep Tower Apartment, Gol Bazar, Jabalpur (M.P.) 482002</span>
                 </span>
               </li>
             </ul>
