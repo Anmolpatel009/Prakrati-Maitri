@@ -17,6 +17,7 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
   const railRef = useRef<HTMLElement>(null);
   const pausedRef = useRef(false);
   const interactingRef = useRef(false);
+  const arrowResumeTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const rail = railRef.current;
@@ -154,6 +155,10 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
     return () => {
       cancelAnimationFrame(initialFrame);
       cancelAnimationFrame(animationFrame);
+      if (arrowResumeTimeoutRef.current !== null) {
+        window.clearTimeout(arrowResumeTimeoutRef.current);
+        arrowResumeTimeoutRef.current = null;
+      }
 
       rail.removeEventListener("pointerdown", handlePointerDown);
       rail.removeEventListener("pointerup", handlePointerUp);
@@ -169,8 +174,46 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
 
   const cards = [...navCards, ...navCards];
 
+  const moveRail = (direction: -1 | 1) => {
+    const rail = railRef.current;
+    if (!rail || window.matchMedia("(max-width: 768px)").matches) return;
+
+    pausedRef.current = true;
+    interactingRef.current = true;
+
+    if (arrowResumeTimeoutRef.current !== null) {
+      window.clearTimeout(arrowResumeTimeoutRef.current);
+    }
+
+    const distance = Math.max(280, Math.round(rail.clientWidth * 0.72));
+    rail.scrollBy({ left: direction * distance, behavior: "smooth" });
+
+    arrowResumeTimeoutRef.current = window.setTimeout(() => {
+      const halfWidth = rail.scrollWidth / 2;
+      if (halfWidth > rail.clientWidth) {
+        if (rail.scrollLeft >= halfWidth) rail.scrollLeft -= halfWidth;
+        else if (rail.scrollLeft <= 0) rail.scrollLeft += halfWidth;
+      }
+
+      interactingRef.current = false;
+      pausedRef.current = false;
+      arrowResumeTimeoutRef.current = null;
+    }, 700);
+  };
+
   return (
-    <section
+    <div className="category-rail-shell">
+      <button
+        type="button"
+        className="category-rail-arrow category-rail-arrow--left"
+        aria-label="Scroll categories left"
+        onClick={() => moveRail(-1)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <section
       ref={railRef}
       className="category-rail"
       aria-label="Shop categories"
@@ -200,5 +243,16 @@ export default function CategoryRail({ navCards }: CategoryRailProps) {
         ))}
       </div>
     </section>
+      <button
+        type="button"
+        className="category-rail-arrow category-rail-arrow--right"
+        aria-label="Scroll categories right"
+        onClick={() => moveRail(1)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+    </div>
   );
 }

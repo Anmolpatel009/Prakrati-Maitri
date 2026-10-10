@@ -12644,7 +12644,7 @@ body {
    Fonts: Cormorant Garamond, Montserrat, DM Mono, Tiro Devanagari Hindi (logo mark)
    ===================================================================== */
 .pm-hd{--hd-bark:#4E3320;--hd-jute:#8B5A2B;--hd-ink:#2E2118;--hd-sub:#6B5A4A;--hd-cream:#F8F3EA;--hd-paper:#FFFDF8;--hd-line:#E3D6BF;--hd-sage:#EDF1E4;--hd-burlap:#C8A26B;
-  position:relative;z-index:50;font-family:Montserrat,system-ui,sans-serif;color:var(--hd-ink);background-color:var(--hd-cream);background-image:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22h%22 x=%220%22 y=%220%22 width=%22100%25%22 height=%22100%25%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.04 0.85%22 numOctaves=%222%22 seed=%224%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0.545  0 0 0 0 0.353  0 0 0 0 0.169  0.62 0 0 0 -0.27%22/%3E%3C/filter%3E%3Cfilter id=%22v%22 x=%220%22 y=%220%22 width=%22100%25%22 height=%22100%25%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85 0.04%22 numOctaves=%222%22 seed=%229%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0.545  0 0 0 0 0.353  0 0 0 0 0.169  0.5 0 0 0 -0.23%22/%3E%3C/filter%3E%3Crect width=%22180%22 height=%22180%22 filter=%22url(%23h)%22/%3E%3Crect width=%22180%22 height=%22180%22 filter=%22url(%23v)%22/%3E%3C/svg%3E");background-size:180px 180px;border-bottom:1px solid var(--hd-line)}
+  position:relative;z-index:50;font-family:Montserrat,system-ui,sans-serif;color:var(--hd-ink);background-color:var(--pm-canvas-bg);background-image:var(--pm-canvas-weave);border-bottom:1px solid var(--hd-line)}
 .pm-hd *{box-sizing:border-box}
 .pm-hd a{color:inherit;text-decoration:none}
 .pm-hd :where(h2,h3,h4,p,ul){margin:0;padding:0}
@@ -13217,5 +13217,150 @@ body {
 
   .pm-story-page .pm-story-signature {
     font-size: 20px;
+  }
+}
+
+/* Desktop category rail arrow controls */
+.category-rail-shell {
+  position: relative;
+  width: 100%;
+}
+
+.category-rail-arrow {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .category-rail-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgba(78, 51, 32, 0.28);
+    border-radius: 50%;
+    background: rgba(248, 243, 234, 0.96);
+    color: #4E3320;
+    box-shadow: 0 3px 10px rgba(46, 33, 24, 0.15);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .category-rail-arrow--left { left: 10px; }
+  .category-rail-arrow--right { right: 10px; }
+
+  .category-rail-arrow svg {
+    display: block;
+    width: 19px;
+    height: 19px;
+  }
+
+  .category-rail-arrow:hover {
+    background: #FFFDF8;
+    box-shadow: 0 5px 14px rgba(46, 33, 24, 0.22);
+  }
+
+  .category-rail-arrow:focus-visible {
+    outline: 2px solid #8B5A2B;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-rail-arrow { display: none !important; }
+}
+
+
+/* Product description formatting and plus toggle fix */
+.pdp-description-box.is-collapsed::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  opacity: 0 !important;
+}
+
+.pdp-details-description {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.pdp-details-description > p,
+.pdp-details-description > ul,
+.pdp-details-description > ol,
+.pdp-details-description > blockquote {
+  margin: 0 0 12px !important;
+}
+
+.pdp-details-description > p:last-child,
+.pdp-details-description > ul:last-child,
+.pdp-details-description > ol:last-child,
+.pdp-details-description > blockquote:last-child {
+  margin-bottom: 0 !important;
+}
+
+.pdp-details-description ul,
+.pdp-details-description ol {
+  padding-left: 24px;
+}
+
+.pdp-details-description ul {
+  list-style: disc;
+}
+
+.pdp-details-description ol {
+  list-style: decimal;
+}
+
+.pdp-details-description a {
+  color: #8B5A2B;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pdp-description-toggle {
+  display: inline-flex !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 8px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(78, 51, 32, 0.35) !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: #8B5A2B !important;
+  font-size: 23px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.pdp-description-toggle:hover {
+  background: rgba(139, 90, 43, 0.08) !important;
+  text-decoration: none !important;
+}
+
+.pdp-description-toggle:focus-visible {
+  outline: 2px solid #8B5A2B;
+  outline-offset: 3px;
+}
+
+
+/* Desktop category arches slightly smaller */
+@media (min-width: 769px) {
+  .shop-page .category-rail .category-circle {
+    transform: scale(0.92);
+    transform-origin: center center;
+    transition: transform 180ms ease;
+  }
+
+  .shop-page .category-rail .category-circle-item:hover .category-circle {
+    transform: scale(0.97);
   }
 }

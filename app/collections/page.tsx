@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import CollectionsClient from "@/components/shop/CollectionsClient";
-import CollectionBanner from "@/components/shop/CollectionBanner";
 import { getProductCardStyling } from "@/lib/shop/product-card-styling";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +12,6 @@ export default async function CollectionsPage() {
     { data: products, error: productsError },
     { data: categories, error: categoriesError },
     { data: subcategories, error: subcategoriesError },
-    { data: collectionBanners, error: collectionBannersError },
   ] = await Promise.all([
     supabase
       .from("products")
@@ -51,12 +49,6 @@ export default async function CollectionsPage() {
       .select("id, name, slug, category_id")
       .eq("is_active", true)
       .order("name", { ascending: true }),
-
-    supabase
-      .from("collection_banners")
-      .select("id, slot, image_url, alt_text")
-      .eq("is_active", true)
-      .order("slot", { ascending: true }),
   ]);
 
   if (productsError) {
@@ -77,13 +69,6 @@ export default async function CollectionsPage() {
     console.error(
       "Failed to load collection subcategories:",
       subcategoriesError.message
-    );
-  }
-
-  if (collectionBannersError) {
-    console.error(
-      "Failed to load collection banners:",
-      collectionBannersError.message
     );
   }
 
@@ -123,7 +108,6 @@ export default async function CollectionsPage() {
 
   return (
     <>
-      <CollectionBanner banners={collectionBanners ?? []} />
 
       <CollectionsClient
         products={normalizedProducts}

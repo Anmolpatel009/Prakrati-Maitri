@@ -374,6 +374,57 @@ export default function ProductConfigurator({
     },
   ];
 
+  function sanitizeDescriptionHtml(input: string): string {
+    const allowedTags = new Set([
+      "p", "br", "strong", "b", "em", "i", "u",
+      "ul", "ol", "li", "h2", "h3", "h4", "h5", "h6",
+      "blockquote", "a", "span"
+    ]);
+
+    const voidTags = new Set(["br"]);
+
+    const escapeAttribute = (value: string) =>
+      value
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    const withoutDangerousContent = input
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .replace(/<(script|style|iframe|object|embed|svg|math|template|noscript)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, "")
+      .replace(/<(script|style|iframe|object|embed|svg|math|template|noscript)\b[^>]*\/?>/gi, "");
+
+    return withoutDangerousContent.replace(
+      /<\/?([a-z][a-z0-9-]*)\b([^>]*)>/gi,
+      (whole, rawName: string, attributes: string) => {
+        const tag = String(rawName).toLowerCase();
+
+        if (!allowedTags.has(tag)) return "";
+
+        if (/^<\s*\//.test(whole)) {
+          return voidTags.has(tag) ? "" : "</" + tag + ">";
+        }
+
+        if (voidTags.has(tag)) return "<br>";
+
+        if (tag === "a") {
+          const match = attributes.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+          const rawHref = match ? String(match[1] ?? match[2] ?? match[3] ?? "").trim() : "";
+          const safeHref =
+            !/[\u0000-\u001f\u007f]/.test(rawHref) &&
+            /^(https?:\/\/|mailto:|\/(?!\/)|#)/i.test(rawHref);
+
+          return safeHref
+            ? '<a href="' + escapeAttribute(rawHref) + '">'
+            : "<a>";
+        }
+
+        return "<" + tag + ">";
+      }
+    );
+  }
+
   const fullDescription =
     product.description?.trim() ||
     product.short_description?.trim() ||
@@ -728,14 +779,13 @@ export default function ProductConfigurator({
                   : "is-collapsed"
               }`}
             >
-              <p className="pdp-details-description">
-                {fullDescription}
-              </p>
+              <div className="pdp-details-description" dangerouslySetInnerHTML={{ __html: sanitizeDescriptionHtml(fullDescription) }} />
             </div>
 
             <button
               type="button"
               className="pdp-description-toggle"
+              aria-label={descriptionExpanded ? "Collapse product description" : "Expand product description"}
               aria-expanded={
                 descriptionExpanded
               }
@@ -745,9 +795,7 @@ export default function ProductConfigurator({
                 )
               }
             >
-              {descriptionExpanded
-                ? "Hide"
-                : "View more"}
+              {descriptionExpanded ? "?" : "+"}
             </button>
 
             <div className="pdp-feature-grid">
