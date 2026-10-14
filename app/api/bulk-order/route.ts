@@ -16,9 +16,39 @@ export async function POST(request: Request) {
     const productId =
       String(body.productId ?? "").trim() || null;
     const quantity = Number(body.quantity);
-    const purpose = String(body.purpose ?? "").trim();
+    const allowedPlanningOptions = new Set([
+      "Tote Bags",
+      "Printed Tote Bags",
+      "Conference Bags & Kits",
+      "Customize Bags",
+      "Hamper Bags",
+      "Hand Bags",
+      "Packaging Bags",
+    ]);
+
+    const selectedPlanning: string[] = Array.isArray(body.selectedPlanning)
+      ? Array.from(
+          new Set(
+            body.selectedPlanning.filter(
+              (option: unknown): option is string =>
+                typeof option === "string" &&
+                allowedPlanningOptions.has(option)
+            )
+          )
+        )
+      : [];
+
+    const purpose =
+      String(body.purpose ?? "").trim() ||
+      (selectedPlanning.length > 0 ? "Other" : "");
+
+    const submittedMessage = String(body.message ?? "").trim();
+    const planningMessage = selectedPlanning.length
+      ? `Selected product interests: ${selectedPlanning.join(", ")}`
+      : "";
+
     const message =
-      String(body.message ?? "").trim() || null;
+      [submittedMessage, planningMessage].filter(Boolean).join("\n\n") || null;
     const bagSize =
       String(body.bagSize ?? "").trim() || null;
     const deliveryPincode =
@@ -67,9 +97,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!categoryId && !productId) {
+    if (!categoryId && !productId && selectedPlanning.length === 0) {
       return NextResponse.json(
-        { error: "Please select a category or product." },
+        { error: "Please select a product type, category, or product." },
         { status: 400 }
       );
     }

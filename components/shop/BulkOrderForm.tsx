@@ -173,15 +173,19 @@ export default function BulkOrderForm({ categories, products }: Props) {
       return;
     }
 
-    if (!form.categoryId && !form.productId) {
+    if (
+      !form.categoryId &&
+      !form.productId &&
+      selectedPlanning.length === 0
+    ) {
       setError(
-        "Please select a category or product in Add more details for an accurate quote."
+        "Please select a product type above or choose a category or product in Add more details."
       );
       setMoreOpen(true);
       return;
     }
 
-    if (!form.purpose.trim()) {
+    if (!form.purpose.trim() && selectedPlanning.length === 0) {
       setError("Please tell us the purpose of your bulk purchase.");
       setMoreOpen(true);
       return;
@@ -275,6 +279,7 @@ export default function BulkOrderForm({ categories, products }: Props) {
           ...form,
           mobile: `+91${mobileDigits}`,
           message: form.message.trim() || null,
+          selectedPlanning,
           referenceImagePath,
         }),
       });
